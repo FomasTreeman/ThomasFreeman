@@ -17,7 +17,7 @@ const pinned = [
 ];
 
 /** @type {import('./$types').PageLoad} */
-export function load(): Data {
+export function load() {
     const getRepos = async (): Promise<Repo[] | RepoError> => {
         const resp = await fetch(
             `https://api.github.com/users/FomasTreeman/repos?per_page=100&sort=updated`,
