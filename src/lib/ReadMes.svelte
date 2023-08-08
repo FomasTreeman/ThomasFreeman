@@ -6,7 +6,6 @@
 	import type { Data, Repo, RepoError } from '$lib/types';
 	import { SyncLoader } from 'svelte-loading-spinners';
 
-	/** @type {import('./$types').PageData} */
 	export let data;
 
 	async function getHtml() {
