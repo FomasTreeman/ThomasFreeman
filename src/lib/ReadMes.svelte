@@ -35,7 +35,12 @@
 			</ol>
 		</div>
 		{#each repos as repo}
-			<Saos animation={'slide-in-bottom 1s cubic-bezier(0.35, 0.5, 0.65, 0.95) both'}>
+			<Saos
+				animation={'fade-in 1s cubic-bezier(0.35, 0.5, 0.65, 0.95) both'}
+				animation_out={'fade-out 0.6s cubic-bezier(0.550, 0.085, 0.680, 0.530) both'}
+				top={250}
+				bottom={250}
+			>
 				<article id={repo.name} class="project-article">
 					<!-- <article id="md" class="article"> -->
 					{#await promise}
@@ -60,8 +65,6 @@
 		{/each}
 	{/if}
 {/await}
-
-<!-- <Saos on:update={handleObserver}>...</Saos> -->
 
 <style>
 	.project-article {
@@ -118,28 +121,37 @@
 		mix-blend-mode: lighten;
 	}
 
-	@-webkit-keyframes -global-slide-in-bottom {
+	@-webkit-keyframes -global-fade-in {
 		0% {
-			-webkit-transform: translateY(1000px);
-			transform: translateY(1000px);
 			opacity: 0;
 		}
 		100% {
-			-webkit-transform: translateY(0);
-			transform: translateY(0);
 			opacity: 1;
 		}
 	}
-	@keyframes -global-slide-in-bottom {
+	@keyframes -global-fade-in {
 		0% {
-			-webkit-transform: translateY(1000px);
-			transform: translateY(1000px);
 			opacity: 0;
 		}
 		100% {
-			-webkit-transform: translateY(0);
-			transform: translateY(0);
 			opacity: 1;
+		}
+	}
+
+	@-webkit-keyframes -global-fade-out {
+		0% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0;
+		}
+	}
+	@keyframes -global-fade-out {
+		0% {
+			opacity: 1;
+		}
+		100% {
+			opacity: 0;
 		}
 	}
 
