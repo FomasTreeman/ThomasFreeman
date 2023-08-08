@@ -5,7 +5,7 @@
  * @param {any} options.target - The target element to scroll to.
  * @return {void} This function does not return anything.
  */
-export default function scrollIntoView({ target }) {
+export default function scrollIntoView({ target }: any) {
   const el = document.querySelector(target.getAttribute('href'));
 
   if (!el) return;

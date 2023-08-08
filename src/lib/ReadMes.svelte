@@ -1,19 +1,18 @@
 <script lang="ts">
-	export const ssr = false;
-
 	import showdown from 'showdown';
 	import scrollIntoView from './utils/scroll';
 	import ReadMeTitle from './ReadMeTitle.svelte';
 	import Saos from 'saos';
+	import type { Data, Repo, RepoError } from '$lib/types';
 	import { SyncLoader } from 'svelte-loading-spinners';
 
-	export let data;
+	export let data: Data;
 
 	async function getHtml() {
 		return new showdown.Converter();
 	}
 
-	function renderHtml(html) {
+	function renderHtml(html: string) {
 		return html.slice(0, 1000);
 	}
 
@@ -22,7 +21,6 @@
 
 {#await data.repos}
 	<SyncLoader size="60" color="#FF3E00" unit="px" duration="1s" />
-	<!-- <h1>LIOADING</h1> -->
 {:then repos}
 	{#if repos?.error}
 		<h1 class="center">Whoops error 😔</h1>

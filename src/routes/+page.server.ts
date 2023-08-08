@@ -1,6 +1,7 @@
 
 import { Base64 } from 'js-base64';
 import { TOKEN } from '$env/static/private';
+import type { Data, Repo, RepoError } from '$lib/types.js';
 
 const productions = {
     Comms: 'https://comm-a.vercel.app/',
@@ -16,8 +17,8 @@ const pinned = [
 ];
 
 /** @type {import('./$types').PageLoad} */
-export function load() {
-    const getRepos = async (): Promise<{ md: string; name: string; url: string }[] | { error: string }> => {
+export function load(): Data {
+    const getRepos = async (): Promise<Repo[] | RepoError> => {
         const resp = await fetch(
             `https://api.github.com/users/FomasTreeman/repos?per_page=100&sort=updated`,
             {
@@ -28,6 +29,7 @@ export function load() {
             }
         );
         const jsonResp = await resp.json();
+        if (resp.status !== 200) console.log(jsonResp) // temp
         if (resp.status !== 200) return { error: jsonResp.message };
         const repoNames = jsonResp.map((repo: any) => repo.full_name.split('/')[1]);
         const pinnedRepos = repoNames.filter((name: string) => pinned.includes(name));
@@ -35,6 +37,7 @@ export function load() {
             pinnedRepos.map(async (repoName: string) => {
                 const resp = await fetch(`https://api.github.com/repos/FomasTreeman/${repoName}/readme`);
                 const json = await resp.json();
+                if (resp.status !== 200) console.log(json) // temp
                 return resp.status === 200 ?
                     {
                         md: Base64.decode(json.content),
