@@ -7,7 +7,7 @@
 	import Stack from '../lib/Stack.svelte';
 	// import Contact from "./lib/Contact.svelte";
 
-	let dark = true;
+	export let data;
 	let nav = false;
 	let scrollY: number;
 	let innerHeight: number;
@@ -16,7 +16,7 @@
 	$: scroll = scrollY / innerHeight;
 </script>
 
-<main style={dark ? '--backgroundColor: black' : '--backgroundColor: white'}>
+<main>
 	<Background />
 	{#if nav}
 		<nav>
@@ -40,7 +40,7 @@
 
 	<section id="readmes">
 		<h1 class="center title">MY PROJECTS.</h1>
-		<ReadMes />
+		<ReadMes {data} />
 	</section>
 </main>
 <svelte:window bind:scrollY bind:innerHeight />
