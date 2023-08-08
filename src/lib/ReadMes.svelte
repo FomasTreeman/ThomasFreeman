@@ -20,7 +20,6 @@
 	let promise = getHtml();
 </script>
 
-<!-- .md file -->
 {#await data.repos}
 	<SyncLoader size="60" color="#FF3E00" unit="px" duration="1s" />
 	<!-- <h1>LIOADING</h1> -->
@@ -28,18 +27,16 @@
 	{#if repos?.error}
 		<h1 class="center">Whoops error 😔</h1>
 	{:else}
-		<ol class="article-layout pin-board project-list">
-			<!-- <ol class="project-list"> -->
-			{#each data.pinned as repo}
-				<li>
+		<div class="center">
+			<ol class="project-links">
+				{#each data.pinned as repo}
 					<a href={`#${repo}`} on:click|preventDefault={scrollIntoView}>{repo}</a>
-				</li>
-			{/each}
-			<!-- </ol> -->
-		</ol>
+				{/each}
+			</ol>
+		</div>
 		{#each repos as repo}
 			<Saos animation={'slide-in-bottom 1s cubic-bezier(0.35, 0.5, 0.65, 0.95) both'}>
-				<article id={repo.name} class="article article-layout">
+				<article id={repo.name} class="project-article">
 					<!-- <article id="md" class="article"> -->
 					{#await promise}
 						<h1>Loading...</h1>
@@ -67,32 +64,31 @@
 <!-- <Saos on:update={handleObserver}>...</Saos> -->
 
 <style>
-	.article {
+	.project-article {
 		background-color: black;
 		mix-blend-mode: luminosity;
 		max-width: 76%;
 		padding: 3rem;
 		box-shadow: 10px 10px 10px rgba(59, 52, 21, 0.375);
+		margin-inline: auto;
+		margin-block: 4rem;
 	}
 
-	.article-layout {
+	.center {
 		display: flex;
-		justify-content: space-around;
-		align-items: center;
-		margin: 5rem;
-		gap: 1rem;
+		justify-content: center;
 	}
 
-	.project-list {
+	.project-links {
 		display: flex;
-		flex-wrap: wrap;
 		justify-content: flex-start;
+		align-items: center;
+		flex-wrap: wrap;
 		gap: 2rem;
 		padding: 0px;
-		margin-top: 1rem;
 	}
 
-	.project-list > * {
+	.project-links > * {
 		list-style: none;
 		background-color: white;
 		border-radius: 5px;
@@ -148,24 +144,17 @@
 	}
 
 	@media (max-width: 768px) {
-		article {
+		.project-article {
 			max-width: 100%;
 			padding: 2rem;
 			/* temporary solution for image */
 			overflow-x: hidden;
-		}
-		div {
-			margin: 0%;
-			margin-top: 4rem;
+			margin: 0px;
+			margin-block: 4rem;
 		}
 
-		.project-list {
+		.project-links {
 			margin-inline: 2rem;
-		}
-
-		.article-layout {
-			margin: 0rem;
-			margin-bottom: 4rem;
 		}
 	}
 </style>
