@@ -19,7 +19,6 @@
 	<div class="stack">
 		<Stack />
 	</div>
-
 	<section id="readmes">
 		<h1 class="center title">MY PROJECTS.</h1>
 		<ReadMes {data} />

@@ -4,6 +4,7 @@
 	import ReadMeTitle from './ReadMeTitle.svelte';
 	import Saos from 'saos';
 	import type { Data, Repo, RepoError } from '$lib/types';
+	import ReadMeCard from './ReadMeCard.svelte';
 	import { SyncLoader } from 'svelte-loading-spinners';
 
 	export let data;
@@ -25,22 +26,23 @@
 	{#if repos?.error}
 		<h1 class="center">Whoops error 😔</h1>
 	{:else}
-		<div class="center">
+		<!-- <div class="center">
 			<ol class="project-links">
 				{#each data.pinned as repo}
 					<a href={`#${repo}`} on:click|preventDefault={scrollIntoView}>{repo}</a>
 				{/each}
 			</ol>
-		</div>
-		{#each repos as repo}
-			<Saos
-				animation={'fade-in 1s cubic-bezier(0.35, 0.5, 0.65, 0.95) both'}
-				animation_out={'fade-out 0.6s cubic-bezier(0.550, 0.085, 0.680, 0.530) both'}
-				top={250}
-				bottom={250}
-			>
-				<article id={repo.name} class="project-article">
-					<!-- <article id="md" class="article"> -->
+		</div> -->
+		<section class="grid">
+			{#each repos as repo}
+				<Saos
+					animation={'fade-in 1s cubic-bezier(0.35, 0.5, 0.65, 0.95) both'}
+					animation_out={'fade-out 0.6s cubic-bezier(0.550, 0.085, 0.680, 0.530) both'}
+					top={250}
+					bottom={250}
+				>
+					<ReadMeCard {repo} />
+					<!-- <article id={repo.name} class="project-article">
 					{#await promise}
 						<h1>Loading...</h1>
 					{:then converter}
@@ -57,14 +59,25 @@
 					{:catch}
 						<h1>page in development</h1>
 					{/await}
-					<!-- </article> -->
-				</article>
-			</Saos>
-		{/each}
+				</article> -->
+				</Saos>
+			{/each}
+		</section>
 	{/if}
 {/await}
 
 <style>
+	.grid {
+		margin: 5rem;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+	}
+
+	@media only screen and (max-width: 1000px) {
+		.grid {
+			grid-template-columns: 1fr;
+		}
+	}
 	.project-article {
 		background-color: black;
 		mix-blend-mode: luminosity;

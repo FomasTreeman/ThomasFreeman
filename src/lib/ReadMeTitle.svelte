@@ -4,7 +4,7 @@
 </script>
 
 <h1>
-	{repo.name}
+	// {repo.name.toLocaleLowerCase()}
 	<a href={repo.url} class="link-parent"><img src="link.png" alt="site here" /></a>
 </h1>
 
