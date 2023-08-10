@@ -1,20 +1,26 @@
 
 import { Base64 } from 'js-base64';
 import { TOKEN } from '$env/static/private';
-import type { Data, Repo, RepoError } from '$lib/types.js';
+import type { PinnedData, Repo, RepoError } from '$lib/types.js';
 
-const productions = {
-    Comms: 'https://comm-a.vercel.app/',
-    'Weather-TM': 'https://fac27.github.io/Weather-TM/'
+const PINNED: { [key: string]: Partial<PinnedData> } = {
+    'Comms': {
+        production: 'https://comm-a.vercel.app/',
+        imageExt: '.png',
+        description: 'My quick rough messaging app for testing new frameworks'
+    },
+    'Rich_System_Site': {
+        imageExt: '.png',
+        description: 'A betting bot dashboard'
+    },
+    'KodiTV': {},
+    'home-page': {
+        imageExt: '.png',
+        description: 'My responsive home page for chrome'
+    },
+
 };
 
-const pinned = [
-    'Rich_System_Site',
-    'home-page',
-    'Comms',
-    'KodiTV'
-    // 'Weather-TM',
-];
 
 /** @type {import('./$types').PageLoad} */
 export function load() {
@@ -32,7 +38,7 @@ export function load() {
         if (resp.status !== 200) console.log(jsonResp) // temp
         if (resp.status !== 200) return { error: jsonResp.message };
         const repoNames = jsonResp.map((repo: any) => repo.full_name.split('/')[1]);
-        const pinnedRepos = repoNames.filter((name: string) => pinned.includes(name));
+        const pinnedRepos = repoNames.filter((name: string) => Object.keys(PINNED).includes(name));
         return Promise.all(
             pinnedRepos.map(async (repoName: string) => {
                 const resp = await fetch(`https://api.github.com/repos/FomasTreeman/${repoName}/readme`);
@@ -42,19 +48,19 @@ export function load() {
                     {
                         md: Base64.decode(json.content),
                         name: repoName,
-                        url: `https://github.com/FomasTreeman/${repoName}`
+                        url: `https://github.com/FomasTreeman/${repoName}`,
+                        ...PINNED[repoName],
                     } :
                     {
                         md: '',
                         name: repoName,
-                        url: `https://github.com/FomasTreeman/${repoName}`
+                        url: `https://github.com/FomasTreeman/${repoName}`,
+                        ...PINNED[repoName],
                     };
             })
         );
     };
     return {
         repos: getRepos(),
-        pinned,
-        productions
     };
 }

@@ -21,11 +21,16 @@
 <article>
 	<!-- image -->
 	<div class="img-container">
-		<img src="https://media2.giphy.com/media/yKo3dHxkk3cLwFrIkp/200.gif" alt="temp gif" />
+		<img
+			src={repo?.imageExt
+				? `${repo.name}${repo.imageExt}`
+				: 'https://media2.giphy.com/media/yKo3dHxkk3cLwFrIkp/200.gif'}
+			alt="temp gif"
+		/>
 	</div>
 	<footer>
-		<h3>// {repo.name.toLocaleLowerCase()}</h3>
-		<p class="description">Read Me?</p>
+		<h2>// {repo.name.toLocaleLowerCase()}</h2>
+		<p class="description">{repo?.description || 'Read Me?'}</p>
 		<span class="space-between">
 			<button>
 				<a href={repo.url} class="link-parent"> 🔗 </a>
@@ -37,6 +42,7 @@
 			{#await promise}
 				<SyncLoader size="60" color="#FF3E00" unit="px" duration="1s" />
 			{:then converter}
+				<hr />
 				{@html renderHtml(converter.makeHtml(repo.md))}
 			{/await}
 		{/if}
@@ -59,15 +65,39 @@
 		max-width: 100%;
 		height: 15rem;
 		overflow: hidden;
+		background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+		background-size: 400% 400%;
+		animation: gradient 15s ease infinite;
+	}
+
+	@keyframes gradient {
+		0% {
+			background-position: 0% 50%;
+		}
+		50% {
+			background-position: 100% 50%;
+		}
+		100% {
+			background-position: 0% 50%;
+		}
 	}
 
 	img {
-		/* object-fit: contain; */
-		width: 100%;
+		height: 100%;
+		left: 50%;
 		transition: scale 1s;
+		position: relative;
+		transform: translateX(-50%);
+		transform-origin: left;
 	}
 
-	h3 {
+	hr {
+		margin-block: 2rem;
+		opacity: 0.6;
+		width: 100%;
+	}
+
+	h2 {
 		margin-top: 0px;
 	}
 

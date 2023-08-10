@@ -1,3 +1,9 @@
+export type PinnedData = {
+    production: string
+    imageExt: '.png' | '.jpg' | '.jpeg'
+    description: string
+}
+
 
 export type Repo = {
     md: string,
