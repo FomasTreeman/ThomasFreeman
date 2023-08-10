@@ -35,6 +35,7 @@
 	@media only screen and (max-width: 1000px) {
 		.grid {
 			grid-template-columns: 1fr;
+			margin: 0px;
 		}
 	}
 	.center {

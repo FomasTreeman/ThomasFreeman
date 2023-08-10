@@ -51,7 +51,9 @@
 
 <style>
 	article {
-		margin: 1rem;
+		max-width: calc(100% - 2rem);
+		margin-inline: auto;
+		margin-block: 2rem;
 		background-color: #28282a;
 		box-shadow: 10px 10px 0px 0px rgba(0, 0, 0, 0.75);
 		-webkit-box-shadow: 10px 10px 0px 0px rgba(0, 0, 0, 0.75);
@@ -62,9 +64,7 @@
 		padding: 2rem;
 	}
 	.img-container {
-		max-width: 100%;
 		height: 15rem;
-		overflow: hidden;
 		background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
 		background-size: 400% 400%;
 		animation: gradient 15s ease infinite;
@@ -84,11 +84,13 @@
 
 	img {
 		height: 100%;
-		left: 50%;
+		width: 100%;
+		object-fit: contain;
+		/* left: 50%;
 		transition: scale 1s;
 		position: relative;
 		transform: translateX(-50%);
-		transform-origin: left;
+		transform-origin: left; */
 	}
 
 	hr {
