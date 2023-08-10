@@ -1,20 +1,9 @@
 <script lang="ts">
-	import showdown from 'showdown';
-	import { SyncLoader } from 'svelte-loading-spinners';
+	import SvelteMarkdown from 'svelte-markdown';
 	import type { IRepo } from '$lib/types';
 
 	export let repo: IRepo;
 	let isMdToggled = false;
-
-	async function getHtml() {
-		return new showdown.Converter();
-	}
-
-	function renderHtml(html: string) {
-		return html.slice(0, 1000);
-	}
-
-	let promise = getHtml();
 </script>
 
 <article>
@@ -45,12 +34,8 @@
 		</span>
 		<!-- insert md -->
 		{#if isMdToggled}
-			{#await promise}
-				<SyncLoader size="60" color="#FF3E00" unit="px" duration="1s" />
-			{:then converter}
-				<hr />
-				{@html renderHtml(converter.makeHtml(repo.md))}
-			{/await}
+			<hr />
+			<SvelteMarkdown source={repo.md} />
 		{/if}
 	</footer>
 </article>
@@ -118,6 +103,7 @@
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;
+		font-family: 'JetBrains Mono Variable';
 	}
 
 	article:hover img {

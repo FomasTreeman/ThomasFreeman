@@ -14,6 +14,7 @@ const PINNED: { [key: string]: Partial<IPinnedData> } = {
         description: 'A betting bot dashboard'
     },
     'KodiTV': {
+        imageExt: '.webp',
         description: 'My kodi auto-play plugin'
     },
     'home-page': {

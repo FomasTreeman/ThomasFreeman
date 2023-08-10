@@ -1,7 +1,9 @@
 <script lang="ts">
 	import '../app.css';
+	import '@fontsource-variable/jetbrains-mono';
 	import Background from '$lib/Background.svelte';
-	import Routes from '../lib/Routes.svelte';
+	import Header from '../lib/Header.svelte';
+	import Footer from '../lib/Footer.svelte';
 
 	let nav = false;
 	let scrollY: number;
@@ -15,7 +17,7 @@
 
 {#if nav}
 	<nav>
-		<Routes />
+		<Header />
 	</nav>
 {/if}
 <button class="globe" on:click={() => (nav = !nav)}>
@@ -23,6 +25,7 @@
 </button>
 
 <slot />
+<Footer />
 
 <svelte:window bind:scrollY bind:innerHeight />
 

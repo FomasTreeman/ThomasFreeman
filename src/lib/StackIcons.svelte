@@ -20,3 +20,10 @@
 <i class="devicon-vim-plain colored" />
 <i class="devicon-bootstrap-plain colored" />
 <i class="devicon-figma-plain colored" />
+
+<style>
+	i {
+		width: calc(var(--icon-width) + var(--icon-width));
+		font-size: var(--icon-width);
+	}
+</style>

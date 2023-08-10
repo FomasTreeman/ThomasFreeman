@@ -34,7 +34,7 @@
 		display: flex;
 	}
 
-	.scroll-element i {
+	i {
 		width: calc(var(--icon-width) + var(--icon-width));
 		font-size: var(--icon-width);
 	}

@@ -19,7 +19,7 @@
 	<div class="stack">
 		<Stack />
 	</div>
-	<section id="readmes">
+	<section id="readmes" class="no-max-height">
 		<h1 class="center title">MY PROJECTS.</h1>
 		<ReadMes {data} />
 	</section>
@@ -63,12 +63,13 @@
 
 	.title {
 		font-size: xx-large;
-	}
-
-	#readmes .title {
 		margin-top: 5rem;
 		max-width: max-content;
 		padding: 1rem;
 		border: 0.5rem solid var(--color);
+	}
+
+	.no-max-height {
+		height: auto;
 	}
 </style>

@@ -3,7 +3,7 @@
 	import { fly } from 'svelte/transition';
 </script>
 
-<div class="flex">
+<div class="flex horizon">
 	<a
 		class="card"
 		transition:fly={{ x: 150 }}
@@ -29,7 +29,7 @@
 		Projects
 	</a>
 </div>
-<span class="flex col" transition:fly={{ y: -100 }}>
+<span class="flex col vertical" transition:fly={{ y: -100 }}>
 	<a href="https://fac-portfolio.vercel.app/">
 		<img src="fac.svg" alt="FAC" />
 	</a>
@@ -64,10 +64,16 @@
 		justify-content: end;
 		align-items: end;
 		gap: 5%;
+		position: absolute;
+		right: 0px;
 	}
 
 	.col {
 		flex-direction: column;
+	}
+
+	.vertical {
+		margin-top: 7.5rem;
 	}
 
 	.card {
@@ -81,6 +87,7 @@
 		font-weight: 800;
 		text-align: center;
 		box-shadow: 10px 10px 0px 0px var(--link-color);
+		white-space: nowrap;
 		/* transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1); */
 	}
 

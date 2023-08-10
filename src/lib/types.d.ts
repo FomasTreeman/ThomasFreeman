@@ -1,6 +1,6 @@
 export interface IPinnedData {
     production: string
-    imageExt: '.png' | '.jpg' | '.jpeg'
+    imageExt: '.png' | '.jpg' | '.jpeg' | '.webp'
     description: string
 }
 
