@@ -40,6 +40,7 @@
 		.grid {
 			grid-template-columns: 1fr;
 			margin: 0px;
+			margin-bottom: 5rem;
 		}
 	}
 	.center {

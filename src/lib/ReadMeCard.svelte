@@ -11,7 +11,7 @@
 	<div class="img-container">
 		<img
 			src={repo?.imageExt
-				? `${repo.name}${repo.imageExt}`
+				? `/repos/${repo.name}${repo.imageExt}`
 				: 'https://media2.giphy.com/media/yKo3dHxkk3cLwFrIkp/200.gif'}
 			alt="temp gif"
 		/>

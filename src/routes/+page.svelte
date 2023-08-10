@@ -1,6 +1,6 @@
 <script lang="ts">
 	import About from '../lib/About.svelte';
-	import ProjectTemplate from '../lib/ProjectTemplate.svelte';
+	import BetBotPage from '../lib/BetBotPage.svelte';
 	import ReadMes from '../lib/ReadMes.svelte';
 	import Stack from '../lib/Stack.svelte';
 
@@ -13,7 +13,7 @@
 	</section>
 
 	<section id="project">
-		<ProjectTemplate />
+		<BetBotPage />
 	</section>
 
 	<div class="stack">

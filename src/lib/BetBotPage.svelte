@@ -50,8 +50,8 @@
 </article>
 
 <div class="blob-container">
-	<img class="blob" src="blob1.svg" alt="blob1" />
-	<img class="blob" src="blob2.svg" alt="blob2" />
+	<img class="blob" src="/blobs/blob1.svg" alt="blob1" />
+	<img class="blob" src="/blobs/blob2.svg" alt="blob2" />
 	<div class="mask cat" />
 	<div class="mask money" />
 	<div class="mask rodeo" />
