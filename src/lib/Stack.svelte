@@ -34,10 +34,7 @@
 		display: flex;
 	}
 
-	i {
-		width: calc(var(--icon-width) + var(--icon-width));
-		font-size: var(--icon-width);
-	}
+	
 
 	.primary {
 		animation: primary 20s linear infinite;
