@@ -1,14 +1,15 @@
 <script lang="ts">
 	import Saos from 'saos';
 	import ReadMeCard from './ReadMeCard.svelte';
+	import type { Data } from '$lib/types';
 
-	export let data;
+	export let data: Data;
 </script>
 
-{#await data.repos then repos}
-	{#if repos?.error}
-		<h1 class="center">Whoops error 😔</h1>
-	{:else}
+{#if data.error}
+	<h1 class="center">Whoops error 😔</h1>
+{:else}
+	{#await data?.repos then repos}
 		<section class="grid">
 			{#each repos as repo}
 				<Saos
@@ -21,8 +22,8 @@
 				</Saos>
 			{/each}
 		</section>
-	{/if}
-{/await}
+	{/await}
+{/if}
 
 <style>
 	.grid {

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import showdown from 'showdown';
 	import { SyncLoader } from 'svelte-loading-spinners';
-	import type { Repo } from '$lib/types';
+	import type { IRepo } from '$lib/types';
 
-	export let repo: Repo;
+	export let repo: IRepo;
 	let isMdToggled = false;
 
 	async function getHtml() {
@@ -15,7 +15,6 @@
 	}
 
 	let promise = getHtml();
-	$: console.log(repo);
 </script>
 
 <article>
@@ -32,9 +31,16 @@
 		<h2>// {repo.name.toLocaleLowerCase()}</h2>
 		<p class="description">{repo?.description || 'Read Me?'}</p>
 		<span class="space-between">
-			<button>
-				<a href={repo.url} class="link-parent"> 🔗 </a>
-			</button>
+			<span class="space-between">
+				<a href={repo.url}>
+					<button> 🔗 </button>
+				</a>
+				{#if repo?.production}
+					<a href={repo.production}>
+						<button> 👀 </button>
+					</a>
+				{/if}
+			</span>
 			<button on:click={() => (isMdToggled = !isMdToggled)}> ▼ </button>
 		</span>
 		<!-- insert md -->
@@ -104,6 +110,7 @@
 	.space-between {
 		display: flex;
 		justify-content: space-between;
+		gap: 1rem;
 	}
 
 	p.description {

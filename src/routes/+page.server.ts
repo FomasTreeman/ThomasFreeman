@@ -1,9 +1,9 @@
 
 import { Base64 } from 'js-base64';
 import { TOKEN } from '$env/static/private';
-import type { PinnedData, Repo, RepoError } from '$lib/types.js';
+import type { IPinnedData, Data } from '$lib/types.js';
 
-const PINNED: { [key: string]: Partial<PinnedData> } = {
+const PINNED: { [key: string]: Partial<IPinnedData> } = {
     'Comms': {
         production: 'https://comm-a.vercel.app/',
         imageExt: '.png',
@@ -13,7 +13,9 @@ const PINNED: { [key: string]: Partial<PinnedData> } = {
         imageExt: '.png',
         description: 'A betting bot dashboard'
     },
-    'KodiTV': {},
+    'KodiTV': {
+        description: 'My kodi auto-play plugin'
+    },
     'home-page': {
         imageExt: '.png',
         description: 'My responsive home page for chrome'
@@ -23,8 +25,9 @@ const PINNED: { [key: string]: Partial<PinnedData> } = {
 
 
 /** @type {import('./$types').PageLoad} */
-export function load() {
-    const getRepos = async (): Promise<Repo[] | RepoError> => {
+export async function load() {
+    let error: boolean;
+    const getRepos = async (): Promise<Data> => {
         const resp = await fetch(
             `https://api.github.com/users/FomasTreeman/repos?per_page=100&sort=updated`,
             {
@@ -35,32 +38,25 @@ export function load() {
             }
         );
         const jsonResp = await resp.json();
-        if (resp.status !== 200) console.log(jsonResp) // temp
-        if (resp.status !== 200) return { error: jsonResp.message };
+        error = resp.status !== 200
         const repoNames = jsonResp.map((repo: any) => repo.full_name.split('/')[1]);
-        const pinnedRepos = repoNames.filter((name: string) => Object.keys(PINNED).includes(name));
-        return Promise.all(
-            pinnedRepos.map(async (repoName: string) => {
-                const resp = await fetch(`https://api.github.com/repos/FomasTreeman/${repoName}/readme`);
-                const json = await resp.json();
-                if (resp.status !== 200) console.log(json) // temp
-                return resp.status === 200 ?
-                    {
-                        md: Base64.decode(json.content),
-                        name: repoName,
-                        url: `https://github.com/FomasTreeman/${repoName}`,
-                        ...PINNED[repoName],
-                    } :
-                    {
-                        md: '',
+        const pinnedRepoNames = repoNames.filter((name: string) => Object.keys(PINNED).includes(name));
+        return {
+            repos: Promise.all(
+                pinnedRepoNames.map(async (repoName: string) => {
+                    const resp = await fetch(`https://api.github.com/repos/FomasTreeman/${repoName}/readme`);
+                    const json = await resp.json();
+                    return {
+                        error: resp.status === 200,
+                        md: resp.status === 200 ? Base64.decode(json.content) : '',
                         name: repoName,
                         url: `https://github.com/FomasTreeman/${repoName}`,
                         ...PINNED[repoName],
                     };
-            })
-        );
+                })
+            ),
+            error: error
+        };
     };
-    return {
-        repos: getRepos(),
-    };
+    return await getRepos();
 }
