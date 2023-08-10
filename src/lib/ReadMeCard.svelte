@@ -65,6 +65,7 @@
 	}
 	.img-container {
 		height: 15rem;
+		overflow: hidden;
 		background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
 		background-size: 400% 400%;
 		animation: gradient 15s ease infinite;
@@ -86,11 +87,8 @@
 		height: 100%;
 		width: 100%;
 		object-fit: contain;
-		/* left: 50%;
+		scale: 1;
 		transition: scale 1s;
-		position: relative;
-		transform: translateX(-50%);
-		transform-origin: left; */
 	}
 
 	hr {
@@ -116,11 +114,6 @@
 	}
 
 	article:hover img {
-		scale: 1.3;
-	}
-	@media only screen and (max-width: 1000px) {
-		.grid {
-			grid-template-columns: 1fr;
-		}
+		scale: 1.1;
 	}
 </style>

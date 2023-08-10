@@ -51,11 +51,12 @@
 
 <style>
 	:global(:root) {
-		--img-width: 10vw;
+		--icon-width: 4rem;
+		--icon-margin: 2rem;
 		/* 22 is number of imgs */
 		/* breaks at 900px width */
 		/* --stack-width: calc(100vw - 110vw + 22 * var(--img-width)); */
-		--stack-width: calc(22 * var(--img-width));
+		--stack-width: calc(22 * (var(--icon-width) + var(--icon-margin)));
 	}
 	.scroll-parent {
 		position: relative;
@@ -72,14 +73,8 @@
 	}
 
 	.scroll-element i {
-		width: var(--img-width);
-		font-size: var(--img-width);
-	}
-
-	@media only screen and (min-width: 800px) {
-		.scroll-element i {
-			font-size: 5rem;
-		}
+		width: calc(var(--icon-width) + var(--icon-width));
+		font-size: var(--icon-width);
 	}
 
 	.primary {
