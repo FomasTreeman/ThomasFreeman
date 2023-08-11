@@ -1,28 +1,8 @@
 
 import { Base64 } from 'js-base64';
 import { TOKEN } from '$env/static/private';
-import type { IPinnedData, Data } from '$lib/types.js';
-
-const PINNED: { [key: string]: Partial<IPinnedData> } = {
-    'Comms': {
-        production: 'https://comm-a.vercel.app/',
-        imageExt: '.png',
-        description: 'My quick rough messaging app for testing new frameworks'
-    },
-    'Rich_System_Site': {
-        imageExt: '.png',
-        description: 'A betting bot dashboard'
-    },
-    'KodiTV': {
-        imageExt: '.webp',
-        description: 'My kodi auto-play plugin'
-    },
-    'home-page': {
-        imageExt: '.png',
-        description: 'My responsive home page for chrome'
-    },
-
-};
+import PINNED from '$lib/utils/repos.js';
+import type { Data } from '$lib/types.js';
 
 
 /** @type {import('./$types').PageLoad} */
