@@ -102,10 +102,10 @@
 	}
 
 	p.description {
-		max-width: 20rem;
+		/* max-width: 20rem;
 		overflow: hidden;
 		white-space: nowrap;
-		text-overflow: ellipsis;
+		text-overflow: ellipsis; */
 		font-family: 'JetBrains Mono Variable';
 	}
 
