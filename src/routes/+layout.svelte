@@ -56,6 +56,7 @@
 		height: 5rem;
 		background-color: transparent;
 		margin: 1rem;
+		padding: 0px;
 		border: none;
 		border-radius: 50%;
 		padding-bottom: -2px; /* weird */
@@ -65,6 +66,7 @@
 		position: relative;
 		width: 100%;
 		height: 100%;
+		padding: 0px;
 		margin: 0px;
 		border-radius: 50%;
 		animation: rotate 1s linear infinite;
