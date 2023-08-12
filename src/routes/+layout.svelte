@@ -59,7 +59,6 @@
 		padding: 0px;
 		border: none;
 		border-radius: 50%;
-		padding-bottom: -2px; /* weird */
 		z-index: 100;
 	}
 	.globe {

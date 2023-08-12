@@ -40,20 +40,19 @@
 
 	p {
 		max-width: 75%;
-		mix-blend-mode: luminosity;
 		font-weight: 500;
-		font-size: large;
+		mix-blend-mode: luminosity;
 		border-radius: 1rem;
 		padding: 2rem;
-		background-color: red;
+		background-color: blue;
 	}
 
 	a {
-		color: rgb(0, 44, 163);
+		/* color: rgb(47, 47, 47); */
 		opacity: 0.8;
 	}
 	a:hover {
-		color: black;
+		opacity: 1;
 	}
 
 	video {
