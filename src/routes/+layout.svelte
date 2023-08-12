@@ -10,7 +10,18 @@
 	let scrollY: number;
 	let innerHeight: number;
 	let scroll: number;
+	// let scrollYLast: number;
 
+	// const scrollYBufferSize = 50; //px;
+	// $: {
+	// 	if (scrollYLast === undefined) scrollYLast = scrollY;
+	// 	console.log('scrolled', scrollYLast, scrollY + scrollYBufferSize);
+	// 	if (scrollY >= scrollYLast + scrollYBufferSize || scrollY <= scrollYLast - scrollYBufferSize) {
+	// 		scrollYLast = scrollY;
+	// 		scroll = scrollY / innerHeight;
+	// 		console.log('change');
+	// 	}
+	// }
 	$: scroll = scrollY / innerHeight;
 </script>
 
@@ -21,8 +32,14 @@
 		<Header />
 	</nav>
 {/if}
-<button class="globe" on:click={() => (nav = !nav)}>
-	<img loading="eager" src={globe} alt="globe" style="animation-delay: calc({scroll} * -1s);" />
+<button class="globe-wrapper" on:click={() => (nav = !nav)}>
+	<img
+		class="globe"
+		loading="eager"
+		src={globe}
+		alt="Menu - globe"
+		style="animation-delay: calc({scroll} * -1s);"
+	/>
 </button>
 
 <slot />
@@ -31,17 +48,23 @@
 <svelte:window bind:scrollY bind:innerHeight />
 
 <style>
-	.globe {
+	.globe-wrapper {
 		position: fixed;
 		right: 0px;
 		top: 0px;
+		background-color: transparent;
+		z-index: 100;
 		margin: 1rem;
+	}
+	.globe {
+		position: relative;
 		width: 5rem;
 		height: 5rem;
 		padding: 0px;
-		background-color: transparent;
-		z-index: 100;
+		margin: 0px;
 		border-radius: 50%;
+		animation: rotate 1s linear infinite;
+		animation-play-state: paused;
 	}
 
 	nav {
@@ -51,12 +74,5 @@
 		width: 100%;
 		height: 5rem;
 		z-index: 100;
-	}
-	img[alt='globe'] {
-		position: relative;
-		width: 100%;
-		animation: rotate 1s linear infinite;
-		animation-play-state: paused;
-		z-index: 20;
 	}
 </style>
