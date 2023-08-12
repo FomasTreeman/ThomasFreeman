@@ -9,24 +9,24 @@
 <main class="wrapper">
 	<a href="/" class="return">← back to home</a>
 	<h1>// {repo.name}</h1>
-	<nav>
-		<details open>
-			<summary>Stack</summary>
+	<div class="link-list">
+		<a href={repo.url}>
+			<button>🔗</button>
+		</a>
+		{#if repo.production}
+			<a href={repo.production}>
+				<button>👀</button>
+			</a>
+		{/if}
+	</div>
+	<details open>
+		<summary>Stack</summary>
+		<ul>
 			{#each repo.stack as stackElement}
 				<mark>{stackElement}</mark>
 			{/each}
-		</details>
-		<div>
-			<a href={repo.url}>
-				<button>🔗</button>
-			</a>
-			{#if repo.production}
-				<a href={repo.production}>
-					<button>👀</button>
-				</a>
-			{/if}
-		</div>
-	</nav>
+		</ul>
+	</details>
 	<!-- <img
 		src={repo.imageExt
 			? `/repos/${repo.name}${repo.imageExt}`
@@ -49,20 +49,45 @@
 	}
 
 	main.wrapper {
+		position: relative;
 		margin: 5rem;
 		padding: 5rem;
 		background-color: var(--background-color);
 	}
 
-	main.wrapper :not(:first-child):not(:nth-child(2)) {
+	@media (max-width: 768px) {
+		main.wrapper {
+			margin: 0rem;
+			margin-top: 4rem;
+			padding: 2rem;
+		}
+
+		div.link-list {
+			top: 2rem;
+			right: 2rem;
+		}
+	}
+
+	main.wrapper > :not(a.return):not(h1):not(div.link-list) {
 		font-family: 'JetBrains Mono Variable';
 		padding: 1rem 0rem 0rem 1rem;
 	}
 
-	nav {
+	div.link-list {
+		position: absolute;
+		right: 4rem;
+		top: 4rem;
 		display: flex;
-		justify-content: space-between;
-		align-items: center;
+		flex-direction: column;
+		gap: 1rem;
+		/* align-items: center; */
+	}
+
+	ul {
+		list-style: none;
+		margin-left: 0px;
+		display: flex;
+		flex-wrap: wrap;
 	}
 
 	mark {
