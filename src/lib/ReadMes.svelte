@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Saos from 'saos';
 	import ReadMeCard from './ReadMeCard.svelte';
-	import { SyncLoader } from 'svelte-loading-spinners';
+	// import { SyncLoader } from 'svelte-loading-spinners';
 	import type { Data } from '$lib/types';
 
 	export let data: Data;
@@ -11,7 +11,8 @@
 	<h1 class="center">Whoops error 😔</h1>
 {:else}
 	{#await data?.repos}
-		<SyncLoader size="60" color="#FF3E00" unit="px" duration="1s" />
+		<!-- <SyncLoader size="60" color="#FF3E00" unit="px" duration="1s" /> -->
+		<h1>Loading ...</h1>
 	{:then repos}
 		<section class="grid">
 			{#each repos as repo}

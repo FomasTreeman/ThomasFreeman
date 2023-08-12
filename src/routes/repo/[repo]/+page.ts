@@ -9,5 +9,5 @@ export function load({ params }) {
         return {
             param: param
         }
-    } else throw error(404, 'Not found');
+    } else throw error(404, "This repo doesn't exist");
 }

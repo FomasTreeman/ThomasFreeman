@@ -4,7 +4,7 @@
 	import Background from '$lib/Background.svelte';
 	import Header from '../lib/Header.svelte';
 	import Footer from '../lib/Footer.svelte';
-	import globe from '../globe.webp';
+	import globe from '../globe.svg';
 
 	let nav = false;
 	let scrollY: number;
@@ -22,7 +22,7 @@
 	</nav>
 {/if}
 <button class="globe" on:click={() => (nav = !nav)}>
-	<img src={globe} alt="globe" style="animation-delay: calc({scroll} * -1s);" />
+	<img loading="eager" src={globe} alt="globe" style="animation-delay: calc({scroll} * -1s);" />
 </button>
 
 <slot />

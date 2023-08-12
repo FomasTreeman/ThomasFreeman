@@ -6,39 +6,42 @@
 	let isMdToggled = false;
 </script>
 
-<article>
-	<!-- image -->
-	<div class="img-container">
-		<img
-			src={repo?.imageExt
-				? `/repos/${repo.name}${repo.imageExt}`
-				: 'https://media2.giphy.com/media/yKo3dHxkk3cLwFrIkp/200.gif'}
-			alt="temp gif"
-		/>
-	</div>
-	<footer>
-		<h2>// {repo.name.toLocaleLowerCase()}</h2>
-		<p class="description">{repo?.description || 'Read Me?'}</p>
-		<span class="space-between">
+<a href={`/repo/${repo.name}`}>
+	<article>
+		<!-- image -->
+		<div class="img-container">
+			<img
+				src={repo?.imageExt
+					? `/repos/${repo.name}${repo.imageExt}`
+					: 'https://media2.giphy.com/media/yKo3dHxkk3cLwFrIkp/200.gif'}
+				alt="temp gif"
+				loading="lazy"
+			/>
+		</div>
+		<footer>
+			<h2>// {repo.name.toLocaleLowerCase()}</h2>
+			<p class="description">{repo?.summary || 'Read Me?'}</p>
 			<span class="space-between">
-				<a href={repo.url}>
-					<button> 🔗 </button>
-				</a>
-				{#if repo?.production}
-					<a href={repo.production}>
-						<button> 👀 </button>
+				<span class="space-between">
+					<a href={repo.url}>
+						<button> 🔗 </button>
 					</a>
-				{/if}
+					{#if repo?.production}
+						<a href={repo.production}>
+							<button> 👀 </button>
+						</a>
+					{/if}
+				</span>
+				<button on:click={() => (isMdToggled = !isMdToggled)}> ▼ </button>
 			</span>
-			<button on:click={() => (isMdToggled = !isMdToggled)}> ▼ </button>
-		</span>
-		<!-- insert md -->
-		{#if isMdToggled}
-			<hr />
-			<SvelteMarkdown source={repo.md} />
-		{/if}
-	</footer>
-</article>
+			<!-- insert md -->
+			{#if isMdToggled}
+				<hr />
+				<SvelteMarkdown source={repo.md} />
+			{/if}
+		</footer>
+	</article>
+</a>
 
 <style>
 	article {

@@ -1,5 +1,6 @@
 <video autoplay loop muted>
 	<source src="hello-there.webm" type="video/mp4" />
+	<caption>Hello there! -obi wan kenobi</caption>
 </video>
 <h1>Hi, I'm Thomas Freeman</h1>
 <b>🖖</b>

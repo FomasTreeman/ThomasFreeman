@@ -31,16 +31,16 @@
 </div>
 <span class="flex col vertical" transition:fly={{ y: -100 }}>
 	<a href="https://fac-portfolio.vercel.app/">
-		<img src="/contact/fac.svg" alt="FAC" />
+		<img loading="lazy" src="/contact/fac.svg" alt="FAC" />
 	</a>
 	<a href="https://github.com/FomasTreeman">
-		<img style="filter: invert(1)" src="/contact/github.png" alt="github" />
+		<img loading="lazy" style="filter: invert(1)" src="/contact/github.png" alt="github" />
 	</a>
 	<a href="https://www.linkedin.com/in/fomas-treeman/">
-		<img src="/contact/linkedin.png" alt="linkedin" />
+		<img loading="lazy" src="/contact/linkedin.png" alt="linkedin" />
 	</a>
 	<a href="mailto: tom@team-freeman.com">
-		<img src="/contact/gmail.png" alt="gmail" />
+		<img loading="lazy" src="/contact/gmail.png" alt="gmail" />
 	</a>
 </span>
 
@@ -88,13 +88,12 @@
 		text-align: center;
 		box-shadow: 10px 10px 0px 0px var(--link-color);
 		white-space: nowrap;
-		transition: opacity 0.5s ease, scale 1s ease;
-		/* transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1); */
+		transition: all 2s cubic-bezier(0.075, 0.82, 0.165, 1);
 	}
 
 	a.card:hover {
 		transform: scale(1.1);
-		transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+		transition: all 2s cubic-bezier(0.075, 0.82, 0.165, 1);
 		color: var(--link-color-hover);
 	}
 
