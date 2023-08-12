@@ -77,7 +77,8 @@
 	}
 
 	.card {
-		padding: 0.7rem;
+		padding-block: 0.7rem;
+		padding-inline: 1rem;
 		width: fit-content;
 		height: fit-content;
 		background-color: var(--background-color);
@@ -89,6 +90,10 @@
 		box-shadow: 10px 10px 0px 0px var(--link-color);
 		white-space: nowrap;
 		transition: all 2s cubic-bezier(0.075, 0.82, 0.165, 1);
+	}
+
+	a {
+		color: var(--link-color);
 	}
 
 	a.card:hover {

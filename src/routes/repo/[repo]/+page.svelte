@@ -7,6 +7,7 @@
 </script>
 
 <main class="wrapper">
+	<a href="/" class="return">← back to home</a>
 	<h1>// {repo.name}</h1>
 	<nav>
 		<details open>
@@ -36,19 +37,32 @@
 </main>
 
 <style>
+	a.return {
+		color: rgb(209, 209, 209);
+		opacity: 0.7;
+		transition: all 0.3s ease;
+	}
+
+	a.return:hover {
+		opacity: 0.9;
+		transition: all 0.3s ease;
+	}
+
 	main.wrapper {
 		margin: 5rem;
 		padding: 5rem;
 		background-color: var(--background-color);
 	}
 
-	main.wrapper :not(:first-child) {
+	main.wrapper :not(:first-child):not(:nth-child(2)) {
 		font-family: 'JetBrains Mono Variable';
+		padding: 1rem 0rem 0rem 1rem;
 	}
 
 	nav {
 		display: flex;
 		justify-content: space-between;
+		align-items: center;
 	}
 
 	mark {

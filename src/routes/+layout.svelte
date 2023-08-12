@@ -52,14 +52,20 @@
 		position: fixed;
 		right: 0px;
 		top: 0px;
+		width: 5rem;
+		height: 5rem;
 		background-color: transparent;
-		z-index: 100;
 		margin: 1rem;
+		padding: 0px;
+		border: none;
+		border-radius: 50%;
+		padding-bottom: -2px; /* weird */
+		z-index: 100;
 	}
 	.globe {
 		position: relative;
-		width: 5rem;
-		height: 5rem;
+		width: 100%;
+		height: 100%;
 		padding: 0px;
 		margin: 0px;
 		border-radius: 50%;
