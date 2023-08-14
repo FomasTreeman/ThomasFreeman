@@ -1,4 +1,4 @@
-export const prerender = true;
+// export const prerender = true;
 
 import { Base64 } from 'js-base64';
 import { TOKEN } from '$env/static/private';

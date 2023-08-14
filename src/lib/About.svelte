@@ -1,7 +1,8 @@
 <script>
 	import { onMount } from 'svelte';
 	import ScrollDownPrompt from './ScrollDownPrompt.svelte';
-	import ThreeD from './ThreeD.svelte';
+	// import ThreeD from './ThreeD.svelte';
+	import Scene from './Scene.svelte';
 
 	let shouldPromptScroll = false;
 	onMount(() => {
@@ -13,7 +14,8 @@
 
 <div class="model-wrapper">
 	<div class="model">
-		<ThreeD />
+		<!-- <ThreeD /> -->
+		<Scene />
 	</div>
 </div>
 <div class="wrapper">
