@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { r2d2Loaded } from '$lib/stores';
+import { base } from '$app/paths';
 
 const scene = new THREE.Scene();
 scene.background = null;
@@ -9,7 +10,8 @@ scene.background = null;
 // load model
 const loader = new GLTFLoader();
 
-loader.load('r2d2.glb', function (gltf) {
+console.log(`${base}/r2d2.glb`)
+loader.load(`${base}/r2d2.glb`, function (gltf) {
 
     r2d2Loaded.set(true)
     scene.add(gltf.scene);
