@@ -1,14 +1,20 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { r2d2Loaded } from '$lib/stores';
 import { base } from '$app/paths';
 
 const scene = new THREE.Scene();
 scene.background = null;
 
+
 // load model
+const dracoLoader = new DRACOLoader()
 const loader = new GLTFLoader();
+dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/')
+dracoLoader.setDecoderConfig({ type: 'js' })
+loader.setDRACOLoader(dracoLoader)
 
 console.log(`${base}/r2d2.glb`)
 loader.load(`${base}/r2d2.glb`, function (gltf) {
