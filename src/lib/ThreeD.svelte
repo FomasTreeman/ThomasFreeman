@@ -12,7 +12,7 @@
 	r2d2Loaded.subscribe((value) => {
 		loaded = value;
 	});
-	$: console.log(loaded);
+
 	onMount(() => {
 		const windowHeight = window.innerHeight;
 		const initialWidth = windowHeight * 0.7;

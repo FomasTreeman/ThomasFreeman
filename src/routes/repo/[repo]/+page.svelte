@@ -3,7 +3,6 @@
 	export let data;
 
 	const repo = data.repos.find((obj) => obj.name === data.param) as IRepo; // handled in page.ts;
-	console.log(repo);
 </script>
 
 <main class="wrapper">
