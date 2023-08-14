@@ -9,7 +9,7 @@ scene.background = null;
 // load model
 const loader = new GLTFLoader();
 
-loader.load('r2d2.glb', function (gltf) {
+loader.load('models/r2d2.glb', function (gltf) {
 
     r2d2Loaded.set(true)
     scene.add(gltf.scene);
