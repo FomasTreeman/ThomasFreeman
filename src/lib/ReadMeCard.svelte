@@ -1,5 +1,6 @@
 <script lang="ts">
 	import SvelteMarkdown from 'svelte-markdown';
+	import ToolTipWrapper from './ToolTipWrapper.svelte';
 	import type { IRepo } from '$lib/types';
 
 	export let repo: IRepo;
@@ -24,15 +25,21 @@
 			<span class="space-between">
 				<span class="space-between">
 					<a href={repo.url}>
-						<button> 🔗 </button>
+						<ToolTipWrapper message="github">
+							<button> 🔗 </button>
+						</ToolTipWrapper>
 					</a>
 					{#if repo?.production}
 						<a href={repo.production}>
-							<button> 👀 </button>
+							<ToolTipWrapper message="view project">
+								<button> 👀 </button>
+							</ToolTipWrapper>
 						</a>
 					{/if}
 				</span>
-				<button on:click={() => (isMdToggled = !isMdToggled)}> ▼ </button>
+				<ToolTipWrapper message="view description">
+					<button on:click={() => (isMdToggled = !isMdToggled)}> ▼ </button>
+				</ToolTipWrapper>
 			</span>
 			<!-- insert md -->
 			{#if isMdToggled}

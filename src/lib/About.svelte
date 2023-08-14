@@ -1,3 +1,15 @@
+<script>
+	import { onMount } from 'svelte';
+	import ScrollDownPrompt from './ScrollDownPrompt.svelte';
+
+	let shouldPromptScroll = false;
+	onMount(() => {
+		setTimeout(() => {
+			shouldPromptScroll = true;
+		}, 2000);
+	});
+</script>
+
 <video autoplay loop muted>
 	<source src="hello-there.webm" type="video/mp4" />
 	<caption>Hello there! -obi wan kenobi</caption>
@@ -15,6 +27,9 @@
 		🎊 Click the 🌍 for extras. Visit my FAC portfolio briefly too 📛
 	</a>
 </p>
+{#if shouldPromptScroll}
+	<ScrollDownPrompt />
+{/if}
 
 <!-- <DarkMode bind:dark /> -->
 <style>
