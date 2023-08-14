@@ -23,6 +23,7 @@
 		text-align: center;
 		padding: 5px 0;
 		border-radius: 6px;
+		box-shadow: 2px 5px 5px 2px rgba(0, 0, 0, 0.3);
 
 		/* Position the tooltip text - see examples below! */
 		position: absolute;
@@ -32,6 +33,7 @@
 		bottom: 120%;
 		left: 50%;
 		margin-left: -60px;
+		margin-bottom: 5px;
 
 		/* animate out*/
 		opacity: 0;
