@@ -42,9 +42,9 @@
 		scroll-margin: 70px;
 	}
 
-	section#about {
+	/* section#about {
 		padding-top: 3rem;
-	}
+	} */
 
 	section#project {
 		position: relative;

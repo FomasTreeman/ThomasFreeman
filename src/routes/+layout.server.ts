@@ -20,6 +20,7 @@ export async function load() {
         );
         const jsonResp = await resp.json();
         error = resp.status !== 200
+        if (error) return { error, repos: [] };
         const repoNames = jsonResp.map((repo: any) => repo.full_name.split('/')[1]);
         const pinnedRepoNames = repoNames.filter((name: string) => Object.keys(PINNED).includes(name));
         return {

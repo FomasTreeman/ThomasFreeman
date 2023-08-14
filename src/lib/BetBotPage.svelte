@@ -52,9 +52,18 @@
 <div class="blob-container">
 	<img loading="lazy" class="blob" src="/blobs/blob1.svg" alt="blob1" />
 	<img loading="lazy" class="blob" src="/blobs/blob2.svg" alt="blob2" />
-	<div class="mask cat" />
-	<div class="mask money" />
-	<div class="mask rodeo" />
+	<video autoplay loop muted class="mask cat">
+		<source src="blobs/cat.webm" type="video/mp4" />
+		<caption>cat riding bike</caption>
+	</video>
+	<video autoplay loop muted class="mask money">
+		<source src="blobs/money.webm" type="video/mp4" />
+		<caption>bugs bunny counting money</caption>
+	</video>
+	<video autoplay loop muted class="mask obi-wan">
+		<source src="blobs/hello-there.webm" type="video/mp4" />
+		<caption>Hello there! -obi wan kenobi</caption>
+	</video>
 </div>
 <Divider1 flipped={true} />
 
@@ -133,14 +142,10 @@
 		z-index: 2;
 		width: 15vw;
 		aspect-ratio: 1;
-
-		background-size: cover;
-		background-position: center;
-		background-repeat: no-repeat;
+		object-fit: cover;
 	}
 
 	.cat {
-		background-image: url(https://media1.giphy.com/media/cfuL5gqFDreXxkWQ4o/200.gif);
 		clip-path: polygon(
 			49.887% 0.001%,
 			49.887% 0.001%,
@@ -412,8 +417,7 @@
 		left: -5rem;
 	}
 
-	.money {
-		background-image: url(https://media0.giphy.com/media/67ThRZlYBvibtdF9JH/200.gif);
+	.obi-wan {
 		clip-path: polygon(
 			21.656% 15.99%,
 			21.656% 15.99%,
@@ -564,8 +568,8 @@
 		right: 5vw;
 	}
 
-	.rodeo {
-		background-image: url(https://media3.giphy.com/media/vgwG8SvPs1cltGeikP/200.gif);
+	.money {
+		/* background-image: url('/static/hello-there.webm'); */
 		clip-path: polygon(
 			41.58% 17.542%,
 			41.58% 17.542%,
