@@ -1,71 +1,119 @@
-<script>
+<script lang="ts">
 	import scrollIntoView from './utils/scroll';
-	import { fly } from 'svelte/transition';
+	import { fly, fade } from 'svelte/transition';
+	import Globe from './Globe.svelte';
+	let nav = false;
+	let innerWidth: number;
+	$: isSmallScreen = innerWidth < 1000;
 </script>
 
-<div class="flex horizon">
-	<a
-		class="card"
-		transition:fly={{ x: 150 }}
-		href="#about"
-		on:click|preventDefault={scrollIntoView}
+<input id="nav-checkbox" type="checkbox" class="globe-wrapper" bind:checked={nav} />
+<label for="nav-checkbox" class="globe-wrapper">
+	<Globe />
+</label>
+{#if nav}
+	<div transition:fade class="blur-screen" on:click={() => (nav = false)} />
+	<div
+		class="flex horizon links"
+		in:fade={{ delay: isSmallScreen ? 1000 : 0 }}
+		out:fade={{ duration: 200 }}
 	>
-		About Me
-	</a>
-	<a
-		class="card"
-		transition:fly={{ x: 150 }}
-		href="#project"
-		on:click|preventDefault={scrollIntoView}
+		<a class="card" href="#about" on:click|preventDefault={scrollIntoView}> About Me </a>
+		<a class="card" href="#project" on:click|preventDefault={scrollIntoView}> Betting Bot </a>
+		<a class="card" href="#readmes" on:click|preventDefault={scrollIntoView}> Projects </a>
+	</div>
+	<span
+		class="flex col vertical contact"
+		in:fade={{ delay: isSmallScreen ? 1000 : 0 }}
+		out:fade={{ duration: 200 }}
 	>
-		Betting Bot
-	</a>
-	<a
-		class="card"
-		transition:fly={{ x: 150 }}
-		href="#readmes"
-		on:click|preventDefault={scrollIntoView}
-	>
-		Projects
-	</a>
-</div>
-<span class="flex col vertical" transition:fly={{ y: -100 }}>
-	<a href="https://fac-portfolio.vercel.app/">
-		<img loading="lazy" src="/contact/fac.svg" alt="FAC" />
-	</a>
-	<a href="https://github.com/FomasTreeman">
-		<img loading="lazy" style="filter: invert(1)" src="/contact/github.png" alt="github" />
-	</a>
-	<a href="https://www.linkedin.com/in/fomas-treeman/">
-		<img loading="lazy" src="/contact/linkedin.png" alt="linkedin" />
-	</a>
-	<a href="mailto: tom@team-freeman.com">
-		<img loading="lazy" src="/contact/gmail.png" alt="gmail" />
-	</a>
-</span>
+		<a href="https://fac-portfolio.vercel.app/">
+			<img loading="lazy" src="/contact/fac.svg" alt="FAC" />
+		</a>
+		<a href="https://github.com/FomasTreeman">
+			<img loading="lazy" style="filter: invert(1)" src="/contact/github.png" alt="github" />
+		</a>
+		<a href="https://www.linkedin.com/in/fomas-treeman/">
+			<img loading="lazy" src="/contact/linkedin.png" alt="linkedin" />
+		</a>
+		<a href="mailto: tom@team-freeman.com">
+			<img loading="lazy" src="/contact/gmail.png" alt="gmail" />
+		</a>
+	</span>
+{/if}
+
+<svelte:window bind:innerWidth />
 
 <!-- <a href="https://www.flaticon.com/free-icons/linkedin" title="linkedin icons"
   >Linkedin icons created by Flaticon</a
 > -->
 
 <style>
-	div {
-		margin-right: 8rem;
+	.globe-wrapper {
+		position: fixed;
+		right: 0px;
+		top: 0px;
+		width: 5rem;
+		height: 5rem;
+		background-color: transparent;
+		margin: 1rem;
+		padding: 0px;
+		border: none;
+		border-radius: 50%;
+		transition: all 1s;
+		z-index: 51;
+	}
+
+	input[type='checkbox'] {
+		appearance: none;
+		z-index: 101;
+	}
+	input[type='checkbox']:checked + label.globe-wrapper {
+		scale: 1.1;
+	}
+
+	input[type='checkbox']:hover + label.globe-wrapper {
+		box-shadow: 0px 0px 4px 4px rgba(24, 71, 239, 0.7);
+	}
+
+	div.blur-screen {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 110%;
+		height: 110%;
+		filter: blur(2px);
+		background: #000;
+		opacity: 0.3;
+		transition: all 1s;
+		z-index: 45;
+	}
+
+	span.contact {
+		position: fixed;
+		top: 0px;
+		right: 0px;
+		z-index: 50;
+	}
+
+	div.links {
+		position: fixed;
+		top: 0px;
+		right: 0px;
+		z-index: 50;
+		margin-right: 8.5rem;
 		height: 7rem;
 	}
 
-	div > * {
+	div.links > * {
 		margin-bottom: 2rem;
 	}
 
 	.flex {
 		display: flex;
-		/* flex-wrap: wrap; */
 		justify-content: end;
 		align-items: end;
 		gap: 5%;
-		position: absolute;
-		right: 0px;
 	}
 
 	.col {
@@ -96,16 +144,16 @@
 		color: var(--link-color);
 	}
 
-	a.card:hover {
-		transform: scale(1.1);
-		transition: all 2s cubic-bezier(0.075, 0.82, 0.165, 1);
-		color: var(--link-color-hover);
-	}
-
 	a img {
 		width: 2.5rem;
 		margin-inline: 2.3rem;
 		margin-block: 0.7rem;
+	}
+
+	a.card:hover {
+		transform: scale(1.1);
+		transition: all 2s cubic-bezier(0.075, 0.82, 0.165, 1);
+		color: var(--link-color-hover);
 	}
 
 	a.card:hover ~ a.card,
@@ -114,30 +162,77 @@
 	}
 
 	@media (max-width: 1000px) {
-		a img {
-			width: 2rem;
-			margin-inline: 2.5rem;
+		div.blur-screen {
+			z-index: 45 !important;
 		}
 
-		div {
-			margin-top: 1rem;
-			height: fit-content;
+		input[type='checkbox'] {
+			z-index: 51 !important;
 		}
 
-		span {
-			position: absolute;
-			top: 7rem;
-			right: 0;
+		input[type='checkbox']:checked ~ label.globe-wrapper,
+		input[type='checkbox']:checked {
+			width: 300px;
+			height: 300px;
+			position: fixed;
+			top: 50%;
+			right: 50%;
+			margin: 1rem;
+			transform: translate(50%, -50%);
+			transition: all 1s;
 		}
-		.flex {
+		input[type='checkbox']:checked {
+			width: 330px;
+			height: 330px;
+			margin: 0px;
+		}
+
+		.contact {
+			position: fixed;
+			top: 50% !important;
+			right: calc(50% - 150px) !important;
+			transform: translateY(-50%);
+			z-index: 51 !important;
+			margin: 0px !important;
+		}
+
+		.contact img {
+			margin-inline: 0px;
+		}
+
+		.contact > :nth-child(1) {
+			transform: rotate(313deg);
+			padding-right: 42px;
+		}
+		.contact > :nth-child(2) {
+			transform: rotate(338deg);
+			padding-right: 13px;
+		}
+		.contact > :nth-child(3) {
+			transform: rotate(9deg);
+			padding-right: 3px;
+		}
+		.contact > :nth-child(4) {
+			transform: rotate(43deg);
+			padding-right: 32px;
+		}
+
+		.links {
+			position: fixed;
+			top: 50% !important;
+			right: inherit !important;
+			left: calc(50% - 150px) !important;
+			transform: translateY(-50%);
 			flex-direction: column;
+			justify-content: center;
+			gap: 0.5rem;
+			z-index: 51 !important;
+			margin: 0px !important;
 		}
 
-		.card {
-			font-size: medium;
-		}
-		.vertical {
-			margin-top: 0px;
+		.links * {
+			margin: 0px;
+			margin-block: 0.5rem !important;
 		}
 	}
 </style>

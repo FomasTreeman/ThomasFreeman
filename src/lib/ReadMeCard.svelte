@@ -1,13 +1,11 @@
 <script lang="ts">
-	import SvelteMarkdown from 'svelte-markdown';
 	import ToolTipWrapper from './ToolTipWrapper.svelte';
 	import type { IRepo } from '$lib/types';
 
 	export let repo: IRepo;
-	let isMdToggled = false;
 </script>
 
-<a href={`/repo/${repo.name}`}>
+<a href={`/repo/${repo.name}`} on:click|self>
 	<article>
 		<!-- image -->
 		<div class="img-container">
@@ -22,36 +20,13 @@
 		<footer>
 			<h2>// {repo.name.toLocaleLowerCase()}</h2>
 			<p class="description">{repo?.summary || 'Read Me?'}</p>
-			<span class="space-between">
-				<span class="space-between">
-					<a href={repo.url}>
-						<ToolTipWrapper message="github">
-							<button> 🔗 </button>
-						</ToolTipWrapper>
-					</a>
-					{#if repo?.production}
-						<a href={repo.production}>
-							<ToolTipWrapper message="view project">
-								<button> 👀 </button>
-							</ToolTipWrapper>
-						</a>
-					{/if}
-				</span>
-				<ToolTipWrapper message="view description">
-					<button on:click={() => (isMdToggled = !isMdToggled)}> ▼ </button>
-				</ToolTipWrapper>
-			</span>
-			<!-- insert md -->
-			{#if isMdToggled}
-				<hr />
-				<SvelteMarkdown source={repo.md} />
-			{/if}
 		</footer>
 	</article>
 </a>
 
 <style>
 	article {
+		transition: all 1s;
 		max-width: calc(100% - 2rem);
 		margin-inline: auto;
 		margin-block: 2rem;
@@ -88,24 +63,11 @@
 		height: 100%;
 		width: 100%;
 		object-fit: contain;
-		scale: 1;
-		transition: scale 1s;
-	}
-
-	hr {
-		margin-block: 2rem;
-		opacity: 0.6;
-		width: 100%;
 	}
 
 	h2 {
 		margin-top: 0px;
-	}
-
-	.space-between {
-		display: flex;
-		justify-content: space-between;
-		gap: 1rem;
+		transition: color 250ms;
 	}
 
 	p.description {
@@ -113,9 +75,13 @@
 		text-overflow: ellipsis;
 		white-space: pre; */
 		font-family: 'JetBrains Mono Variable';
+		transition: color 250ms;
 	}
 
-	article:hover img {
-		scale: 1.1;
+	article:hover {
+		scale: 0.99;
+		box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 0.75);
+		color: var(--link-color-hover);
+		transition: all 500ms;
 	}
 </style>

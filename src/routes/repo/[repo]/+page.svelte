@@ -1,4 +1,5 @@
 <script lang="ts">
+	import SvelteMarkdown from 'svelte-markdown';
 	import type { IRepo } from '$lib/types';
 	export let data;
 
@@ -26,13 +27,11 @@
 			{/each}
 		</ul>
 	</details>
-	<!-- <img
-		src={repo.imageExt
-			? `/repos/${repo.name}${repo.imageExt}`
-			: 'https://media2.giphy.com/media/yKo3dHxkk3cLwFrIkp/200.gif'}
-		alt="temp gif"
-	/> -->
 	<p>{repo.description}</p>
+	<br />
+	<div class="md-wrapper">
+		<SvelteMarkdown source={repo.md} />
+	</div>
 </main>
 
 <style>
@@ -67,7 +66,7 @@
 		}
 	}
 
-	main.wrapper > :not(a.return):not(h1):not(div.link-list) {
+	main.wrapper > :not(a.return):not(h1):not(div.link-list):not(.md-wrapper) {
 		font-family: 'JetBrains Mono Variable';
 		padding: 1rem 0rem 0rem 1rem;
 	}
@@ -87,10 +86,18 @@
 		margin-left: 0px;
 		display: flex;
 		flex-wrap: wrap;
+		margin-top: 0px;
 	}
 
 	mark {
 		margin-inline: 0.5rem;
+		margin-top: 1rem;
+	}
+
+	.md-wrapper {
+		margin-top: 1rem;
+		border: 3px solid white;
+		padding: 1rem;
 	}
 	/* details {
 		margin-top: 1rem;

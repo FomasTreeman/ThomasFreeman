@@ -30,7 +30,7 @@ export async function load() {
                     const resp = await fetch(`https://api.github.com/repos/FomasTreeman/${repoName}/readme`);
                     const json = await resp.json();
                     return {
-                        error: resp.status === 200,
+                        error: resp.status !== 200,
                         md: resp.status === 200 ? Base64.decode(json.content) : '',
                         name: repoName,
                         url: `https://github.com/FomasTreeman/${repoName}`,

@@ -37,7 +37,7 @@
 	export let animation: 'waiting' | 'arch' | 'straight' | 'advanced';
 
 	$: xRange = innerWidth / 20;
-	$: console.log(xRange);
+
 	$: animation === 'straight' ? (x = -xRange) : null;
 
 	// advanced variables

@@ -19,7 +19,7 @@
 		z-index: 100;
 		transform: translateX(50%);
 		-webkit-transform: translateX(-50%);
-		z-index: 9999;
+		z-index: 30;
 	}
 	#mouse-scroll span {
 		display: block;
