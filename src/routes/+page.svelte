@@ -38,7 +38,7 @@
 
 	section {
 		position: relative;
-		height: calc(100vh + 76px);
+		height: 100vh;
 		scroll-margin: 70px;
 	}
 
