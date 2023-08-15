@@ -39,10 +39,11 @@
 <style>
 	div.wrapper {
 		position: absolute;
-		top: 20%;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		justify-content: center;
+		height: 100%;
 		/* max-width: 50%; */
 	}
 
