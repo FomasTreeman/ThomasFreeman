@@ -23,7 +23,7 @@
 	.scroll-parent {
 		position: relative;
 		width: var(--stack-width);
-		height: 5rem;
+		height: calc(var(--icon-width) + 1rem);
 		overflow-x: hidden;
 	}
 
@@ -33,8 +33,6 @@
 		position: absolute;
 		display: flex;
 	}
-
-	
 
 	.primary {
 		animation: primary 20s linear infinite;
@@ -59,6 +57,22 @@
 		}
 		to {
 			left: 0px;
+		}
+	}
+
+	@media (min-width: 9000px) {
+		:global(:root) {
+			--icon-width: 5rem;
+		}
+	}
+
+	@media (min-width: 1600px) {
+		:global(:root) {
+			--icon-width: 5.5rem;
+		}
+
+		.scroll-parent {
+			margin-block: 2rem;
 		}
 	}
 </style>

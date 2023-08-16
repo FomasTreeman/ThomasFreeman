@@ -6,11 +6,12 @@
 	export let data: Data;
 </script>
 
+<h2 class="center title">MY PROJECTS.</h2>
 {#if data.error}
-	<h1 class="center">Whoops error 😔</h1>
+	<h2 class="center">Whoops error 😔</h2>
 {:else}
 	{#await data?.repos}
-		<h1>Loading ...</h1>
+		<h2>Loading ...</h2>
 	{:then repos}
 		<section class="grid">
 			{#each repos as repo}
@@ -28,11 +29,19 @@
 {/if}
 
 <style>
+	h2.title {
+		font-size: 2rem;
+		margin-top: 5rem;
+		max-width: max-content;
+		padding: 1rem;
+		border: 0.5rem solid var(--color);
+	}
+
 	.grid {
 		margin: 5rem;
+		margin-inline: var(--margin-left);
 		display: grid;
-		grid-template-columns: 1fr 1fr;
-		/* grid-template-columns: repeat(minmax(250px, 1fr), auto-fit); */
+		grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
 	}
 
 	@media only screen and (max-width: 1000px) {

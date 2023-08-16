@@ -27,7 +27,7 @@
 			{/each}
 		</ul>
 	</details>
-	<p>{repo.description}</p>
+	<p><SvelteMarkdown source={repo.description} /></p>
 	<br />
 	<div class="md-wrapper">
 		<SvelteMarkdown source={repo.md} />

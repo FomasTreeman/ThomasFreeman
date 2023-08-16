@@ -53,7 +53,7 @@
 		font-weight: 500;
 		mix-blend-mode: luminosity;
 		border-radius: 1rem;
-		padding: 2rem;
+		padding: calc(var(--margin-left) / 2);
 		background-color: blue;
 	}
 

@@ -12,13 +12,13 @@
 			<img
 				src={repo?.imageExt
 					? `/repos/${repo.name}${repo.imageExt}`
-					: 'https://media2.giphy.com/media/yKo3dHxkk3cLwFrIkp/200.gif'}
+					: 'https://media3.giphy.com/media/3o72FkiKGMGauydfyg/200.gif'}
 				alt="temp gif"
 				loading="lazy"
 			/>
 		</div>
 		<footer>
-			<h2>// {repo.name.toLocaleLowerCase()}</h2>
+			<h3>// {repo.name.toLocaleLowerCase()}</h3>
 			<p class="description">{repo?.summary || 'Read Me?'}</p>
 		</footer>
 	</article>

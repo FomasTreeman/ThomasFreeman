@@ -22,7 +22,7 @@
 <label for="nav-checkbox" class="globe-wrapper">
 	<Globe />
 	{#if showPrompt}
-		<h1 transition:fade class="prompt">Click me!</h1>
+		<b transition:fade class="prompt">Click me!</b>
 	{/if}
 </label>
 {#if nav}
@@ -103,12 +103,13 @@
 		z-index: 45;
 	}
 
-	h1.prompt {
+	b.prompt {
 		font-size: 1rem;
 		margin: 0px;
 		width: 100%;
 		text-align: center;
 		position: absolute;
+		right: 0px;
 		top: calc(50% - 1.5ex);
 		animation: wiggle 1.5s infinite;
 	}
@@ -203,7 +204,7 @@
 		opacity: 0.8;
 	}
 
-	@media (max-width: 1000px) {
+	@media (max-width: 1200px) {
 		div.blur-screen {
 			z-index: 45 !important;
 		}
