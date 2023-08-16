@@ -36,6 +36,10 @@
 		margin-inline: auto;
 	}
 
+	main {
+		scroll-snap-type: y mandatory;
+	}
+
 	section {
 		position: relative;
 		height: 100vh;
@@ -54,6 +58,7 @@
 		margin-bottom: 8rem;
 		scroll-margin: 0px;
 		scroll-snap-align: start;
+		scroll-snap-stop: always;
 	}
 
 	.stack {
