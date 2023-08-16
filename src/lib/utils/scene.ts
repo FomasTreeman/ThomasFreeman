@@ -15,7 +15,6 @@ dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/')
 dracoLoader.setDecoderConfig({ type: 'js' })
 loader.setDRACOLoader(dracoLoader)
 
-console.log(`/r2d2.glb`)
 loader.load('/r2d2.glb', function (gltf) {
 
     r2d2Loaded.set(true)

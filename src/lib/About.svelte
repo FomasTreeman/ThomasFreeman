@@ -1,7 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
 	import ScrollDownPrompt from './ScrollDownPrompt.svelte';
-	// import ThreeD from './ThreeD.svelte';
 	import Scene from './Scene.svelte';
 
 	let shouldPromptScroll = false;
@@ -14,7 +13,6 @@
 
 <div class="model-wrapper">
 	<div class="model">
-		<!-- <ThreeD /> -->
 		<Scene />
 	</div>
 </div>
@@ -25,14 +23,12 @@
 		solve complex problems and improve people's lives. I am fascinated by the constantly evolving
 		tech industry and thrive in fast-paced environments that challenges me to learn and apply new
 		technologies. I look forward to sharing my unique perspective and learning from others as I
-		embark on a successful and rewarding career in software development. <a
-			href="https://fac-portfolio.vercel.app/"
-		>
-			🎊 Click the 🌍 for extras. Visit my FAC portfolio briefly too 📛
-		</a>
+		embark on a successful and rewarding career in software development. <br />
 	</p>
 	{#if shouldPromptScroll}
-		<ScrollDownPrompt />
+		<div class="absolute-wrapper">
+			<ScrollDownPrompt />
+		</div>
 	{/if}
 </div>
 
@@ -44,7 +40,6 @@
 		align-items: center;
 		justify-content: center;
 		height: 100%;
-		/* max-width: 50%; */
 	}
 
 	h1 {
@@ -62,32 +57,22 @@
 		background-color: blue;
 	}
 
-	a {
-		opacity: 0.8;
-	}
-	a:hover {
-		opacity: 1;
-	}
-
 	div.model-wrapper {
 		max-width: 100%;
 	}
 	.model {
-		/* height: 5rem;
-		width: 15rem; */
-		/* margin-left: 40%; */
 		overflow: hidden;
 		z-index: -1;
 	}
 
-	@media (max-width: 768px) {
-		/* .model {
-			width: 10rem;
-			height: 10rem;
-		} */
+	div.absolute-wrapper {
+		position: absolute;
+		bottom: 5rem;
+	}
 
+	@media (max-width: 768px) {
 		h1 {
-			font-size: x-large;
+			font-size: xx-large;
 		}
 
 		p {

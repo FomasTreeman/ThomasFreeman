@@ -2,14 +2,28 @@
 	import scrollIntoView from './utils/scroll';
 	import { fly, fade } from 'svelte/transition';
 	import Globe from './Globe.svelte';
+	import { onMount } from 'svelte';
 	let nav = false;
+	let hasNavBeenClicked = false;
+	let showPrompt = false;
 	let innerWidth: number;
 	$: isSmallScreen = innerWidth < 1000;
+	$: if (nav === true) hasNavBeenClicked = true;
+	$: if (showPrompt === true && nav === true) showPrompt = false;
+
+	onMount(() => {
+		setTimeout(() => {
+			if (hasNavBeenClicked === false) showPrompt = true;
+		}, 7500);
+	});
 </script>
 
 <input id="nav-checkbox" type="checkbox" class="globe-wrapper" bind:checked={nav} />
 <label for="nav-checkbox" class="globe-wrapper">
 	<Globe />
+	{#if showPrompt}
+		<h1 transition:fade class="prompt">Click me!</h1>
+	{/if}
 </label>
 {#if nav}
 	<div transition:fade class="blur-screen" on:click={() => (nav = false)} />
@@ -73,7 +87,7 @@
 	}
 
 	input[type='checkbox']:hover + label.globe-wrapper {
-		box-shadow: 0px 0px 4px 4px rgba(24, 71, 239, 0.7);
+		box-shadow: 0px 0px 4px 4px rgba(24, 71, 239, 0.3);
 	}
 
 	div.blur-screen {
@@ -87,6 +101,34 @@
 		opacity: 0.3;
 		transition: all 1s;
 		z-index: 45;
+	}
+
+	h1.prompt {
+		font-size: 1rem;
+		margin: 0px;
+		width: 100%;
+		text-align: center;
+		position: absolute;
+		top: calc(50% - 1.5ex);
+		animation: wiggle 1.5s infinite;
+	}
+
+	@keyframes wiggle {
+		0% {
+			transform: rotate(0deg);
+		}
+		80% {
+			transform: rotate(0deg);
+		}
+		85% {
+			transform: rotate(10deg);
+		}
+		95% {
+			transform: rotate(-10deg);
+		}
+		100% {
+			transform: rotate(0deg);
+		}
 	}
 
 	span.contact {
