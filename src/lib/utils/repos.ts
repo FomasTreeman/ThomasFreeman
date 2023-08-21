@@ -36,7 +36,7 @@ const PINNED: { [key: string]: IPinnedData } = {
     },
     'renude': {
         summary: 'Coming soon!',
-        stack: ['React Native', 'Stripe', 'AWS: S3, RDS', 'Clerk', 'Prisma', 'tRPC + Express'],
+        stack: ['React Native', 'Stripe', 'Clerk', 'Prisma', 'tRPC', 'PlanetScale', 'Cloudflare R2 + Express'],
         description: `**Project Idea: Fun E-Commerce Clothing App Showcase**
  --- 
 **1. Objective and Purpose:**
