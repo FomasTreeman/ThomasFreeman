@@ -46,29 +46,20 @@
 		margin-inline: auto;
 	}
 
-	main {
-		scroll-snap-type: y mandatory;
-	}
-
 	section {
 		position: relative;
 		height: 100vh;
 		scroll-margin: 70px;
 	}
 
-	/* section#about {
-		padding-top: 3rem;
-	} */
-
 	section#project {
+		height: auto;
 		position: relative;
 		margin: 0%;
 		background-color: rgb(5, 4, 5);
 		padding-block: 5rem;
 		margin-bottom: 8rem;
 		scroll-margin: 0px;
-		scroll-snap-align: start;
-		scroll-snap-stop: always;
 	}
 
 	.stack {
