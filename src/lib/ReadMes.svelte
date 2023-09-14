@@ -6,7 +6,7 @@
 	export let data: Data;
 </script>
 
-<h2 class="center title">MY PROJECTS.</h2>
+<h2 class="center title">My Projects</h2>
 {#if data.error}
 	<h2 class="center">Whoops error 😔</h2>
 {:else}

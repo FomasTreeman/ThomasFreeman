@@ -17,14 +17,16 @@
 	</div>
 </div>
 <div class="wrapper">
-	<h1>Hi, I'm Tom Freeman 🖖</h1>
-	<p>
-		As a software developer, I relish the opportunity to create groundbreaking technologies that
-		solve complex problems and improve people's lives. I am fascinated by the constantly evolving
-		tech industry and thrive in fast-paced environments that challenges me to learn and apply new
-		technologies. I look forward to sharing my unique perspective and learning from others as I
-		embark on a successful and rewarding career in software development. <br />
-	</p>
+	<div class="background">
+		<h1>Hi, I'm Tom Freeman 🖖</h1>
+		<p>
+			As a software developer, I absolutely love diving into the world of technology and crafting
+			innovative solutions that make life better. I'm super excited about the ever-changing tech
+			scene and I'm at my best when I'm in a fast-paced environment that pushes me to explore new
+			technologies. I can't wait to share my fresh ideas and learn from others, in this passionate
+			community! <br />
+		</p>
+	</div>
 	{#if shouldPromptScroll}
 		<div class="absolute-wrapper">
 			<ScrollDownPrompt />
@@ -42,19 +44,23 @@
 		height: 100%;
 	}
 
+	div.background {
+		mix-blend-mode: luminosity;
+		background-color: blue;
+		border-radius: 1rem;
+		text-align: center;
+		padding: calc(var(--margin-left) / 2);
+		max-width: 75%;
+	}
+
 	h1 {
 		font-size: xxx-large;
 		z-index: 1;
 	}
 
 	p {
-		text-align: center;
-		max-width: 75%;
 		font-weight: 500;
-		mix-blend-mode: luminosity;
-		border-radius: 1rem;
 		padding: calc(var(--margin-left) / 2);
-		background-color: blue;
 	}
 
 	div.model-wrapper {

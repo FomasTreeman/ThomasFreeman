@@ -6,46 +6,49 @@
 <article>
 	<h2>My automated betting bot</h2>
 	<p>
-		This project was a significant undertaking, the client had a betting system that wasn't as
-		performant with slow manual input so required this to be automated. I utilized skills in Shell
-		scripting, socket handling, security, cypress/web scraping, and Excel. Additionally, I created a
-		custom logging system and previously deployed it on my NAS within a Docker container but found a
-		limitation with a tool i was using and later removed the need for E2E testing tools for scraping
-		and thereby also not needing a docker container.
-	</p>
-	<h3>🖌️ UI:</h3>
-	<p>
-		Clients were unaware of their trades and wanted to track the bot&lsquo;s progress. To help, I
-		created a website using svelte-kit and a more simple mobile app for Android users. The website
-		provided graphs, trade history, and fun stats. I also created a developer page secured by
-		password to manage app settings and git branch/tag updates.
+		<!-- describe the problem -->
+		For this project, we had a pretty big task on our hands. Our client had a betting system that was
+		a bit sluggish due to manual input, so we decided to automate it to make things smoother. On top
+		of that, I designed a custom logging system. At first, I had it set up on my NAS in a Docker container,
+		but I ran into a few hiccups with one of the tools I was using. Eventually, I managed to eliminate
+		the need for end-to-end testing tools for scraping, which also meant we could ditch the Docker container.
 	</p>
 	<h3>🔍 How it works:</h3>
 	<p>
-		We scrape from a tips website the relevant data and check it against our 'system', these are a
-		set of rules that we have created to determine if a bet is worth it. If it is, we then create a
-		stream/open a websocket to betfair api waiting for the odds to come into that 'systems' range.
-		Once they do, we place a bet.
+		I scrape data from a tips website and then check it against the system, which consists of a set
+		of rules we've created to decide if a bet is worth placing. If it meets the criteria, I open a
+		WebSocket to Betfair and wait for the odds to fall within the 'system's' range. As soon as they
+		do, it places a bet.
 	</p>
-	<h3>🕰️ Future:</h3>
+	<h3>🖌️ The User Interface:</h3>
 	<p>
-		In the future i hope to attempt a more mathematical approach and net a profit from laying all
-		trades in a market.
+		The client, need visibility of the automated system. It needed to track the bot&lsquo;s
+		progress. I created a website using svelte-kit and a react-native app. They provided graphs,
+		trade history, and fun stats. I also created a developer page secured by password to manage app
+		settings and git branch/tag updates.
 	</p>
-	<h3>🔧 Skill and tools used/learned:</h3>
+	<h3>🕰️ What&lsquo;s next:</h3>
 	<p>
-		More advanced shell scripting; tool such as pm2, docker, vi, executable shell scripts for CI,
-		but I know use github actions and for a true CI/CD pipeline. In terms of more devOps I have got
-		the option to remotely change variables/settings of the app live. Also sigInts are emailed to me
-		for peace of mind.
+		Taking this further, I plan to explore a more algorithmic approach aimed at generating profits
+		by laying all trades within a market.
 	</p>
-	<h3>✂️ Issues I had to overcome:</h3>
+	<h3>🔧 Skills and tools:</h3>
 	<p>
-		Had trouble scraping the tips website, originally tried Nightmarejs, but rewrote using cypress +
-		jquery for logging benefits. Later needed to scrape the site for different betting data but
-		parallelization required Cypress Cloud subscription. Workaround using asynchronous cypress
-		processes caused login cookie conflicts. Discovered that using fetch request to get raw html of
-		the page and parsing with cheerio.js was quicker and easier.
+		I've implemented advanced shell scripting tools like pm2, Docker, vi, CI scripts, and GitHub
+		Actions to establish a robust CI/CD pipeline. The app now allows for seamless configuration
+		management, and changes can be applied without any need to restart the bot. Ensuring the
+		automated bot runs smoothly 24/7 without any crashes is of utmost importance, and I've set up
+		notifications to keep me informed about any occurrences or issues promptly.
+	</p>
+	<h3>✂️ Twists:</h3>
+	<p>
+		Initially, I implemented the scraping of the tips website using Nightmarejs. However, I later
+		rewrote the process using Cypress and jQuery due to the logging benefits it offered. To improve
+		performance, I decided to parallelize the scraping service, but this required a Cypress Cloud
+		subscription, which my client was not willing to pay for. As a result, I re-implemented it using
+		asynchronous Cypress processes, which, unfortunately, led to login cookie conflicts. In my quest
+		for a more efficient solution, I discovered that making fetch requests to obtain the raw HTML of
+		the page and then parsing it with cheerio.js was a quicker and simpler approach.
 	</p>
 </article>
 
