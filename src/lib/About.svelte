@@ -83,6 +83,10 @@
 
 		p {
 			font-size: small;
+			padding: 0px;
+		}
+		div.background {
+			padding-top: 14px;
 		}
 	}
 </style>

@@ -51,19 +51,11 @@
 		margin: 5rem;
 		padding: 5rem;
 		background-color: var(--background-color);
+		max-width: 100vw;
 	}
 
-	@media (max-width: 768px) {
-		main.wrapper {
-			margin: 0rem;
-			margin-top: 4rem;
-			padding: 2rem;
-		}
-
-		div.link-list {
-			top: 2rem;
-			right: 2rem;
-		}
+	image {
+		width: 100%;
 	}
 
 	main.wrapper > :not(a.return):not(h1):not(div.link-list):not(.md-wrapper) {
@@ -99,10 +91,21 @@
 		border: 3px solid white;
 		padding: 1rem;
 	}
-	/* details {
-		margin-top: 1rem;
-		margin-left: 0px;
-		display: flex;
-		gap: 1rem;
-	} */
+
+	@media (max-width: 768px) {
+		main.wrapper {
+			margin: 0rem;
+			margin-top: 7rem;
+			padding: 2rem;
+		}
+
+		div.link-list {
+			top: 1rem;
+			right: 1rem;
+		}
+
+		h1 {
+			font-size: xx-large;
+		}
+	}
 </style>

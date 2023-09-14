@@ -1,6 +1,6 @@
 <script lang="ts">
 	import scrollIntoView from './utils/scroll';
-	import { fly, fade } from 'svelte/transition';
+	import { fade } from 'svelte/transition';
 	import Globe from './Globe.svelte';
 	import { onMount } from 'svelte';
 	let nav = false;
@@ -20,10 +20,7 @@
 
 <input id="nav-checkbox" type="checkbox" class="globe-wrapper" bind:checked={nav} />
 <label for="nav-checkbox" class="globe-wrapper">
-	<Globe />
-	{#if showPrompt}
-		<b transition:fade class="prompt">Click me!</b>
-	{/if}
+	<Globe {showPrompt} />
 </label>
 {#if nav}
 	<div transition:fade class="blur-screen" on:click={() => (nav = false)} />
@@ -103,35 +100,6 @@
 		z-index: 45;
 	}
 
-	b.prompt {
-		font-size: 1rem;
-		margin: 0px;
-		width: 100%;
-		text-align: center;
-		position: absolute;
-		right: 0px;
-		top: calc(50% - 1.5ex);
-		animation: wiggle 1.5s infinite;
-	}
-
-	@keyframes wiggle {
-		0% {
-			transform: rotate(0deg);
-		}
-		80% {
-			transform: rotate(0deg);
-		}
-		85% {
-			transform: rotate(10deg);
-		}
-		95% {
-			transform: rotate(-10deg);
-		}
-		100% {
-			transform: rotate(0deg);
-		}
-	}
-
 	span.contact {
 		position: fixed;
 		top: 0px;
@@ -168,17 +136,18 @@
 	}
 
 	.card {
-		padding-block: 0.7rem;
-		padding-inline: 1rem;
+		padding-block: 0.4rem;
+		padding-inline: 0.8rem;
 		width: fit-content;
 		height: fit-content;
-		background-color: var(--background-color);
-		border-radius: 2rem;
+		color: var(--background-color);
+		background-color: var(--primary-color2);
+		border-radius: 1rem;
+		border: 2px solid var(--background-color);
 		font-size: x-large;
-		text-transform: uppercase;
 		font-weight: 800;
 		text-align: center;
-		box-shadow: 10px 10px 0px 0px var(--link-color);
+		box-shadow: 0px 7px 0px 0px var(--background-color);
 		white-space: nowrap;
 		transition: all 2s cubic-bezier(0.075, 0.82, 0.165, 1);
 	}
@@ -194,14 +163,15 @@
 	}
 
 	a.card:hover {
-		transform: scale(1.1);
+		transform: translateY(7px);
+		box-shadow: none;
 		transition: all 2s cubic-bezier(0.075, 0.82, 0.165, 1);
-		color: var(--link-color-hover);
 	}
 
 	a.card:hover ~ a.card,
 	a.card:has(~ :hover) {
-		opacity: 0.8;
+		/* opacity: 0.8; */
+		text-decoration: line-through;
 	}
 
 	@media (max-width: 1200px) {
