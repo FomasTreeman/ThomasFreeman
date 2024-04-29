@@ -63,7 +63,7 @@
 	}
 
 	.stack {
-		width: 100vw;
+		width: 100%;
 		overflow-x: hidden;
 	}
 

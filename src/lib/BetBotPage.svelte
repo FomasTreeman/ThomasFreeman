@@ -104,8 +104,7 @@
 
 	article {
 		height: inherit;
-		overflow-y: scroll;
-		/* scroll-snap-stop: al; */
+		/* overflow-y: scroll; */
 		overscroll-behavior: auto;
 	}
 
