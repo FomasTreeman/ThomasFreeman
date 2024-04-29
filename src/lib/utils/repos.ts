@@ -35,7 +35,7 @@ const PINNED: { [key: string]: IPinnedData } = {
         description: 'This is a simulation to replicate the behaviour of flocks of birds. It follows three rules; separation, alignment, cohesion. Separation - each bird attempts to maintain even spacing among its neighbouring birds. Alignment - each bird tries to gradually follow the same vector as neighbouring birds. Cohesion - each bird ties to move towards the average position of other neighbouring birds (countering separation to create an average position).',
     },
     'renude': {
-        summary: 'Coming soon!',
+        summary: "My Vinted inspired clothing app",
         stack: ['React Native', 'Stripe', 'Clerk', 'Prisma', 'tRPC', 'PlanetScale', 'Cloudflare R2 + Express'],
         description: `**Project Idea: Fun E-Commerce Clothing App Showcase**
  --- 
