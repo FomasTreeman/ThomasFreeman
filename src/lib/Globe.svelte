@@ -11,7 +11,7 @@
 	<img
 		class="globe globe-shape"
 		loading="eager"
-		src="globe.svg"
+		src="globe.webp"
 		alt="Menu - globe"
 		style="animation-delay: calc({scroll} * -1s);"
 	/>

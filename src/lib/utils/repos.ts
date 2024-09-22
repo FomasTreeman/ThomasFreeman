@@ -1,13 +1,17 @@
 import type { IPinnedData } from '$lib/types.js';
 
 const PINNED: { [key: string]: IPinnedData } = {
+    'Trade-o-matic': {
+        summary: 'A trading bot testing different strategies across various markets',
+        stack: ['Java'],
+        description: 'A trading bot in Java testing different strategies across various markets. The bot uses a variety of indicators to make decisions, such as moving averages, RSI, and MACD. The bot is designed to be modular, allowing for easy integration of new strategies and indicators. The bot is currently in development and is not yet ready for production use.'
+    },
     'Comms': {
         production: 'https://comm-a.vercel.app/',
         imageExt: '.webp',
         summary: 'My quick rough messaging app for testing new frameworks',
         stack: ['react', 'supabase'],
         description: 'A messaging app using react, (version 2) the current feature in development is introducing Supabases DB and login/auth tools. where originally there wasnt session management'
-
     },
     'Rich_System_Site': {
         imageExt: '.webp',

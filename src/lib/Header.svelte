@@ -39,16 +39,16 @@
 		out:fade={{ duration: 200 }}
 	>
 		<a href="https://fac-portfolio.vercel.app/">
-			<img loading="lazy" src="/contact/fac.svg" alt="FAC" />
+			<img loading="lazy" src="/contact/fac.webp" alt="FAC" />
 		</a>
 		<a href="https://github.com/FomasTreeman">
-			<img loading="lazy" style="filter: invert(1)" src="/contact/github.png" alt="github" />
+			<img loading="lazy" style="filter: invert(1)" src="/contact/github.webp" alt="github" />
 		</a>
 		<a href="https://www.linkedin.com/in/fomas-treeman/">
-			<img loading="lazy" src="/contact/linkedin.png" alt="linkedin" />
+			<img loading="lazy" src="/contact/linkedin.webp" alt="linkedin" />
 		</a>
 		<a href="mailto: tom@team-freeman.com">
-			<img loading="lazy" src="/contact/gmail.png" alt="gmail" />
+			<img loading="lazy" src="/contact/gmail.webp" alt="gmail" />
 		</a>
 	</span>
 {/if}
