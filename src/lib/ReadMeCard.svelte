@@ -1,24 +1,43 @@
 <script lang="ts">
-	import ToolTipWrapper from './ToolTipWrapper.svelte';
 	import type { IRepo } from '$lib/types';
 
 	export let repo: IRepo;
+	export let index: number;
+	export let gradientCenter = { x: '50%', y: '100%' };
+
+	const colours = [
+		{
+			overlay: '#A05801',
+			before: '#FF8B00'
+		},
+		{
+			overlay: '#9B8901',
+			before: '#F9DC02'
+		},
+		{
+			overlay: '#286A8E',
+			before: '#47BFFF'
+		},
+		{
+			overlay: '#024A9B',
+			before: '#0279FF'
+		}
+	];
 </script>
 
-<a href={`/repo/${repo.name}`} on:click|self>
-	<article>
-		<!-- image -->
+<a href={`/repo/${repo.name}`} data-project={repo.name}>
+	<article
+		style="--overlay-color: {colours[index % colours.length].overlay};
+               --background-color: {colours[index % colours.length].before};
+               background-image: radial-gradient(circle at {gradientCenter.x} {gradientCenter.y}, #39a05000, var(--overlay-color));"
+	>
 		<div class="img-container">
-			<img
-				src={repo?.imageExt
-					? `/repos/${repo.name}${repo.imageExt}`
-					: 'https://media3.giphy.com/media/3o72FkiKGMGauydfyg/200.gif'}
-				alt="temp gif"
-				loading="lazy"
-			/>
+			<img src="demo.png" alt="temp gif" loading="lazy" />
+			<h3>// {repo.name.toLocaleLowerCase()}</h3>
 		</div>
 		<footer>
 			<h3>// {repo.name.toLocaleLowerCase()}</h3>
+			<hr />
 			<p class="description">{repo?.summary || 'Read Me?'}</p>
 		</footer>
 	</article>
@@ -26,62 +45,77 @@
 
 <style>
 	article {
-		transition: all 1s;
-		max-width: calc(100% - 2rem);
-		margin-inline: auto;
-		margin-block: 2rem;
-		background-color: #28282a;
-		box-shadow: 10px 10px 0px 0px rgba(0, 0, 0, 0.75);
-		-webkit-box-shadow: 10px 10px 0px 0px rgba(0, 0, 0, 0.75);
-		-moz-box-shadow: 10px 10px 0px 0px rgba(0, 0, 0, 0.75);
+		border-radius: 1rem;
+		padding: 1.5rem;
+		font-family: 'JetBrains Mono Variable';
+		transition: background-color 0.3s ease;
+		background-color: var(--background-color);
+		position: relative; /* Ensure positioning for overlap */
+		z-index: 1; /* Ensure articles stack correctly */
 	}
 
-	footer {
-		padding: 2rem;
-	}
-	.img-container {
-		height: 15rem;
-		overflow: hidden;
-		background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-		background-size: 400% 400%;
-		animation: gradient 15s ease infinite;
+	article .img-container {
+		width: 100%;
+		height: 300px;
+		position: relative;
 	}
 
-	@keyframes gradient {
+	article .img-container h3 {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		translate: -50% -50%;
+		white-space: nowrap;
+		font-weight: 900;
+		font-size: 2rem;
+		visibility: hidden;
+		opacity: 0;
+		transition: all .3s ease;
+	}
+
+	article:hover .img-container h3 {
+		animation-delay: 0.3s;
+		animation: fadeInFromUnderneath 0.6s ease forwards;
+		visibility: visible;
+		opacity: 1;
+	}
+
+	@keyframes fadeInFromUnderneath {
 		0% {
-			background-position: 0% 50%;
-		}
-		50% {
-			background-position: 100% 50%;
+			transform: translateY(40px); /* Start 20px below the original position */
 		}
 		100% {
-			background-position: 0% 50%;
+			transform: translateY(0); /* Move to the original position */
 		}
+	}	
+
+
+	article:hover footer h3 {
+		visibility: hidden;
+		opacity: 0;
 	}
 
-	img {
-		height: 100%;
-		width: 100%;
+	article img {
+		position: absolute;
+		width: 75%;
+		height: 75%;
 		object-fit: contain;
+		top: 50%;
+		left: 50%;
+		translate: -50% -50%;
 	}
 
-	h2 {
-		margin-top: 0px;
-		transition: color 250ms;
+	article footer h3 {
+		visibility: visible;
+		opacity: 1;
+		transition: all 0.3s ease;
 	}
 
-	p.description {
-		/* max-width: 100%;
-		text-overflow: ellipsis;
-		white-space: pre; */
-		font-family: 'JetBrains Mono Variable';
-		transition: color 250ms;
+	article hr {
+		opacity: 0.4;
 	}
 
-	article:hover {
-		scale: 0.99;
-		box-shadow: 5px 5px 0px 0px rgba(0, 0, 0, 0.75);
-		color: var(--link-color-hover);
-		transition: all 500ms;
+	article footer p {
+		margin-bottom: 0;
 	}
 </style>

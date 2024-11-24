@@ -2,8 +2,51 @@
 	import Saos from 'saos';
 	import ReadMeCard from './ReadMeCard.svelte';
 	import type { Data } from '$lib/types';
+	import { onMount, onDestroy } from 'svelte';
 
 	export let data: Data;
+
+	let projectElements: NodeListOf<HTMLElement>;
+
+	let gradients: { [key: string]: { x: string; y: string } } = {};
+
+	function normalizeCoordinates(screenX: number, screenY: number, element: HTMLElement) {
+		// Get the bounding rectangle of the element
+		const rect = element.getBoundingClientRect();
+
+		// Calculate relative coordinates
+		const relativeX = screenX - rect.left; // Subtract the left offset
+		const relativeY = screenY - rect.top; // Subtract the top offset
+
+		return { relativeX, relativeY };
+	}
+
+	function handleMouseMove(event: MouseEvent) {
+		const { clientX, clientY } = event;
+		projectElements.forEach((element) => {
+			const { relativeX, relativeY } = normalizeCoordinates(clientX, clientY, element);
+			if (!element.dataset.project) return;
+			gradients[element.dataset.project] = { x: `${relativeX}px`, y: `${relativeY}px` };
+			gradients = { ...gradients };
+		});
+	}
+
+	onMount(() => {
+		window.addEventListener('mousemove', handleMouseMove);
+		projectElements = document.querySelectorAll('[data-project]');
+		console.log(projectElements);
+		// for (const element of projectElements) {
+		// 	console.log(element.dataset.project);
+		// 	gradients[element.dataset.project as string] = { x: '50%', y: '100%' };
+		// 	gradients = { ...gradients };
+		// }
+	});
+
+	$: console.log(gradients);
+
+	// onDestroy(() => {
+	// 	window.removeEventListener('mousemove', handleMouseMove);
+	// });
 </script>
 
 <h2 class="center title">My Projects</h2>
@@ -14,15 +57,15 @@
 		<h2>Loading ...</h2>
 	{:then repos}
 		<section class="grid">
-			{#each repos as repo}
-				<Saos
+			{#each repos as repo, index}
+				<!-- <Saos
 					animation={'slide-in 1s cubic-bezier(0.35, 0.5, 0.65, 0.95) both'}
 					top={250}
 					bottom={250}
 					once
-				>
-					<ReadMeCard {repo} />
-				</Saos>
+				> -->
+				<ReadMeCard {repo} {index} gradientCenter={gradients[repo.name]} />
+				<!-- </Saos> -->
 			{/each}
 		</section>
 	{/await}
@@ -33,8 +76,15 @@
 		font-size: 2rem;
 		margin-top: 5rem;
 		max-width: max-content;
-		padding: 1rem;
-		border: 0.5rem solid var(--color);
+		padding-block: 1rem;
+		padding-inline: 2rem;
+		background-color: blue;
+		mix-blend-mode: luminosity;
+		border-radius: 1000px;
+		/* box-shadow: 2px 1px 100px 59px rgba(77, 77, 77, 0.53);
+		-webkit-box-shadow: 2px 1px 100px 59px rgba(77, 77, 77, 0.53);
+		-moz-box-shadow: 2px 1px 100px 59px rgba(77, 77, 77, 0.53); */
+		/* border: 0.5rem solid var(--color); */
 	}
 
 	.grid {
@@ -42,6 +92,7 @@
 		margin-inline: var(--margin-left);
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+		gap: 1.3rem;
 	}
 
 	@media only screen and (max-width: 1000px) {
