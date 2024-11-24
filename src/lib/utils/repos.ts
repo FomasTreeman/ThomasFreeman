@@ -17,7 +17,51 @@ const PINNED: { [key: string]: IPinnedData } = {
         imageExt: '.webp',
         summary: 'A betting bot dashboard',
         stack: ['Node.js', 'Docker', 'Cypress', 'PM2', 'Svelte', 'shell'],
-        description: 'I assisted clients in automating their betting system by utilising web scraping techniques and placing necessary bets accordingly. In the initial version, I used a docker container with Cypress, but it became increasingly complicated and heavy due to the need for headless video buffers to run the test in a browser. In the second revision, I simply made a request for the HTML with a valid cookie that I refreshed on each request to avoid conflicts. Additionally, I developed a user-friendly interface that allows clients to view their open, closed, and live bets for the day, as well as all historical data, represented in various graphs with customisable filters. To ensure secure operation, I implemented a minimal login feature that allows me to change settings and preset configurations for the bot, such as turning it on/off or increasing the maximum stake.'
+        description: `<h2>🤖  __My automated betting bot  📈 </h2>
+	<p>
+		For this project, we had a pretty big task on our hands. Our client had a betting system that was
+		a bit sluggish due to manual input, so we decided to automate it to make things smoother. On top
+		of that, I designed a custom logging system. At first, I had it set up on my NAS in a Docker container,
+		but I ran into a few hiccups with one of the tools I was using. Eventually, I managed to eliminate
+		the need for end-to-end testing tools for scraping, which also meant we could ditch the Docker container.
+	</p>
+	<h3>🔍 How it works:</h3>
+	<p>
+		I scrape data from a tips website and then check it against the system, which consists of a set
+		of rules we've created to decide if a bet is worth placing. If it meets the criteria, I open a
+		WebSocket to Betfair and wait for the odds to fall within the 'system's' range. As soon as they
+		do, it places a bet.
+	</p>
+	<h3>🖌️ The User Interface:</h3>
+	<p>
+		The client, need visibility of the automated system. It needed to track the bot&lsquo;s
+		progress. I created a website using svelte-kit and a react-native app. They provided graphs,
+		trade history, and fun stats. I also created a developer page secured by password to manage app
+		settings and git branch/tag updates.
+	</p>
+	<h3>🕰️ What&lsquo;s next:</h3>
+	<p>
+		Taking this further, I plan to explore a more algorithmic approach aimed at generating profits
+		by laying all trades within a market.
+	</p>
+	<h3>🔧 Skills and tools:</h3>
+	<p>
+		I've implemented advanced shell scripting tools like pm2, Docker, vi, CI scripts, and GitHub
+		Actions to establish a robust CI/CD pipeline. The app now allows for seamless configuration
+		management, and changes can be applied without any need to restart the bot. Ensuring the
+		automated bot runs smoothly 24/7 without any crashes is of utmost importance, and I've set up
+		notifications to keep me informed about any occurrences or issues promptly.
+	</p>
+	<h3>✂️ Twists:</h3>
+	<p>
+		Initially, I implemented the scraping of the tips website using Nightmarejs. However, I later
+		rewrote the process using Cypress and jQuery due to the logging benefits it offered. To improve
+		performance, I decided to parallelize the scraping service, but this required a Cypress Cloud
+		subscription, which my client was not willing to pay for. As a result, I re-implemented it using
+		asynchronous Cypress processes, which, unfortunately, led to login cookie conflicts. In my quest
+		for a more efficient solution, I discovered that making fetch requests to obtain the raw HTML of
+		the page and then parsing it with cheerio.js was a quicker and simpler approach.
+	</p>`
     },
     'KodiTV': {
         imageExt: '.webp',
