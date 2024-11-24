@@ -1,251 +1,127 @@
+
 <script lang="ts">
-	import scrollIntoView from './utils/scroll';
-	import { fade } from 'svelte/transition';
-	import Globe from './Globe.svelte';
+	/// TODO :
+	/// 1. Add a scroll event listener to the window object to update the indicator position
+
 	import { onMount } from 'svelte';
-	let nav = false;
-	let hasNavBeenClicked = false;
-	let showPrompt = false;
-	let innerWidth: number;
-	$: isSmallScreen = innerWidth < 1000;
-	$: if (nav === true) hasNavBeenClicked = true;
-	$: if (showPrompt === true && nav === true) showPrompt = false;
+
+	let BASE_URL: string;
+	let navItems: NodeListOf<Element>;
+	let indicator: HTMLElement | null;
+	let activeIndex = 0;
+
+	function scrollToElement(event: MouseEvent, elementId: string) {
+		event.preventDefault();
+		const element = document.getElementById(elementId);
+		if (element) {
+			element.scrollIntoView({ behavior: 'smooth' });
+		}
+	}
+
+	function setIndicatorPosition(index: number) {
+		const activeItem = navItems[index];
+		const itemRect = activeItem.getBoundingClientRect();
+		const navRect = activeItem.parentElement?.parentElement?.getBoundingClientRect() || { left: 0 };
+		const itemLeft = itemRect.left - navRect.left;
+
+		const itemWidth = itemRect.width;
+
+		if (indicator !== null) {
+			indicator.style.width = `${itemWidth}px`;
+			indicator.style.left = `${itemLeft}px`;
+			indicator.style.display = `block`;
+		}
+	}
+
+	function adjustIndicator(event: MouseEvent) {
+		const item = event.currentTarget as HTMLAnchorElement;
+		navItems.forEach((nav) => nav.classList.remove('active'));
+		item.classList.add('active');
+		const index = Array.from(navItems).indexOf(item);
+		activeIndex = index; // Update the active index
+		setIndicatorPosition(index);
+		const href = item.href;
+		const windowHref = window.location.href;
+		if (!href) return;
+		const indexOfHash = href.indexOf('#') + 1;
+		const indexOfHashHome = windowHref.indexOf('#') + 1;
+		console.log(href.slice(0, indexOfHash), window.location.href);
+		if (href.slice(0, indexOfHash) === windowHref.slice(0, indexOfHashHome)) {
+			scrollToElement(event, href.substring(indexOfHash));
+		}
+	}
 
 	onMount(() => {
-		setTimeout(() => {
-			if (hasNavBeenClicked === false) showPrompt = true;
-		}, 7500);
+		navItems = document.querySelectorAll('nav li > a');
+		indicator = document.querySelector('.indicator');
+		BASE_URL = window.location.origin;
+		setIndicatorPosition(activeIndex); // Set initial position
 	});
 </script>
 
-<input id="nav-checkbox" type="checkbox" class="globe-wrapper" bind:checked={nav} />
-<label for="nav-checkbox" class="globe-wrapper">
-	<Globe {showPrompt} />
-</label>
-{#if nav}
-	<div transition:fade class="blur-screen" on:click={() => (nav = false)} />
-	<div
-		class="flex horizon links"
-		in:fade={{ delay: isSmallScreen ? 1000 : 0 }}
-		out:fade={{ duration: 200 }}
-	>
-		<a class="card" href="#about" on:click|preventDefault={scrollIntoView}> About Me </a>
-		<a class="card" href="#project" on:click|preventDefault={scrollIntoView}> Betting Bot </a>
-		<a class="card" href="#readmes" on:click|preventDefault={scrollIntoView}> Projects </a>
-	</div>
-	<span
-		class="flex col vertical contact"
-		in:fade={{ delay: isSmallScreen ? 1000 : 0 }}
-		out:fade={{ duration: 200 }}
-	>
-		<a href="https://fac-portfolio.vercel.app/">
-			<img loading="lazy" src="/contact/fac.webp" alt="FAC" />
-		</a>
-		<a href="https://github.com/FomasTreeman">
-			<img loading="lazy" style="filter: invert(1)" src="/contact/github.webp" alt="github" />
-		</a>
-		<a href="https://www.linkedin.com/in/fomas-treeman/">
-			<img loading="lazy" src="/contact/linkedin.webp" alt="linkedin" />
-		</a>
-		<a href="mailto: tom@team-freeman.com">
-			<img loading="lazy" src="/contact/gmail.webp" alt="gmail" />
-		</a>
-	</span>
-{/if}
-
-<svelte:window bind:innerWidth />
-
-<!-- <a href="https://www.flaticon.com/free-icons/linkedin" title="linkedin icons"
-  >Linkedin icons created by Flaticon</a
-> -->
+<nav>
+	<ul>
+		<li>
+			<a data-index="0" href={`${BASE_URL}/#about`} on:click={adjustIndicator}>
+				Home
+			</a>
+		</li>
+		<li>
+			<a data-index="0" href={`${BASE_URL}/#project`} on:click={adjustIndicator}>
+				About
+			</a>
+		</li>
+		<li>
+			<a data-index="0" href={`${BASE_URL}/#readmes`} on:click={adjustIndicator}>
+				Projects
+			</a>
+		</li>
+		<div class="indicator" />
+	</ul>
+</nav>
 
 <style>
-	.globe-wrapper {
-		position: fixed;
-		right: 0px;
-		top: 0px;
-		width: 5rem;
-		height: 5rem;
-		background-color: transparent;
-		margin: 1rem;
-		padding: 0px;
-		border: none;
-		border-radius: 50%;
-		transition: all 1s;
-		z-index: 51;
-	}
-
-	input[type='checkbox'] {
-		appearance: none;
-		z-index: 101;
-	}
-	input[type='checkbox']:checked + label.globe-wrapper {
-		scale: 1.1;
-	}
-
-	input[type='checkbox']:hover + label.globe-wrapper {
-		box-shadow: 0px 0px 4px 4px rgba(24, 71, 239, 0.3);
-	}
-
-	div.blur-screen {
+	nav {
 		position: fixed;
 		top: 0;
-		left: 0;
-		width: 110%;
-		height: 110%;
-		filter: blur(2px);
-		background: #000;
-		opacity: 0.3;
-		transition: all 1s;
-		z-index: 45;
-	}
-
-	span.contact {
-		position: fixed;
-		top: 0px;
-		right: 0px;
 		z-index: 50;
+		width: 100%;
 	}
 
-	div.links {
-		position: fixed;
-		top: 0px;
-		right: 0px;
-		z-index: 50;
-		margin-right: 8.5rem;
-		height: 7rem;
-	}
-
-	div.links > * {
-		margin-bottom: 2rem;
-	}
-
-	.flex {
+	ul {
+		position: relative;
+		list-style-type: none;
 		display: flex;
-		justify-content: end;
-		align-items: end;
-		gap: 5%;
-	}
-
-	.col {
-		flex-direction: column;
-	}
-
-	.vertical {
-		margin-top: 7.5rem;
-	}
-
-	.card {
-		padding-block: 0.4rem;
-		padding-inline: 0.8rem;
+		justify-content: center;
+		align-items: center;
+		padding-block: 0.7rem;
+		gap: 1rem;
 		width: fit-content;
-		height: fit-content;
-		color: var(--background-color);
-		background-color: var(--primary-color2);
-		border-radius: 1rem;
-		border: 2px solid var(--background-color);
-		font-size: x-large;
-		font-weight: 800;
-		text-align: center;
-		box-shadow: 0px 7px 0px 0px var(--background-color);
-		white-space: nowrap;
-		transition: all 2s cubic-bezier(0.075, 0.82, 0.165, 1);
+		margin-inline: auto;
+		padding-inline: 0.8rem;
+		background: rgba(1, 1, 1, 0.6);
+		backdrop-filter: blur(20px) saturate(1.7);
+		border-radius: 1000px;
 	}
 
-	a {
-		color: var(--link-color);
+	li {
+		padding-block: 0.4rem;
+		padding-inline: 1.3rem;
+		border-radius: 1000px;
 	}
 
-	a img {
-		width: 2.5rem;
-		margin-inline: 2.3rem;
-		margin-block: 0.7rem;
-	}
-
-	a.card:hover {
-		transform: translateY(7px);
-		box-shadow: none;
-		transition: all 2s cubic-bezier(0.075, 0.82, 0.165, 1);
-	}
-
-	a.card:hover ~ a.card,
-	a.card:has(~ :hover) {
-		/* opacity: 0.8; */
-		text-decoration: line-through;
-	}
-
-	@media (max-width: 1200px) {
-		div.blur-screen {
-			z-index: 45 !important;
-		}
-
-		input[type='checkbox'] {
-			z-index: 51 !important;
-		}
-
-		input[type='checkbox']:checked ~ label.globe-wrapper,
-		input[type='checkbox']:checked {
-			width: 300px;
-			height: 300px;
-			position: fixed;
-			top: 50%;
-			right: 50%;
-			margin: 1rem;
-			transform: translate(50%, -50%);
-			transition: all 1s;
-		}
-		input[type='checkbox']:checked {
-			width: 330px;
-			height: 330px;
-			margin: 0px;
-		}
-
-		.contact {
-			position: fixed;
-			top: 50% !important;
-			right: calc(50% - 150px) !important;
-			transform: translateY(-50%);
-			z-index: 51 !important;
-			margin: 0px !important;
-		}
-
-		.contact img {
-			margin-inline: 0px;
-		}
-
-		.contact > :nth-child(1) {
-			transform: rotate(313deg);
-			padding-right: 42px;
-		}
-		.contact > :nth-child(2) {
-			transform: rotate(338deg);
-			padding-right: 13px;
-		}
-		.contact > :nth-child(3) {
-			transform: rotate(9deg);
-			padding-right: 3px;
-		}
-		.contact > :nth-child(4) {
-			transform: rotate(43deg);
-			padding-right: 32px;
-		}
-
-		.links {
-			position: fixed;
-			top: 50% !important;
-			right: inherit !important;
-			left: calc(50% - 150px) !important;
-			transform: translateY(-50%);
-			flex-direction: column;
-			justify-content: center;
-			gap: 0.5rem;
-			z-index: 51 !important;
-			margin: 0px !important;
-		}
-
-		.links * {
-			margin: 0px;
-			margin-block: 0.5rem !important;
-		}
+	.indicator {
+		background: rgba(39, 39, 39, 0.6);
+		position: absolute;
+		bottom: 0.7rem;
+		left: 0;
+		height: 1.5rem;
+		padding-block: 0.4rem;
+		padding-inline: 1.3rem;
+		border-radius: 1000px;
+		transition: all 0.3s ease;
+		display: none;
+		z-index: -1;
+		translate: -1.3rem;
 	}
 </style>
