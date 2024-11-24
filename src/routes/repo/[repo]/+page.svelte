@@ -48,10 +48,13 @@
 
 	main.wrapper {
 		position: relative;
-		margin: 5rem;
+		margin-inline: 5rem;
+		margin-top: 5.7rem; 
+		margin-bottom: 2.5rem; 
 		padding: 5rem;
 		background-color: var(--background-color);
 		max-width: 100vw;
+		border-radius: 1rem;
 	}
 
 	image {
@@ -94,8 +97,9 @@
 
 	@media (max-width: 768px) {
 		main.wrapper {
-			margin: 0rem;
-			margin-top: 7rem;
+			margin-inline: 0rem;
+			margin-top: 5.7rem;
+			margin-bottom: 2rem;
 			padding: 2rem;
 		}
 
