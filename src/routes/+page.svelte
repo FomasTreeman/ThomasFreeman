@@ -1,8 +1,7 @@
 <script lang="ts">
 	import About from '../lib/About.svelte';
-	import BetBotPage from '../lib/BetBotPage.svelte';
+	import Block from '../lib/Block.svelte';
 	import ReadMes from '../lib/ReadMes.svelte';
-	import Stack from '../lib/Stack.svelte';
 
 	export let data;
 </script>
@@ -13,12 +12,9 @@
 	</section>
 
 	<section id="project">
-		<BetBotPage />
+		<Block />
 	</section>
-
-	<div class="stack">
-		<Stack />
-	</div>
+	
 	<section id="readmes" class="no-max-height">
 		<ReadMes {data} />
 	</section>
@@ -60,11 +56,6 @@
 		padding-block: 5rem;
 		margin-bottom: 8rem;
 		scroll-margin: 0px;
-	}
-
-	.stack {
-		width: 100%;
-		overflow-x: hidden;
 	}
 
 	.no-max-height {

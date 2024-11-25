@@ -91,7 +91,7 @@
 		margin: 5rem;
 		margin-inline: var(--margin-left);
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
 		gap: 1.3rem;
 	}
 

@@ -32,7 +32,7 @@
                background-image: radial-gradient(circle at {gradientCenter.x} {gradientCenter.y}, #39a05000, var(--overlay-color));"
 	>
 		<div class="img-container">
-			<img src="demo.png" alt="temp gif" loading="lazy" />
+			<img src={`repos/${repo.name.toLowerCase()}.webp`} alt="temp gif" loading="lazy" />
 			<h3>// {repo.name.toLocaleLowerCase()}</h3>
 		</div>
 		<footer>
@@ -64,13 +64,13 @@
 		position: absolute;
 		top: 50%;
 		left: 50%;
-		translate: -50% -50%;
-		white-space: nowrap;
+		translate: -50% -75%;
 		font-weight: 900;
-		font-size: 2rem;
+		font-size: 2.5rem;
 		visibility: hidden;
 		opacity: 0;
 		transition: all .3s ease;
+		color: white;
 	}
 
 	article:hover .img-container h3 {
@@ -102,13 +102,14 @@
 		object-fit: contain;
 		top: 50%;
 		left: 50%;
-		translate: -50% -50%;
+		translate: -50% -45%;
 	}
 
 	article footer h3 {
 		visibility: visible;
 		opacity: 1;
 		transition: all 0.3s ease;
+		font-size: 1.5rem !important;
 	}
 
 	article hr {
@@ -117,5 +118,6 @@
 
 	article footer p {
 		margin-bottom: 0;
+		font-size: 1rem !important;
 	}
 </style>
