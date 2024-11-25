@@ -23,7 +23,7 @@
 	--link-color-hover: #535bf2;
 }
 
-h1,
+ƒ h1,
 h2 {
 	font-weight: 800;
 }
@@ -41,6 +41,10 @@ a {
 body {
 	min-width: 320px;
 	margin: 0%;
+
+	@media (max-width: 768px) {
+		width: calc(100% + 10px);
+	}
 }
 
 button {
@@ -54,6 +58,7 @@ button {
 	cursor: pointer;
 	transition: border-color 0.25s, scale 250ms, box-shadow 250ms;
 }
+
 /* button:hover {
     border-color: #646cff;
   } */
@@ -73,6 +78,7 @@ button:hover {
 		color: #213547;
 		background-color: #ffffff;
 	}
+
 	/* a:hover {
 		color: #747bff;
 	} */
