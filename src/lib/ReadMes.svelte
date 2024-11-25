@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Saos from 'saos';
 	import ReadMeCard from './ReadMeCard.svelte';
 	import type { Data } from '$lib/types';
 	import { onMount, onDestroy } from 'svelte';
@@ -11,12 +10,10 @@
 	let gradients: { [key: string]: { x: string; y: string } } = {};
 
 	function normalizeCoordinates(screenX: number, screenY: number, element: HTMLElement) {
-		// Get the bounding rectangle of the element
 		const rect = element.getBoundingClientRect();
 
-		// Calculate relative coordinates
-		const relativeX = screenX - rect.left; // Subtract the left offset
-		const relativeY = screenY - rect.top; // Subtract the top offset
+		const relativeX = screenX - rect.left;
+		const relativeY = screenY - rect.top;
 
 		return { relativeX, relativeY };
 	}
@@ -34,19 +31,7 @@
 	onMount(() => {
 		window.addEventListener('mousemove', handleMouseMove);
 		projectElements = document.querySelectorAll('[data-project]');
-		console.log(projectElements);
-		// for (const element of projectElements) {
-		// 	console.log(element.dataset.project);
-		// 	gradients[element.dataset.project as string] = { x: '50%', y: '100%' };
-		// 	gradients = { ...gradients };
-		// }
 	});
-
-	$: console.log(gradients);
-
-	// onDestroy(() => {
-	// 	window.removeEventListener('mousemove', handleMouseMove);
-	// });
 </script>
 
 <h2 class="center title">My Projects</h2>

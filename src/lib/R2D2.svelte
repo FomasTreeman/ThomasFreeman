@@ -15,7 +15,6 @@
 
 	onMount(() => {
 		loadGLTF().then((_model) => {
-			console.log(_model);
 			model = _model;
 		});
 	});
