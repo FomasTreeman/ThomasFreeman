@@ -1,8 +1,4 @@
-
 <script lang="ts">
-	/// TODO :
-	/// 1. Add a scroll event listener to the window object to update the indicator position
-
 	import { onMount } from 'svelte';
 
 	let BASE_URL: string;
@@ -51,30 +47,52 @@
 		}
 	}
 
+	function handleIntersection(entries: IntersectionObserverEntry[]) {
+		entries.forEach((entry) => {
+			if (entry.isIntersecting) {
+				const id = entry.target.getAttribute('id');
+				const navItem = Array.from(navItems).find((item) =>
+					item.getAttribute('href')?.includes(`#${id}`)
+				);
+				if (navItem) {
+					navItems.forEach((nav) => nav.classList.remove('active'));
+					navItem.classList.add('active');
+					const index = Array.from(navItems).indexOf(navItem);
+					activeIndex = index;
+					setIndicatorPosition(index);
+				}
+			}
+		});
+	}
+
 	onMount(() => {
 		navItems = document.querySelectorAll('nav li > a');
 		indicator = document.querySelector('.indicator');
 		BASE_URL = window.location.origin;
 		setIndicatorPosition(activeIndex); // Set initial position
+
+		const observer = new IntersectionObserver(handleIntersection, {
+			root: null,
+			rootMargin: '0px',
+			threshold: 0.5
+		});
+
+		document.querySelectorAll('section').forEach((section) => {
+			observer.observe(section);
+		});
 	});
 </script>
 
 <nav>
 	<ul>
 		<li>
-			<a data-index="0" href={`${BASE_URL}/#about`} on:click={adjustIndicator}>
-				Home
-			</a>
+			<a data-index="0" href={`${BASE_URL}/#about`} on:click={adjustIndicator}> Home </a>
 		</li>
 		<li>
-			<a data-index="0" href={`${BASE_URL}/#project`} on:click={adjustIndicator}>
-				About
-			</a>
+			<a data-index="0" href={`${BASE_URL}/#project`} on:click={adjustIndicator}> About </a>
 		</li>
 		<li>
-			<a data-index="0" href={`${BASE_URL}/#readmes`} on:click={adjustIndicator}>
-				Projects
-			</a>
+			<a data-index="0" href={`${BASE_URL}/#readmes`} on:click={adjustIndicator}> Projects </a>
 		</li>
 		<div class="indicator" />
 	</ul>
