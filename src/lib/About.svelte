@@ -21,8 +21,8 @@
 		<div class="background" />
 		<div class="inner">
 			<h1>Hi, I'm Tom Freeman 🖖</h1>
-			<h2>Full Stack Developer</h2>
-			<p>23 years old with a passion for creating beautiful and efficient applications.</p>
+			<h2>A Full Stack Developer</h2>
+			<p>I'm 23 years old with a passion for creating beautiful and efficient applications.</p>
 			<a href="/Tom_Freeman.pdf" download class="tracer-border">
 				<svg
 					stroke="currentColor"
@@ -101,7 +101,7 @@
 		</div>
 	</div>
 	{#if shouldPromptScroll}
-		<div class="absolute-wrapper">
+		<div class="scroll-down-prompt">
 			<ScrollDownPrompt />
 		</div>
 	{/if}
@@ -251,7 +251,7 @@
 		z-index: -1;
 	}
 
-	div.absolute-wrapper {
+	.scroll-down-prompt {
 		position: absolute;
 		bottom: 5rem;
 	}
@@ -277,31 +277,39 @@
 	}
 
 	@media (max-width: 768px) {
-		.background {
-			display: none;
-		}
-
 		.inner {
-			margin-top: -5rem;
-			text-align: start;
-			padding-inline: 1.5rem;
+			padding-inline: 1rem;
+			padding-block: 4rem;
+			height: 100vh;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
 		}
 
-		.inner > * {
-			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-		}
-
-		.inner h1 {
+		.inner > h1 {
 			font-size: xx-large;
 		}
 
-		.inner p {
-			font-size: small;
-			padding: 0px;
-			opacity: 1;
+		.inner > h2 {
+			font-size: large;
 		}
-		div.background {
-			padding-top: 14px;
+
+		.inner > p {
+			margin-top: 1.2rem;
+			font-size: medium;
+		}
+
+		.background {
+			border-radius: 0;
+		}
+
+		.scroll-down-prompt {
+			bottom: 1rem;
+		}
+
+		.contact-links {
+			max-width: 100%;
+			gap: 1rem;
 		}
 	}
 </style>
