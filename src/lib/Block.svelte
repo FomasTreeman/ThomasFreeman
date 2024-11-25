@@ -183,10 +183,6 @@
 	}
 
 	@media (max-width: 768px) {
-		article {
-			margin-right: 1rem;
-			margin-left: 1rem;
-		}
 
 		.hobbies {
 			grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
