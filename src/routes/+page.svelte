@@ -58,6 +58,10 @@
 		scroll-margin: 0px;
 	}
 
+	section#readmes {
+		scroll-margin: 100px;
+	}
+
 	.no-max-height {
 		height: auto;
 	}
@@ -77,6 +81,21 @@
 		}
 		:global(p) {
 			font-size: 1.5rem;
+		}
+	}
+
+	@media (max-width: 768px) {
+		section#project {
+			padding-block: 1.5rem;
+		}
+
+		section#readmes {
+			scroll-margin: 40px;		
+		}
+
+		section#about {
+			height: calc(100vh - 4rem);
+			scroll-margin: -30px;		
 		}
 	}
 </style>

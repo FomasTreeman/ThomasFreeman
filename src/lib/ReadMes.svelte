@@ -112,4 +112,11 @@
 			opacity: 1;
 		}
 	}
+
+	@media (max-width: 768px) {
+		.grid {
+			gap: 0;
+			margin-bottom: 1.5rem;
+		}
+	}
 </style>

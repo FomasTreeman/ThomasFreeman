@@ -41,7 +41,6 @@
 		if (!href) return;
 		const indexOfHash = href.indexOf('#') + 1;
 		const indexOfHashHome = windowHref.indexOf('#') + 1;
-		console.log(href.slice(0, indexOfHash), window.location.href);
 		if (href.slice(0, indexOfHash) === windowHref.slice(0, indexOfHashHome)) {
 			scrollToElement(event, href.substring(indexOfHash));
 		}
@@ -94,6 +93,9 @@
 		<li>
 			<a data-index="0" href={`${BASE_URL}/#readmes`} on:click={adjustIndicator}> Projects </a>
 		</li>
+		<li>
+			<a href={`/game`} on:click={adjustIndicator}> Play </a>
+		</li>
 		<div class="indicator" />
 	</ul>
 </nav>
@@ -141,5 +143,16 @@
 		display: none;
 		z-index: -1;
 		translate: -1.3rem;
+	}
+
+	@media (max-width: 768px) {
+		ul {
+			gap: 0;
+		}
+
+		nav {
+			top: auto;
+			bottom: 0;
+		}
 	}
 </style>

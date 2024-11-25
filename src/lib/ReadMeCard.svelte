@@ -69,7 +69,7 @@
 		font-size: 2.5rem;
 		visibility: hidden;
 		opacity: 0;
-		transition: all .3s ease;
+		transition: all 0.3s ease;
 		color: white;
 	}
 
@@ -87,8 +87,7 @@
 		100% {
 			transform: translateY(0); /* Move to the original position */
 		}
-	}	
-
+	}
 
 	article:hover footer h3 {
 		visibility: hidden;
@@ -119,5 +118,20 @@
 	article footer p {
 		margin-bottom: 0;
 		font-size: 1rem !important;
+	}
+
+	@media (max-width: 768px) {
+		article {
+			scale: 0.9;
+		}
+
+		article .img-container {
+			height: 150px;
+		}
+
+		article .img-container img {
+			width: 100%;
+			height: 100%;
+		}
 	}
 </style>
