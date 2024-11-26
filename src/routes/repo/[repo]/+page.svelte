@@ -98,7 +98,7 @@
 	@media (max-width: 768px) {
 		main.wrapper {
 			margin-inline: 0rem;
-			margin-top: 5.7rem;
+			margin-top: 0;
 			margin-bottom: 2rem;
 			padding: 2rem;
 		}

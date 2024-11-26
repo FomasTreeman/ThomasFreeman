@@ -112,7 +112,8 @@
 	}
 
 	article hr {
-		opacity: 0.4;
+		opacity: 0.5;
+		border: 1px solid white;
 	}
 
 	article footer p {

@@ -63,7 +63,7 @@
 		max-width: max-content;
 		padding-block: 1rem;
 		padding-inline: 2rem;
-		background-color: blue;
+		background: blue;
 		mix-blend-mode: luminosity;
 		border-radius: 1000px;
 		/* box-shadow: 2px 1px 100px 59px rgba(77, 77, 77, 0.53);
@@ -117,6 +117,14 @@
 		.grid {
 			gap: 0;
 			margin-bottom: 1.5rem;
+		}
+	}
+
+	@supports (-webkit-appearance: none) {
+		h2.title {
+			mix-blend-mode: normal;
+			background: rgba(1, 1, 1, 0.6);
+			backdrop-filter: blur(20px) saturate(1.7);
 		}
 	}
 </style>

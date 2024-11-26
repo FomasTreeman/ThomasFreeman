@@ -199,7 +199,7 @@
 
 	div.background {
 		mix-blend-mode: luminosity;
-		background-color: blue;
+		background: blue;
 		position: absolute;
 		height: 100%;
 		width: 100%;
@@ -311,6 +311,14 @@
 		.contact-links {
 			max-width: 100%;
 			gap: 1rem;
+		}
+	}
+
+	@supports (-webkit-appearance: none) {
+		.isolate .background {
+			mix-blend-mode: normal;
+			background: rgba(1, 1, 1, 0.6);
+			backdrop-filter: blur(20px) saturate(1.7);
 		}
 	}
 </style>

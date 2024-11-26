@@ -51,4 +51,12 @@
 			margin-bottom: 5.6rem;
 		}
 	}
+
+	@supports (-webkit-appearance: none) {
+		footer .background {
+			mix-blend-mode: normal;
+			background: rgba(1, 1, 1, 0.6);
+			backdrop-filter: blur(20px) saturate(1.7);
+		}
+	}
 </style>
