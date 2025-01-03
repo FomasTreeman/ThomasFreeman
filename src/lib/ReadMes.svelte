@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ReadMeCard from './ReadMeCard.svelte';
 	import type { Data } from '$lib/types';
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount } from 'svelte';
 
 	export let data: Data;
 
@@ -43,14 +43,7 @@
 	{:then repos}
 		<section class="grid">
 			{#each repos as repo, index}
-				<!-- <Saos
-					animation={'slide-in 1s cubic-bezier(0.35, 0.5, 0.65, 0.95) both'}
-					top={250}
-					bottom={250}
-					once
-				> -->
 				<ReadMeCard {repo} {index} gradientCenter={gradients[repo.name]} />
-				<!-- </Saos> -->
 			{/each}
 		</section>
 	{/await}
@@ -66,10 +59,6 @@
 		background: blue;
 		mix-blend-mode: luminosity;
 		border-radius: 1000px;
-		/* box-shadow: 2px 1px 100px 59px rgba(77, 77, 77, 0.53);
-		-webkit-box-shadow: 2px 1px 100px 59px rgba(77, 77, 77, 0.53);
-		-moz-box-shadow: 2px 1px 100px 59px rgba(77, 77, 77, 0.53); */
-		/* border: 0.5rem solid var(--color); */
 	}
 
 	.grid {

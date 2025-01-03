@@ -52,6 +52,7 @@
 		background-color: var(--background-color);
 		position: relative; /* Ensure positioning for overlap */
 		z-index: 1; /* Ensure articles stack correctly */
+		height: calc(100% - 3rem);
 	}
 
 	article .img-container {

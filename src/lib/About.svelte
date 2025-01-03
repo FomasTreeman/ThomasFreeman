@@ -230,7 +230,7 @@
 	}
 
 	.inner > p {
-		margin-top: 1.5rem;
+		margin-top: 1.2rem;
 		font-weight: 500;
 		/* padding: calc(var(--margin-left) / 2); */
 		opacity: 0.9;
@@ -296,7 +296,6 @@
 		}
 
 		.inner > p {
-			margin-top: 1.2rem;
 			font-size: medium;
 		}
 

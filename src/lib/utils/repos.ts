@@ -1,20 +1,23 @@
 import type { IPinnedData } from '$lib/types.js';
 
 const PINNED: { [key: string]: IPinnedData } = {
-    'Trade-o-matic': {
+    'DID': {
+		summary: 'A decentralized identity service using blockchain technology.',
+		stack: ['Go'],
+		description: 'The service enables the creation and management of DIDs, storing them in a blockchain structure. It primarily explores the advantages and disadvantages of PoW, PoS, and ZKP. Additionally, it pairs with Kubernetes to simulate more realistic performance.'
+	},
+	'Trade-o-matic': {
         summary: 'A trading bot testing different strategies across various markets',
         stack: ['Java'],
-        description: 'A trading bot in Java testing different strategies across various markets. The bot uses a variety of indicators to make decisions, such as moving averages, RSI, and MACD. The bot is designed to be modular, allowing for easy integration of new strategies and indicators. The bot is currently in development and is not yet ready for production use.'
+        description: 'A trading bot in Java testing different strategies across various markets. The bot uses a variety of indicators to make decisions, such as moving averages, RSI, and MACD.'
     },
     'Comms': {
         production: 'https://comm-a.vercel.app/',
-        imageExt: '.webp',
         summary: 'My quick rough messaging app for testing new frameworks',
         stack: ['react', 'supabase'],
         description: 'A messaging app using react, (version 2) the current feature in development is introducing Supabases DB and login/auth tools. where originally there wasnt session management'
     },
     'Rich_System_Site': {
-        imageExt: '.webp',
         summary: 'A betting bot dashboard',
         stack: ['Node.js', 'Docker', 'Cypress', 'PM2', 'Svelte', 'shell'],
         description: `<h2>🤖  __My automated betting bot  📈 </h2>
@@ -64,20 +67,17 @@ const PINNED: { [key: string]: IPinnedData } = {
 	</p>`
     },
     'KodiTV': {
-        imageExt: '.webp',
         summary: 'My kodi auto-play plugin',
         stack: ['python'],
         description: 'A Kodi plug-in. A program that automatically recorded TV show episodes you were watching to create a queue for things to watch next. Also using Alexa skills to stop, start and skip.'
 
     },
     'home-page': {
-        imageExt: '.webp',
         summary: 'My responsive home page for chrome',
         stack: ['Svelte-Kit'],
         description: 'A new Chrome extension for power users. Faster access to your GitHub repos. Integrating my progress tracker, with a shortcut for the projects status Customise and save notes with the sticky note feature and fun widgets like BTC and ETH prices, an age widget, and a clock.Currently building a Rust LLM chatbot to replace my current phind.com hotline.'
     },
     'boids': {
-        imageExt: '.webp',
         summary: "My BOID's simulation",
         stack: ['python'],
         description: 'This is a simulation to replicate the behaviour of flocks of birds. It follows three rules; separation, alignment, cohesion. Separation - each bird attempts to maintain even spacing among its neighbouring birds. Alignment - each bird tries to gradually follow the same vector as neighbouring birds. Cohesion - each bird ties to move towards the average position of other neighbouring birds (countering separation to create an average position).',
