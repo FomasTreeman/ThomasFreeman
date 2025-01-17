@@ -7,15 +7,15 @@
 </script>
 
 <main>
-	<section id="about">
+	<section id="home">
 		<About />
 	</section>
 
-	<section id="project">
+	<section id="about">
 		<Block />
 	</section>
 	
-	<section id="readmes" class="no-max-height">
+	<section id="projects" class="no-max-height">
 		<ReadMes {data} />
 	</section>
 </main>
@@ -48,7 +48,7 @@
 		scroll-margin: 70px;
 	}
 
-	section#project {
+	section#about {
 		height: auto;
 		position: relative;
 		margin: 0%;
@@ -58,7 +58,7 @@
 		scroll-margin: 0px;
 	}
 
-	section#readmes {
+	section#projects {
 		scroll-margin: 100px;
 	}
 
@@ -85,15 +85,15 @@
 	}
 
 	@media (max-width: 768px) {
-		section#project {
+		section#about {
 			padding-block: 1.5rem;
 		}
 
-		section#readmes {
+		section#projects {
 			scroll-margin: 40px;		
 		}
 
-		section#about {
+		section#home {
 			height: calc(100vh - 4rem);
 			scroll-margin: -30px;		
 		}

@@ -32,7 +32,7 @@ export async function load() {
                     return {
                         error: resp.status !== 200,
                         md: resp.status === 200 ? Base64.decode(json.content) : '',
-                        name: repoName,
+                        name: repoName, 
                         url: `https://github.com/FomasTreeman/${repoName}`,
                         ...PINNED[repoName],
                     };

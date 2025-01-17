@@ -1,102 +1,157 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
+	import { spring } from 'svelte/motion';
+	import { page } from '$app/stores';
 
 	let BASE_URL: string;
-	let navItems: NodeListOf<Element>;
-	let indicator: HTMLElement | null;
 	let activeIndex = 0;
+	let menuOffset = spring(2.3, {
+		stiffness: 0.1,
+		damping: 1
+	});
 
-	function scrollToElement(event: MouseEvent, elementId: string) {
+	let homeItems = [
+		{ id: 'home', text: 'Home' },
+		{ id: 'about', text: 'About' },
+		{ id: 'projects', text: 'Projects' }
+	];
+
+	let lastWheelTime = 0;
+	let observer: IntersectionObserver;
+
+	function scrollMenu(direction: 'up' | 'down') {
+		const newIndex = direction === 'up' ? activeIndex - 1 : activeIndex + 1;
+		if (newIndex >= 0 && newIndex < homeItems.length) {
+			activeIndex = newIndex;
+			menuOffset.set(2.3 - activeIndex * 2.3);
+			scrollToElement(homeItems[newIndex].id);
+		}
+	}
+
+	function handleWheel(event: WheelEvent) {
 		event.preventDefault();
+
+		const now = Date.now();
+		const timeSinceLastWheel = now - lastWheelTime;
+		if (timeSinceLastWheel < 125) return;
+
+		lastWheelTime = now;
+
+		if (event.deltaY > 50 && activeIndex < homeItems.length - 1) {
+			scrollMenu('down');
+		} else if (event.deltaY < -50 && activeIndex > 0) {
+			scrollMenu('up');
+		}
+	}
+
+	function scrollToElement(elementId: string) {
 		const element = document.getElementById(elementId);
 		if (element) {
 			element.scrollIntoView({ behavior: 'smooth' });
 		}
 	}
 
-	function setIndicatorPosition(index: number) {
-		const activeItem = navItems[index];
-		const itemRect = activeItem.getBoundingClientRect();
-		const navRect = activeItem.parentElement?.parentElement?.getBoundingClientRect() || { left: 0 };
-		const itemLeft = itemRect.left - navRect.left;
-
-		const itemWidth = itemRect.width;
-
-		if (indicator !== null) {
-			indicator.style.width = `${itemWidth}px`;
-			indicator.style.left = `${itemLeft}px`;
-			indicator.style.display = `block`;
-		}
-	}
-
-	function adjustIndicator(event: MouseEvent) {
-		const item = event.currentTarget as HTMLAnchorElement;
-		navItems.forEach((nav) => nav.classList.remove('active'));
-		item.classList.add('active');
-		const index = Array.from(navItems).indexOf(item);
-		activeIndex = index; // Update the active index
-		setIndicatorPosition(index);
-		const href = item.href;
-		const windowHref = window.location.href;
-		if (!href) return;
-		const indexOfHash = href.indexOf('#') + 1;
-		const indexOfHashHome = windowHref.indexOf('#') + 1;
-		if (href.slice(0, indexOfHash) === windowHref.slice(0, indexOfHashHome)) {
-			scrollToElement(event, href.substring(indexOfHash));
-		}
-	}
-
 	function handleIntersection(entries: IntersectionObserverEntry[]) {
 		entries.forEach((entry) => {
+			console.log(entry)
 			if (entry.isIntersecting) {
-				const id = entry.target.getAttribute('id');
-				const navItem = Array.from(navItems).find((item) =>
-					item.getAttribute('href')?.includes(`#${id}`)
-				);
-				if (navItem) {
-					navItems.forEach((nav) => nav.classList.remove('active'));
-					navItem.classList.add('active');
-					const index = Array.from(navItems).indexOf(navItem);
-					activeIndex = index;
-					setIndicatorPosition(index);
+				const id = entry.target.id;
+				const itemIndex = homeItems.findIndex((item) => item.id === id);
+				if (itemIndex !== -1) {
+					activeIndex = itemIndex;
+					menuOffset.set(2.3 - activeIndex * 2.3);
 				}
 			}
 		});
 	}
 
-	onMount(() => {
-		navItems = document.querySelectorAll('nav li > a');
-		indicator = document.querySelector('.indicator');
-		BASE_URL = window.location.origin;
-		setIndicatorPosition(activeIndex); // Set initial position
+	function initializeObserver() {
+		if (observer) {
+			observer.disconnect();
+		}
 
-		const observer = new IntersectionObserver(handleIntersection, {
+		observer = new IntersectionObserver(handleIntersection, {
 			root: null,
-			rootMargin: '0px',
-			threshold: 0.5
+			rootMargin: '-20% 0px -20% 0px',
+			threshold: [0.1, 0.5]
 		});
 
-		document.querySelectorAll('section').forEach((section) => {
+		document.querySelectorAll('section[id]').forEach((section) => {
 			observer.observe(section);
 		});
+	}
+
+	$: if ($page.url.pathname === '/') {
+		setTimeout(initializeObserver, 100);
+	}
+
+	onMount(() => {
+		BASE_URL = window.location.origin;
+		if ($page.url.pathname === '/') {
+			initializeObserver();
+		}
 	});
+
+	onDestroy(() => {
+		if (observer) {
+			observer.disconnect();
+		}
+	});
+
+	$: {
+		menuOffset.set(2.3 - activeIndex * 2.3);
+	}
+
+	$: currentPath = $page.url.pathname;
 </script>
 
 <nav>
 	<ul>
-		<li>
-			<a data-index="0" href={`${BASE_URL}/#about`} on:click={adjustIndicator}> Home </a>
+		<li class="home-items" class:active={currentPath === '/'} on:wheel|preventDefault={handleWheel}>
+			<div class="menu-container" style="transform: translateY({$menuOffset}rem)">
+				{#each homeItems as item, i}
+					<a
+						data-index={i}
+						href={`${BASE_URL}/#${item.id}`}
+						on:click={(e) => {
+							if (
+								window.location.href.split('/')[3].includes('#') ||
+								window.location.href.split('/')[3] == '' ||
+								window.location.href.split('/').length == 3
+							) {
+								console.log('scroll')
+								e.preventDefault();
+							}
+							activeIndex = i;
+							scrollToElement(item.id);
+						}}
+						class:active={activeIndex === i}
+					>
+						{item.text}
+					</a>
+				{/each}
+			</div>
+			<button
+				class="scroll-arrow up"
+				class:hidden={activeIndex === 0}
+				on:click={() => scrollMenu('up')}
+			>
+				▲
+			</button>
+			<button
+				class="scroll-arrow down"
+				class:hidden={activeIndex === homeItems.length - 1}
+				on:click={() => scrollMenu('down')}
+			>
+				▼
+			</button>
 		</li>
-		<li>
-			<a data-index="0" href={`${BASE_URL}/#project`} on:click={adjustIndicator}> About </a>
+		<li class:active={currentPath === '/blogs'}>
+			<a href="/blogs">Blogs</a>
 		</li>
-		<li>
-			<a data-index="0" href={`${BASE_URL}/#readmes`} on:click={adjustIndicator}> Projects </a>
+		<li class:active={currentPath === '/game'}>
+			<a href={`/game`}> Play </a>
 		</li>
-		<li>
-			<a href={`/game`} on:click={adjustIndicator}> Play </a>
-		</li>
-		<div class="indicator" />
 	</ul>
 </nav>
 
@@ -128,28 +183,101 @@
 		padding-block: 0.4rem;
 		padding-inline: 1.3rem;
 		border-radius: 1000px;
+		transition: background-color 0.3s ease;
+		width: 6ch;
+		text-align: center;
+		height: 2.3rem;
 	}
 
-	.indicator {
-		background: rgba(39, 39, 39, 0.6);
+	li:not(.home-items) {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	li.active {
+		background: rgba(255, 255, 255, 0.1);
+	}
+
+	li.home-items {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		overflow: visible;
+		cursor: ns-resize;
+	}
+
+	.menu-container {
 		position: absolute;
-		bottom: 0.7rem;
-		left: 0;
-		height: 1.5rem;
-		padding-block: 0.4rem;
-		padding-inline: 1.3rem;
-		border-radius: 1000px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0;
+		width: 100%;
+		z-index: 2;
+	}
+
+	li.home-items a {
+		height: 2.3rem;
+		width: 100%;
+		text-align: center;
+		transition: opacity 0.3s ease;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		white-space: nowrap;
+		min-width: 5ex;
+		pointer-events: all;
+		opacity: 0;
+	}
+
+	li.home-items:hover a {
+		opacity: 0.6;
+		text-shadow: 0 0 5px rgba(32, 32, 32, 0.5);
+	}
+
+	li.home-items a.active {
+		opacity: 1;
+	}
+
+	.scroll-arrow {
+		position: absolute;
+		font-size: 0.7rem;
+		opacity: 0.2;
 		transition: all 0.3s ease;
-		display: none;
-		z-index: -1;
-		translate: -1.3rem;
+		background: none;
+		border: none;
+		color: white;
+		cursor: pointer;
+		padding: 0;
+		width: 1.5rem;
+		height: 1.15rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 1;
+		right: -1.5rem;
+	}
+
+	.scroll-arrow.up {
+		top: 0.5rem;
+	}
+
+	.scroll-arrow.down {
+		top: 1.5rem;
+	}
+
+	.scroll-arrow.hidden {
+		opacity: 0;
+		pointer-events: none;
 	}
 
 	@media (max-width: 768px) {
 		ul {
 			gap: 0;
 		}
-
 		nav {
 			top: auto;
 			bottom: 0;
