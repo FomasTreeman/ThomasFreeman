@@ -1,14 +1,17 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount } from 'svelte';
 	import { spring } from 'svelte/motion';
 	import { page } from '$app/stores';
+	import ScrollObserver from './ScrollObserver.svelte';
 
 	let BASE_URL: string;
+	let lastWheelTime = 0;
 	let activeIndex = 0;
 	let menuOffset = spring(2.3, {
 		stiffness: 0.1,
 		damping: 1
 	});
+	let pauseIO = false;
 
 	let homeItems = [
 		{ id: 'home', text: 'Home' },
@@ -16,16 +19,17 @@
 		{ id: 'projects', text: 'Projects' }
 	];
 
-	let lastWheelTime = 0;
-	let observer: IntersectionObserver;
-
 	function scrollMenu(direction: 'up' | 'down') {
+		pauseIO = true;
 		const newIndex = direction === 'up' ? activeIndex - 1 : activeIndex + 1;
 		if (newIndex >= 0 && newIndex < homeItems.length) {
 			activeIndex = newIndex;
 			menuOffset.set(2.3 - activeIndex * 2.3);
 			scrollToElement(homeItems[newIndex].id);
 		}
+		setTimeout(() => {
+			pauseIO = false;
+		}, 400);
 	}
 
 	function handleWheel(event: WheelEvent) {
@@ -33,69 +37,29 @@
 
 		const now = Date.now();
 		const timeSinceLastWheel = now - lastWheelTime;
+
 		if (timeSinceLastWheel < 125) return;
 
 		lastWheelTime = now;
 
-		if (event.deltaY > 50 && activeIndex < homeItems.length - 1) {
-			scrollMenu('down');
-		} else if (event.deltaY < -50 && activeIndex > 0) {
-			scrollMenu('up');
+		if (Math.abs(event.deltaY) > 50) {
+			if (event.deltaY > 0 && activeIndex < homeItems.length - 1) {
+				scrollMenu('down');
+			} else if (event.deltaY < 0 && activeIndex > 0) {
+				scrollMenu('up');
+			}
 		}
 	}
 
-	function scrollToElement(elementId: string) {
-		const element = document.getElementById(elementId);
+	function scrollToElement(id: string) {
+		const element = document.getElementById(id);
 		if (element) {
 			element.scrollIntoView({ behavior: 'smooth' });
 		}
 	}
 
-	function handleIntersection(entries: IntersectionObserverEntry[]) {
-		entries.forEach((entry) => {
-			console.log(entry)
-			if (entry.isIntersecting) {
-				const id = entry.target.id;
-				const itemIndex = homeItems.findIndex((item) => item.id === id);
-				if (itemIndex !== -1) {
-					activeIndex = itemIndex;
-					menuOffset.set(2.3 - activeIndex * 2.3);
-				}
-			}
-		});
-	}
-
-	function initializeObserver() {
-		if (observer) {
-			observer.disconnect();
-		}
-
-		observer = new IntersectionObserver(handleIntersection, {
-			root: null,
-			rootMargin: '-20% 0px -20% 0px',
-			threshold: [0.1, 0.5]
-		});
-
-		document.querySelectorAll('section[id]').forEach((section) => {
-			observer.observe(section);
-		});
-	}
-
-	$: if ($page.url.pathname === '/') {
-		setTimeout(initializeObserver, 100);
-	}
-
 	onMount(() => {
 		BASE_URL = window.location.origin;
-		if ($page.url.pathname === '/') {
-			initializeObserver();
-		}
-	});
-
-	onDestroy(() => {
-		if (observer) {
-			observer.disconnect();
-		}
 	});
 
 	$: {
@@ -103,6 +67,11 @@
 	}
 
 	$: currentPath = $page.url.pathname;
+
+	function updateActiveIndex(index: number) {
+		activeIndex = index;
+	}
+	
 </script>
 
 <nav>
@@ -119,11 +88,14 @@
 								window.location.href.split('/')[3] == '' ||
 								window.location.href.split('/').length == 3
 							) {
-								console.log('scroll')
 								e.preventDefault();
 							}
+							pauseIO = true;
 							activeIndex = i;
 							scrollToElement(item.id);
+							setTimeout(() => {
+								pauseIO = false;
+							}, 400);
 						}}
 						class:active={activeIndex === i}
 					>
@@ -131,20 +103,10 @@
 					</a>
 				{/each}
 			</div>
-			<button
-				class="scroll-arrow up"
-				class:hidden={activeIndex === 0}
-				on:click={() => scrollMenu('up')}
-			>
-				▲
-			</button>
-			<button
-				class="scroll-arrow down"
-				class:hidden={activeIndex === homeItems.length - 1}
-				on:click={() => scrollMenu('down')}
-			>
-				▼
-			</button>
+			{#if currentPath === '/'}
+				<button class="scroll-arrow up" on:click={() => scrollMenu('up')} title="Scroll Up" class:hidden={activeIndex === 0}>▲</button>
+				<button class="scroll-arrow down" on:click={() => scrollMenu('down')} title="Scroll Down" class:hidden={activeIndex === homeItems.length - 1}>▼</button>
+			{/if}
 		</li>
 		<li class:active={currentPath === '/blogs'}>
 			<a href="/blogs">Blogs</a>
@@ -154,6 +116,10 @@
 		</li>
 	</ul>
 </nav>
+
+{#if currentPath === '/'}
+	<ScrollObserver onSectionChange={updateActiveIndex} pauseIO={pauseIO} />
+{/if}
 
 <style>
 	nav {
