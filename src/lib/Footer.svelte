@@ -48,7 +48,7 @@
 		footer {
 			width: calc(100% - 4rem);
 			margin: 0;
-			margin-bottom: 5.6rem;
+			margin-bottom: 6.5rem;
 		}
 	}
 

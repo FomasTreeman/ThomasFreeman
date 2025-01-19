@@ -123,10 +123,6 @@
 	}
 
 	@media (max-width: 768px) {
-		article {
-			scale: 0.9;
-		}
-
 		article .img-container {
 			height: 150px;
 		}

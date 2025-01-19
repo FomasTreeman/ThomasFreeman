@@ -18,7 +18,7 @@
 		"@fontsource-variable/jetbrains-mono": "^5.0.9",
 		"@playwright/test": "^1.28.1",
 		"@sveltejs/adapter-auto": "^2.0.0",
-		"@sveltejs/kit": "^1.20.4",
+		"@sveltejs/kit": "^1.30.4",
 		"@types/three": "^0.155.0",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
@@ -41,6 +41,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"mdsvex": "^0.12.3",
 		"svelte-cubed": "^0.2.1"
 	}
 }

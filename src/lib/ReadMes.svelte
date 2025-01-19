@@ -78,7 +78,7 @@
 		}
 	}
 
-	@media only screen and (max-width: 1000px) {
+	@media only screen and (max-width: 768px) {
 		.grid {
 			margin: 0px;
 			margin-bottom: 5rem;
@@ -113,7 +113,7 @@
 
 	@media (max-width: 768px) {
 		.grid {
-			gap: 0;
+			gap: 25px;
 			margin-bottom: 1.5rem;
 		}
 	}
