@@ -208,6 +208,11 @@
 
 	.isolate {
 		position: relative;
+		width: 100%;
+
+		@media (min-width: 769px) {
+			width: fit-content
+		}
 	}
 
 	.inner {

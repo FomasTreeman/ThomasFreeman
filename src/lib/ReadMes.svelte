@@ -72,10 +72,19 @@
 	@media only screen and (max-width: 1000px) {
 		.grid {
 			grid-template-columns: 1fr;
+			margin-top: 0px;
+			margin-inline: var(--margin-left);
+			margin-bottom: 5rem;
+		}
+	}
+
+	@media only screen and (max-width: 1000px) {
+		.grid {
 			margin: 0px;
 			margin-bottom: 5rem;
 		}
 	}
+
 	.center {
 		display: flex;
 		justify-content: center;
