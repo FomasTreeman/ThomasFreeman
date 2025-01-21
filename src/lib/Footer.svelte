@@ -27,8 +27,9 @@
 		padding: 2rem;
 		text-align: center;
 		font-size: large;
-		width: calc(100% - 14rem);
+		width: calc(100% - (var(--margin-left) * 2));
 		margin-bottom: 1.5rem;
+		box-sizing: border-box;
 	}
 	footer :not(h3) {
 		font-family: 'JetBrains Mono Variable';
@@ -46,7 +47,7 @@
 
 	@media (max-width: 768px) {
 		footer {
-			width: calc(100% - 4rem);
+			width: 100%;
 			margin: 0;
 			margin-bottom: 6.5rem;
 		}

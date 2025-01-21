@@ -21,7 +21,7 @@
 		<div class="background" />
 		<div class="inner">
 			<h1>Hi, I'm Tom Freeman 🖖</h1>
-			<h2>A Full Stack Developer</h2>
+			<h2 class="about--role">A Full Stack Developer</h2>
 			<p>I'm 23 years old with a passion for creating beautiful and efficient applications.</p>
 			<a href="/Tom_Freeman.pdf" download class="tracer-border">
 				<svg
@@ -108,6 +108,12 @@
 </div>
 
 <style>
+	@media (min-width: 1440px) {
+		.about--role {
+			font-size: 2rem;
+		}
+	}
+
 	.tracer-border {
 		padding: 7px 15px;
 		margin: 0px;
@@ -211,7 +217,7 @@
 		width: 100%;
 
 		@media (min-width: 769px) {
-			width: fit-content
+			width: fit-content;
 		}
 	}
 

@@ -21,6 +21,33 @@
 	--secondary-color2: rgba(72.073, 189.936, 255, 1);
 	--link-color: #646cff;
 	--link-color-hover: #535bf2;
+	--margin-left: 5rem;
+	--icon-width: 4rem;
+	--icon-margin: 2rem;
+	/* 22 is number of imgs */
+	/* breaks at 900px width */
+	/* --stack-width: calc(100vw - 110vw + 22 * var(--img-width)); */
+	--stack-width: calc(22 * (var(--icon-width) + var(--icon-margin)));
+
+	@media (min-width: 1440px) {
+		--margin-left: 8rem;
+
+		h1 {
+			font-size: 4.5rem;
+		}
+
+		h2 {
+			font-size: 3rem;
+		}
+
+		h3 {
+			font-size: 2.5rem;
+		}
+
+		p {
+			font-size: 1.5rem;
+		}
+	}
 }
 
 ƒ h1,
@@ -41,10 +68,7 @@ a {
 body {
 	min-width: 320px;
 	margin: 0%;
-
-	@media (max-width: 768px) {
-		width: calc(100% + 10px);
-	}
+	width: 100vw;
 }
 
 button {

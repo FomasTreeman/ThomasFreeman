@@ -31,6 +31,11 @@
     margin-bottom: 20px;
     margin-inline: var(--margin-left);
     margin-top: 6.5rem;
+
+    @media (max-width: 768px) {
+      margin-inline: 0;
+      margin-top: 1.5rem;
+    }
   }
   .blog-card {
     display: flex;
@@ -68,7 +73,7 @@
     z-index: 1;
   }
   .blog-title {
-    font-size: 1.5em;
+    font-size: 2em;
     font-weight: bold;
     color: white;
   }

@@ -2,6 +2,7 @@
 	import About from '../lib/About.svelte';
 	import Block from '../lib/Block.svelte';
 	import ReadMes from '../lib/ReadMes.svelte';
+	import Footer from '../lib/Footer.svelte';
 
 	export let data;
 </script>
@@ -14,16 +15,15 @@
 	<section id="about">
 		<Block />
 	</section>
-	
+
 	<section id="projects" class="no-max-height">
 		<ReadMes {data} />
 	</section>
 </main>
 
+<Footer />
+
 <style>
-	:global(:root) {
-		--margin-left: 5rem;
-	}
 	:global(h1) {
 		font-size: 3.5rem;
 	}
@@ -66,36 +66,18 @@
 		height: auto;
 	}
 
-	@media (min-width: 1440px) {
-		:global(:root) {
-			--margin-left: 8rem;
-		}
-		:global(h1) {
-			font-size: 4.5rem !important;
-		}
-		:global(h2) {
-			font-size: 3rem !important;
-		}
-		:global(h3) {
-			font-size: 2.5rem;
-		}
-		:global(p) {
-			font-size: 1.5rem;
-		}
-	}
-
 	@media (max-width: 768px) {
 		section#about {
 			padding-block: 1.5rem;
 		}
 
 		section#projects {
-			scroll-margin: 40px;		
+			scroll-margin: 40px;
 		}
 
 		section#home {
 			height: calc(100vh - 4rem);
-			scroll-margin: -30px;		
+			scroll-margin: -30px;
 		}
 	}
 </style>
