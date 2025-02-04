@@ -45,11 +45,14 @@ scene.add(hemisphereLight);
 let renderer: THREE.WebGLRenderer;
 let camera: THREE.PerspectiveCamera;
 let controls: OrbitControls;
+let animationFrameId: number;
 
 const animate = () => {
-    requestAnimationFrame(animate);
-    controls.update();
-    renderer.render(scene, camera);
+    animationFrameId = requestAnimationFrame(animate);
+    if (controls && renderer && camera) {
+        controls.update();
+        renderer.render(scene, camera);
+    }
 };
 
 const resize = (width: number, height: number) => {
@@ -60,7 +63,20 @@ const resize = (width: number, height: number) => {
 
 };
 
+const cleanup = () => {
+    if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+    }
+    if (renderer) {
+        renderer.dispose();
+    }
+    if (controls) {
+        controls.dispose();
+    }
+};
+
 export const createScene = (el: HTMLElement, width: number, height: number) => {
+    cleanup();
     renderer = new THREE.WebGLRenderer({ antialias: true, canvas: el, alpha: true });
 
     camera = new THREE.PerspectiveCamera(28, width / height, 1, 50);

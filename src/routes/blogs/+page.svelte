@@ -84,4 +84,10 @@
   .blog-description {
     margin-top: 10px;
   }
+
+  @media (min-width: 1440px) {
+    h2 {
+      font-size: 2.1rem;
+    }
+  }
 </style>
