@@ -5,8 +5,7 @@
 	import Background from '$lib/Background.svelte';
 	import Header from '../lib/Header.svelte';
 
-	// Hide background on play page to avoid visual interference with the game
-	$: hideBackground = $page.route.id === '/play';
+	$: hideBackground = $page.route.id === '/play' || $page.route.id === '/leaderboard';
 </script>
 
 {#if !hideBackground}

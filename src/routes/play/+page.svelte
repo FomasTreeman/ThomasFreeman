@@ -21,8 +21,13 @@
     currentPizza: { ingredients: [] } as Pizza,
     gameRunning: true,
     gameStarted: false,
-    isPaused: false
+    isPaused: false,
+    showNameInput: false,
+    isSubmittingScore: false
   };
+
+  let playerName = '';
+  let nameInputError = '';
 
   // Reactive statements for better state management
   $: gameStatusText = gameState.isPaused ? 'PAUSED' : (gameState.gameRunning ? 'PLAYING' : 'STOPPED');
@@ -263,9 +268,54 @@
   }
 
   function endGame(): void {
-    gameState = { ...gameState, gameRunning: false, isPaused: false };
+    gameState = { ...gameState, gameRunning: false, isPaused: false, showNameInput: true };
     clearInterval(gameInterval);
     clearInterval(orderInterval);
+  }
+
+  async function submitScore() {
+    if (!playerName.trim()) {
+      nameInputError = 'Please enter your name';
+      return;
+    }
+
+    if (playerName.trim().length < 2) {
+      nameInputError = 'Name must be at least 2 characters';
+      return;
+    }
+
+    gameState = { ...gameState, isSubmittingScore: true };
+    nameInputError = '';
+
+    try {
+      const response = await fetch('/api/leaderboard', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: playerName.trim(),
+          score: gameState.score,
+          level: gameState.level
+        })
+      });
+
+      if (response.ok) {
+        gameState = { ...gameState, showNameInput: false, isSubmittingScore: false };
+        playSound('success');
+      } else {
+        nameInputError = 'Failed to submit score. Please try again.';
+        gameState = { ...gameState, isSubmittingScore: false };
+      }
+    } catch (error) {
+      console.error('Error submitting score:', error);
+      nameInputError = 'Failed to submit score. Please try again.';
+      gameState = { ...gameState, isSubmittingScore: false };
+    }
+  }
+
+  function skipLeaderboard() {
+    gameState = { ...gameState, showNameInput: false };
   }
 
   function resetGame(): void {
@@ -274,6 +324,8 @@
       gameStarted: false,
       gameRunning: false,
       isPaused: false,
+      showNameInput: false,
+      isSubmittingScore: false,
       score: 0,
       lives: 3,
       level: 1,
@@ -281,6 +333,8 @@
       activeOrders: [],
       currentPizza: { ingredients: [] }
     };
+    playerName = '';
+    nameInputError = '';
     clearInterval(gameInterval);
     clearInterval(orderInterval);
   }
@@ -330,7 +384,10 @@
     <div class="start-screen">
       <h1>🍕 Pizza Rush! 🍕</h1>
       <p>Make pizzas to match customer orders!</p>
-      <button on:click={startGame} class="start-button">Start Game</button>
+      <div class="start-buttons">
+        <button on:click={startGame} class="start-button">Start Game</button>
+        <a href="/leaderboard" class="leaderboard-link">🏆 View Leaderboard</a>
+      </div>
       <div class="instructions">
         <h3>How to Play:</h3>
         <ul>
@@ -437,13 +494,62 @@
         </div>
       </div>
 
+      <!-- Name Input Screen -->
+      {#if gameState.showNameInput}
+        <div class="game-over-overlay">
+          <div class="game-over-content name-input-content">
+            <h2>🏆 Game Over!</h2>
+            <p>Final Score: <strong>{gameState.score}</strong></p>
+            <p>Level Reached: <strong>{gameState.level}</strong></p>
+            
+            <div class="name-input-section">
+              <h3>Enter your name for the leaderboard:</h3>
+              <input 
+                type="text" 
+                bind:value={playerName}
+                placeholder="Your name..."
+                maxlength="20"
+                class="name-input"
+                class:error={nameInputError}
+                on:keydown={(e) => e.key === 'Enter' && submitScore()}
+                disabled={gameState.isSubmittingScore}
+              />
+              {#if nameInputError}
+                <p class="error-message">{nameInputError}</p>
+              {/if}
+            </div>
+
+            <div class="name-input-buttons">
+              <button 
+                on:click={submitScore} 
+                class="submit-score-button"
+                disabled={gameState.isSubmittingScore}
+              >
+                {#if gameState.isSubmittingScore}
+                  ⏳ Submitting...
+                {:else}
+                  🚀 Submit Score
+                {/if}
+              </button>
+              <button 
+                on:click={skipLeaderboard} 
+                class="skip-button"
+                disabled={gameState.isSubmittingScore}
+              >
+                Skip
+              </button>
+            </div>
+          </div>
+        </div>
+      {/if}
+
       <!-- Game Over Screen -->
-      {#if !gameState.gameRunning}
+      {#if !gameState.gameRunning && !gameState.showNameInput}
         <div class="game-over-overlay">
           <div class="game-over-content">
-            <h2>Game Over!</h2>
-            <p>Final Score: {gameState.score}</p>
-            <p>Level Reached: {gameState.level}</p>
+            <h2>Thanks for playing!</h2>
+            <p>Final Score: <strong>{gameState.score}</strong></p>
+            <p>Level Reached: <strong>{gameState.level}</strong></p>
             <button on:click={resetGame} class="restart-button">Play Again</button>
           </div>
         </div>
@@ -469,6 +575,37 @@
           <div class="confetti"></div>
           <div class="confetti"></div>
           <div class="confetti"></div>
+        </div>
+      {/if}
+
+      <!-- Leaderboard Submission -->
+      {#if gameState.showNameInput}
+        <div class="name-input-overlay">
+          <div class="name-input-content">
+            <h2>Submit Your Score</h2>
+            <p>Enter your name to submit your score to the leaderboard:</p>
+            <input 
+              type="text" 
+              bind:value={playerName} 
+              placeholder="Your Name"
+              class="name-input"
+            />
+            {#if nameInputError}
+              <div class="error-message">{nameInputError}</div>
+            {/if}
+            <div class="name-input-actions">
+              <button on:click={submitScore} class="submit-button" disabled={gameState.isSubmittingScore}>
+                {#if gameState.isSubmittingScore}
+                  <span class="loading-spinner"></span> Submitting...
+                {:else}
+                  Submit Score
+                {/if}
+              </button>
+              <button on:click={skipLeaderboard} class="skip-button">
+                Skip
+              </button>
+            </div>
+          </div>
         </div>
       {/if}
     </div>
@@ -508,6 +645,13 @@
     opacity: 0.9;
   }
 
+  .start-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    align-items: center;
+  }
+
   .start-button {
     background: linear-gradient(45deg, #ff6b6b, #ee5a24);
     color: white;
@@ -521,9 +665,27 @@
     font-weight: bold;
   }
 
+  .leaderboard-link {
+    background: linear-gradient(45deg, #ffd700, #ffb347);
+    color: #333;
+    text-decoration: none;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    font-weight: bold;
+    display: inline-block;
+  }
+
   .start-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+  }
+
+  .leaderboard-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
   }
 
   .instructions {
@@ -1072,6 +1234,16 @@
       font-size: 2rem;
     }
 
+    .start-buttons {
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .start-button, .leaderboard-link {
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+    }
+
     .game-ui {
       padding-bottom: 2rem;
     }
@@ -1165,6 +1337,30 @@
       padding: 2rem 1.5rem;
     }
 
+    .name-input-content {
+      max-width: 90%;
+    }
+
+    .name-input-section h3 {
+      font-size: 1.1rem;
+    }
+
+    .name-input {
+      font-size: 1rem;
+      padding: 0.8rem;
+    }
+
+    .name-input-buttons {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .submit-score-button, .skip-button {
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      min-width: auto;
+    }
+
     .game-over-content h2, .pause-content h2 {
       font-size: 2rem;
     }
@@ -1211,5 +1407,165 @@
       min-width: 160px;
       padding: 0.6rem;
     }
+  }
+
+  /* Name Input Overlay */
+  .name-input-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .name-input-content {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 3rem;
+    text-align: center;
+    color: white;
+    max-width: 400px;
+    width: 90%;
+  }
+
+  .name-input-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #ffd700;
+  }
+
+  .name-input-content p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+  }
+
+  .name-input-section {
+    margin: 2rem 0;
+  }
+
+  .name-input-section h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: #ffd700;
+  }
+
+  .name-input {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-family: inherit;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .name-input:focus {
+    outline: none;
+    border-color: #3498db;
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .name-input.error {
+    border-color: #e74c3c;
+    background: rgba(231, 76, 60, 0.1);
+  }
+
+  .name-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .name-input-actions {
+    margin-top: 2.5rem;
+  }
+
+  .error-message {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    text-align: center;
+  }
+
+  .name-input-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  .submit-score-button {
+    background: linear-gradient(45deg, #2ecc71, #27ae60);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    font-weight: bold;
+    min-width: 150px;
+  }
+
+  .submit-score-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
+  }
+
+  .submit-score-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .skip-button {
+    background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    font-weight: bold;
+    min-width: 100px;
+  }
+
+  .skip-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(149, 165, 166, 0.4);
+  }
+
+  .skip-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .loading-spinner {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    width: 1rem;
+    height: 1rem;
+    animation: spin 0.6s linear infinite;
+    display: inline-block;
+    margin-right: 0.5rem;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
 </style>
