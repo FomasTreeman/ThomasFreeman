@@ -617,6 +617,7 @@
     min-height: 100vh;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     padding: 2rem;
+    padding-bottom: 4rem;
     font-family: 'JetBrains Mono Variable', monospace;
     overflow-y: auto;
     position: relative;
