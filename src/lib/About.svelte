@@ -9,6 +9,15 @@
 			shouldPromptScroll = true;
 		}, 2000);
 	});
+
+	const birthDate = new Date('2001-04-13T00:00:00Z');
+	const now = new Date();
+	let minutesOld = Math.floor((now.getTime() - birthDate.getTime()) / (1000 * 60));
+
+	setInterval(() => {
+		const now = new Date();
+		minutesOld = Math.floor((now.getTime() - birthDate.getTime()) / (1000 * 60));
+	}, 60000);
 </script>
 
 <div class="model-wrapper">
@@ -22,7 +31,7 @@
 		<div class="inner">
 			<h1>Hi, I'm Tom Freeman 🖖</h1>
 			<h2 class="about--role">A Full Stack Developer</h2>
-			<p>I'm 23 years old with a passion for creating beautiful and efficient applications.</p>
+			<p>I'm {minutesOld} minutes old with a passion for creating beautiful and efficient applications.</p>
 			<a href="/Tom_Freeman.pdf" download class="tracer-border">
 				<svg
 					stroke="currentColor"

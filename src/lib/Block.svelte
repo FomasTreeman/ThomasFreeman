@@ -5,6 +5,7 @@
 	const hobbies = [
 		{ icon: '🏀', title: 'Basketball', color: '#f87171' },
 		{ icon: '🤖', title: 'AI/ML', color: '#818cf8' },
+		{ icon: '💰', title: 'Crypto', color: '#fbbf24' },
 		{ icon: '🏠', title: 'Home Automation', color: '#34d399' },
 		{ icon: '🖨️', title: '3D printing', color: '#f472b6' },
 		{ icon: '📽️', title: 'Cinema', color: '#fbbf24' },
@@ -18,8 +19,16 @@
 		<span class="code-comment">//</span> Experience
 	</h3>
 	<ol class="experience-list">
-		<li class="fac glass-card">FAC <span>- 10 months</span></li>
-		<li class="rubber-cheese glass-card">Rubber Cheese <span>- 16 months</span></li>
+		<li class="fac glass-card">
+			FAC <span>- 10 months</span>
+		</li>
+		<li class="rubber-cheese glass-card">
+			Rubber Cheese <span
+				>- {Math.floor(new Date().getFullYear() * 12 + new Date().getMonth() - (2023 * 12 + 8))} months
+				- present</span
+			>
+		</li>
+		<li class="bsv glass-card">BSV (Open Source) - present</li>
 	</ol>
 
 	<br />
@@ -28,13 +37,12 @@
 		<span class="code-comment">//</span> Skills
 	</h3>
 	<ul class="skills-list">
-		<li class="glass-pill">🚀 JS</li>
-		<li class="glass-pill">⚡ Svelte</li>
-		<li class="glass-pill">⚛️ React/Next.js</li>
+		<li class="glass-pill">🚀 TS</li>
+		<li class="glass-pill">⚛️ Svelte/Next.js</li>
 		<li class="glass-pill">🎯 C#</li>
 		<li class="glass-pill">🐘 PHP/Laravel</li>
 		<li class="glass-pill">🐳 Docker</li>
-		<li class="glass-pill">💻 Bash</li>
+		<li class="glass-pill">💻 Bash/Linux</li>
 		<li class="glass-pill">📝 Vim</li>
 		<li class="glass-pill">🎨 Figma</li>
 		<li class="glass-pill">🐍 Python</li>
@@ -57,19 +65,23 @@
 <Divider flipped={true} />
 
 <style>
+	/* ===== CSS CUSTOM PROPERTIES ===== */
 	:root {
 		--primary-bg: #0f172a;
 		--glass-bg: rgba(255, 255, 255, 0.1);
-		--accent-0: #024A9B;
+		--accent-0: #024a9b;
 		--accent-1: #0279ff;
 		--accent-2: #ff8b00;
 		--accent-3: #f9dc02;
 		--text: #e2e8f0;
 	}
+
+	/* ===== LAYOUT ===== */
 	article {
 		padding: 2rem;
 	}
 
+	/* ===== TYPOGRAPHY ===== */
 	h3 {
 		font-family: 'JetBrains Mono Variable', monospace;
 		font-size: 1.5rem;
@@ -82,11 +94,29 @@
 		font-weight: bold;
 	}
 
+	/* ===== GLASS COMPONENTS ===== */
 	.glass-card {
 		background: var(--glass-bg);
 		backdrop-filter: blur(8px);
 		border-radius: 1rem;
 		padding: 1rem;
+		position: relative;
+	}
+
+	.glass-card:before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		opacity: 0;
+		transition: opacity 1s ease;
+		z-index: -1;
+	}
+
+	.glass-card:hover:before {
+		opacity: 1;
 	}
 
 	.glass-pill {
@@ -102,14 +132,7 @@
 		transform: scale(1.05);
 	}
 
-	.skills-list {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 1rem;
-		list-style-type: none;
-		padding-left: 0;
-	}
-
+	/* ===== EXPERIENCE SECTION ===== */
 	.experience-list {
 		display: flex;
 		width: 100%;
@@ -119,30 +142,10 @@
 	}
 
 	.fac {
-		position: relative; /* Enable positioning for pseudo-elements */
-		width: 37.5%;
-		background: linear-gradient(135deg, var(--glass-bg), transparent);
-		overflow: hidden; /* Ensure that pseudo-elements stay within bounds */
-	}
-
-	.rubber-cheese {
 		position: relative;
-		width: 60.5%;
+		width: 27.5%;
 		background: linear-gradient(135deg, var(--glass-bg), transparent);
 		overflow: hidden;
-	}
-
-	.fac:before,
-	.rubber-cheese:before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		opacity: 0;
-		z-index: 1; /* Place it above the background */
-		transition: opacity 1s ease; /* Transition background color */
 	}
 
 	.fac:before {
@@ -152,7 +155,14 @@
 			transparent,
 			var(--accent-2),
 			var(--accent-3)
-		); /* Color on hover */
+		);
+	}
+
+	.rubber-cheese {
+		position: relative;
+		width: 50.5%;
+		background: linear-gradient(135deg, var(--glass-bg), transparent);
+		overflow: hidden;
 	}
 
 	.rubber-cheese:before {
@@ -162,14 +172,36 @@
 			transparent,
 			var(--accent-0),
 			var(--accent-1)
-		); /* Color on hover */
+		);
 	}
 
-	.fac:hover:before,
-	.rubber-cheese:hover:before {
-		opacity: 1;
+	.bsv {
+		position: relative;
+		width: 20%;
+		background: linear-gradient(135deg, var(--glass-bg), transparent);
+		overflow: hidden;
 	}
 
+	.bsv:before {
+		background: linear-gradient(
+			135deg,
+			transparent,
+			transparent,
+			var(--accent-2),
+			var(--accent-1)
+		);
+	}
+
+	/* ===== SKILLS SECTION ===== */
+	.skills-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		list-style-type: none;
+		padding-left: 0;
+	}
+
+	/* ===== HOBBIES SECTION ===== */
 	.hobbies-container {
 		padding: 1rem 0;
 	}
@@ -182,8 +214,8 @@
 		padding: 0;
 	}
 
+	/* ===== MEDIA QUERIES ===== */
 	@media (max-width: 768px) {
-
 		.hobbies {
 			grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 			gap: 1rem;
@@ -196,9 +228,8 @@
 			gap: 1rem;
 		}
 
-		.fac,
-		.rubber-cheese {
-			width: 100%;
+		.glass-card {
+			width: auto;
 		}
 	}
 </style>
