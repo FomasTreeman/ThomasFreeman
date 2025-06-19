@@ -52,7 +52,7 @@
 				<p>Resume</p>
 			</a>
 			<div class="contact-links">
-				<a href="https://fac-portfolio.vercel.app/">
+				<a href="https://www.foundersandcoders.com/">
 					<img loading="lazy" src="/contact/fac.webp" alt="FAC" />
 				</a>
 				<a href="https://github.com/FomasTreeman">
