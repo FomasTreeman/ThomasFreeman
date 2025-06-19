@@ -108,11 +108,11 @@
 				<button class="scroll-arrow down" on:click={() => scrollMenu('down')} title="Scroll Down" class:hidden={activeIndex === homeItems.length - 1}>▼</button>
 			{/if}
 		</li>
-		<li class:active={currentPath === '/blogs'}>
+		<!-- <li class:active={currentPath === '/blogs'}>
 			<a href="/blogs">Blogs</a>
-		</li>
+		</li> -->
 		<li class:active={currentPath === '/game'}>
-			<a href={`/game`}> Play </a>
+			<a href={`/play`}> Play </a>
 		</li>
 	</ul>
 </nav>
