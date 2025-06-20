@@ -1,10 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { gameActive } from '$lib/stores';
 
   interface Order {
     id: number;
     ingredients: string[];
     timeLeft: number;
+    originalTime: number; // Store the original time for progress bar calculation
     completed: boolean;
   }
 
@@ -43,19 +45,33 @@
   ];
 
   const ORDER_TEMPLATES = [
+    // Simple recipes (3 ingredients)
     ['dough', 'sauce', 'cheese'],
+    
+    // Medium recipes (4 ingredients)
     ['dough', 'sauce', 'cheese', 'pepperoni'],
     ['dough', 'sauce', 'cheese', 'mushrooms'],
-    ['dough', 'sauce', 'cheese', 'pepperoni', 'mushrooms'],
     ['dough', 'sauce', 'cheese', 'olives'],
     ['dough', 'sauce', 'cheese', 'peppers'],
+    
+    // Complex recipes (5 ingredients) 
+    ['dough', 'sauce', 'cheese', 'pepperoni', 'mushrooms'],
     ['dough', 'sauce', 'cheese', 'pepperoni', 'olives'],
-    ['dough', 'sauce', 'cheese', 'mushrooms', 'peppers']
+    ['dough', 'sauce', 'cheese', 'mushrooms', 'peppers'],
+    ['dough', 'sauce', 'cheese', 'olives', 'peppers'],
+    
+    // Very complex recipes (6+ ingredients)
+    ['dough', 'sauce', 'cheese', 'pepperoni', 'mushrooms', 'olives'],
+    ['dough', 'sauce', 'cheese', 'pepperoni', 'mushrooms', 'peppers'],
+    ['dough', 'sauce', 'cheese', 'mushrooms', 'olives', 'peppers'],
+    ['dough', 'sauce', 'cheese', 'pepperoni', 'olives', 'peppers']
   ];
 
   let orderIdCounter = 1;
   let gameInterval: ReturnType<typeof setInterval>;
   let orderInterval: ReturnType<typeof setInterval>;
+  let elapsedTime = 0; // Track elapsed game time for difficulty scaling
+  let audioContext: AudioContext | null = null;
 
   let celebrationEffect = false;
 
@@ -72,6 +88,9 @@
       activeOrders: [],
       currentPizza: { ingredients: [] }
     };
+    
+    elapsedTime = 0; // Reset elapsed time
+    gameActive.set(true); // Hide the navigation
 
     // Generate initial order
     generateOrder();
@@ -81,20 +100,64 @@
       updateGame();
     }, 100);
 
-    // Generate new orders periodically
+    // Start with initial order generation interval
+    startOrderGeneration();
+  }
+
+  function startOrderGeneration() {
+    // Clear existing interval if any
+    if (orderInterval) {
+      clearInterval(orderInterval);
+    }
+    
+    // Calculate dynamic spawn rate based on elapsed time and level
+    const baseInterval = 8000; // 8 seconds base
+    const timeReduction = Math.min(elapsedTime * 10, 4000); // Reduce by up to 4 seconds over time
+    const levelReduction = (gameState.level - 1) * 300; // Additional reduction per level
+    const minInterval = 2500; // Minimum 2.5 seconds between orders (cap for maximum difficulty)
+    
+    const currentInterval = Math.max(minInterval, baseInterval - timeReduction - levelReduction);
+    
     orderInterval = setInterval(() => {
       if (gameState.activeOrders.length < 3) {
         generateOrder();
       }
-    }, 8000 - (gameState.level * 500)); // Orders come faster at higher levels
+      // Restart with updated interval for continuous difficulty scaling
+      startOrderGeneration();
+    }, currentInterval);
   }
 
   function generateOrder(): void {
-    const template = ORDER_TEMPLATES[Math.floor(Math.random() * ORDER_TEMPLATES.length)];
+    // Progressive difficulty: simpler recipes early, more complex ones later
+    let availableTemplates = ORDER_TEMPLATES;
+    
+    // Filter templates based on game progression
+    if (gameState.level < 2 && elapsedTime < 30) {
+      // Early game: only simple and medium recipes
+      availableTemplates = ORDER_TEMPLATES.filter(template => template.length <= 4);
+    } else if (gameState.level < 4 && elapsedTime < 60) {
+      // Mid game: simple to complex recipes
+      availableTemplates = ORDER_TEMPLATES.filter(template => template.length <= 5);
+    }
+    // Late game: all recipes available
+    
+    const template = availableTemplates[Math.floor(Math.random() * availableTemplates.length)];
+    
+    // Variable completion time based on recipe complexity
+    const baseTime = 20; // Base time for simple recipes
+    const ingredientCount = template.length;
+    const complexityBonus = (ingredientCount - 3) * 4; // Extra time for each ingredient beyond basic 3
+    const randomVariation = Math.random() * 10; // 0-10 seconds random variation
+    const levelAdjustment = Math.max(0, 3 - gameState.level * 0.3); // Slightly less time at higher levels
+    
+    const totalTime = baseTime + complexityBonus + randomVariation + levelAdjustment;
+    const finalTime = Math.max(10, Math.min(40, totalTime)); // Minimum 10 seconds, maximum 40 seconds
+    
     const order: Order = {
       id: orderIdCounter++,
       ingredients: [...template],
-      timeLeft: 30 + (Math.random() * 20), // 30-50 seconds
+      timeLeft: finalTime,
+      originalTime: finalTime, // Store the original time for progress bar
       completed: false
     };
     
@@ -106,6 +169,9 @@
 
   function updateGame(): void {
     if (!gameState.gameRunning || gameState.isPaused) return;
+
+    // Track elapsed time for difficulty scaling (increment by 0.1 seconds)
+    elapsedTime += 0.1;
 
     // Update order timers
     let livesLost = 0;
@@ -155,35 +221,48 @@
   }
 
   function playSound(type: 'success' | 'error' | 'click') {
-    // Create audio context for sound effects
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    switch (type) {
-      case 'success':
-        oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
-        oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
-        oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
-        break;
-      case 'error':
-        oscillator.frequency.setValueAtTime(220, audioContext.currentTime); // A3
-        oscillator.frequency.setValueAtTime(196, audioContext.currentTime + 0.1); // G3
-        break;
-      case 'click':
-        oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4
-        break;
+    try {
+      // Create audio context once and reuse it
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      }
+      
+      // Resume audio context if it's suspended (required by browser policies)
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      switch (type) {
+        case 'success':
+          oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+          oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+          oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+          break;
+        case 'error':
+          oscillator.frequency.setValueAtTime(220, audioContext.currentTime); // A3
+          oscillator.frequency.setValueAtTime(196, audioContext.currentTime + 0.1); // G3
+          break;
+        case 'click':
+          oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4
+          break;
+      }
+      
+      oscillator.type = 'sine';
+      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.3);
+    } catch (error) {
+      // Silently fail if audio context creation fails
+      console.warn('Audio not available:', error);
     }
-    
-    oscillator.type = 'sine';
-    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-    
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.3);
   }
 
   function addIngredient(ingredientName: string): void {
@@ -342,6 +421,8 @@
     };
     playerName = '';
     nameInputError = '';
+    elapsedTime = 0; // Reset elapsed time
+    gameActive.set(false); // Show the navigation again
     clearInterval(gameInterval);
     clearInterval(orderInterval);
   }
@@ -379,8 +460,14 @@
 
     return () => {
       document.removeEventListener('keydown', handleKeyPress);
+      gameActive.set(false); // Ensure navigation is shown when leaving the page
       clearInterval(gameInterval);
       clearInterval(orderInterval);
+      // Clean up audio context
+      if (audioContext) {
+        audioContext.close();
+        audioContext = null;
+      }
     };
   });
 </script>
@@ -409,95 +496,99 @@
   {:else}
     <!-- Game Screen -->
     <div class="game-ui">
-      <div class="stats">
-        <div class="stat-item">Score: {gameState.score}</div>
-        <div class="stat-item">Lives: {'❤️'.repeat(gameState.lives)}</div>
-        <div class="stat-item">Level: {gameState.level}</div>
-        <div class="stat-item">Combo: {gameState.combo > 0 ? `🔥 ${gameState.combo}` : '0'}</div>
-        <div class="stat-item status-indicator" class:paused={gameState.isPaused}>
-          Status: <span class="status-text">{gameStatusText}</span>
+      <div class="game-content">
+        <div class="stats">
+          <div class="stat-item">Score: {gameState.score}</div>
+          <div class="stat-item">Lives: {'❤️'.repeat(gameState.lives)}</div>
+          <div class="stat-item">Level: {gameState.level}</div>
+          <div class="stat-item">Combo: {gameState.combo > 0 ? `🔥 ${gameState.combo}` : '0'}</div>
+          <div class="stat-item status-indicator" class:paused={gameState.isPaused}>
+            Status: <span class="status-text">{gameStatusText}</span>
+          </div>
+          <div class="stat-item">
+            {#if gameState.isPaused}
+              <button on:click={resumeGame} class="pause-play-button play">
+                ▶️ Resume
+              </button>
+            {:else}
+              <button on:click={pauseGame} class="pause-play-button pause">
+                ⏸️ Pause
+              </button>
+            {/if}
+          </div>
         </div>
-        <div class="stat-item">
-          {#if gameState.isPaused}
-            <button on:click={resumeGame} class="pause-play-button play">
-              ▶️ Resume
-            </button>
-          {:else}
-            <button on:click={pauseGame} class="pause-play-button pause">
-              ⏸️ Pause
-            </button>
-          {/if}
-        </div>
-      </div>
 
-      <!-- Active Orders -->
-      <div class="orders-section">
-        <h3>Customer Orders:</h3>
-        <div class="orders-list">
-          {#each gameState.activeOrders as order (order.id)}
-            <div class="order-card" class:completed={order.completed}>
-              <div class="order-ingredients">
-                {#each order.ingredients as ingredient}
-                  <span class="ingredient-icon">{getIngredientEmoji(ingredient)}</span>
-                {/each}
-              </div>
-              <div class="order-timer">
-                <div class="timer-bar">
+        <!-- Active Orders -->
+        <div class="orders-section">
+          <h3>Customer Orders:</h3>
+          <div class="orders-list">
+            {#each gameState.activeOrders as order (order.id)}
+              <div class="order-card" class:completed={order.completed}>
+                <div class="order-ingredients">
+                  {#each order.ingredients as ingredient}
+                    <span class="ingredient-icon">{getIngredientEmoji(ingredient)}</span>
+                  {/each}
+                </div>
+                <div class="order-timer">                <div class="timer-bar">
                   <div 
                     class="timer-fill" 
-                    style="width: {Math.max(0, (order.timeLeft / 50) * 100)}%"
+                    style="width: {Math.max(0, (order.timeLeft / order.originalTime) * 100)}%"
                   ></div>
                 </div>
-                <span class="timer-text">{Math.ceil(order.timeLeft)}s</span>
+                  <span class="timer-text">{Math.ceil(order.timeLeft)}s</span>
+                </div>
               </div>
-            </div>
-          {/each}
+            {/each}
+          </div>
         </div>
       </div>
 
-      <!-- Current Pizza -->
-      <div class="pizza-section">
-        <h3>Your Pizza:</h3>
-        <div class="current-pizza" class:celebration={celebrationEffect}>
-          {#if gameState.currentPizza.ingredients.length === 0}
-            <div class="empty-pizza">Click ingredients to start making a pizza!</div>
-          {:else}
-            <div class="pizza-ingredients">
-              {#each gameState.currentPizza.ingredients as ingredient}
-                <span class="ingredient-icon large">{getIngredientEmoji(ingredient)}</span>
-              {/each}
-            </div>
-          {/if}
+      <!-- Bottom Sticky Section -->
+      <div class="bottom-section">
+        <!-- Current Pizza -->
+        <div class="pizza-section">
+          <h3>Your Pizza:</h3>
+          <div class="current-pizza" class:celebration={celebrationEffect}>
+            {#if gameState.currentPizza.ingredients.length === 0}
+              <div class="empty-pizza">Click ingredients to start making a pizza!</div>
+            {:else}
+              <div class="pizza-ingredients">
+                {#each gameState.currentPizza.ingredients as ingredient}
+                  <span class="ingredient-icon large">{getIngredientEmoji(ingredient)}</span>
+                {/each}
+              </div>
+            {/if}
+            
+            {#if celebrationEffect}
+              <div class="celebration-text">Perfect! 🎉</div>
+            {/if}
+          </div>
           
-          {#if celebrationEffect}
-            <div class="celebration-text">Perfect! 🎉</div>
-          {/if}
-        </div>
-        
-        <div class="pizza-actions">
-          <button on:click={servePizza} class="serve-button" disabled={gameState.currentPizza.ingredients.length === 0}>
-            Serve Pizza
-          </button>
-          <button on:click={clearPizza} class="clear-button" disabled={gameState.currentPizza.ingredients.length === 0}>
-            Clear Pizza
-          </button>
-        </div>
-      </div>
-
-      <!-- Ingredients Selection -->
-      <div class="ingredients-section">
-        <h3>Ingredients:</h3>
-        <div class="ingredients-grid">
-          {#each INGREDIENTS as ingredient}
-            <button 
-              on:click={() => addIngredient(ingredient.name)}
-              class="ingredient-button"
-              class:added={gameState.currentPizza.ingredients.includes(ingredient.name)}
-            >
-              <span class="ingredient-emoji">{ingredient.emoji}</span>
-              <span class="ingredient-name">{ingredient.name}</span>
+          <div class="pizza-actions">
+            <button on:click={servePizza} class="serve-button" disabled={gameState.currentPizza.ingredients.length === 0}>
+              Serve Pizza
             </button>
-          {/each}
+            <button on:click={clearPizza} class="clear-button" disabled={gameState.currentPizza.ingredients.length === 0}>
+              Clear Pizza
+            </button>
+          </div>
+        </div>
+
+        <!-- Ingredients Selection -->
+        <div class="ingredients-section">
+          <h3>Ingredients:</h3>
+          <div class="ingredients-grid">
+            {#each INGREDIENTS as ingredient}
+              <button 
+                on:click={() => addIngredient(ingredient.name)}
+                class="ingredient-button"
+                class:added={gameState.currentPizza.ingredients.includes(ingredient.name)}
+              >
+                <span class="ingredient-emoji">{ingredient.emoji}</span>
+                <span class="ingredient-name">{ingredient.name}</span>
+              </button>
+            {/each}
+          </div>
         </div>
       </div>
 
@@ -698,8 +789,30 @@
   /* Game UI */
   .game-ui {
     max-width: 1200px;
-    margin: 4.7rem auto;
+    margin: 0 auto;
     color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .game-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    padding-bottom: 0;
+  }
+
+  .bottom-section {
+    position: sticky;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    z-index: 10;
+    border-radius: 1rem;
+    padding-bottom: 1rem;
   }
 
   @media (max-width: 768px) {
@@ -830,7 +943,7 @@
 
   /* Pizza Section */
   .pizza-section {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
   }
 
   .pizza-section h3 {
@@ -838,6 +951,11 @@
     margin-bottom: 1rem;
     color: #ffd700;
     font-size: 1.5rem;
+  }
+
+  .bottom-section .pizza-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
   }
 
   .current-pizza {
@@ -853,6 +971,12 @@
     justify-content: center;
     position: relative;
     overflow: hidden;
+  }
+
+  .bottom-section .current-pizza {
+    padding: 1rem;
+    min-height: 60px;
+    margin-bottom: 0.5rem;
   }
 
   .empty-pizza {
@@ -917,12 +1041,22 @@
     font-size: 1.5rem;
   }
 
+  .bottom-section .ingredients-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
   .ingredients-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 1rem;
     max-width: 800px;
     margin: 0 auto;
+  }
+
+  .bottom-section .ingredients-grid {
+    gap: 0.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   }
 
   .ingredient-button {
@@ -990,11 +1124,6 @@
     font-size: 2.5rem;
     margin-bottom: 1rem;
     color: #e74c3c;
-  }
-
-  .game-over-content p {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
   }
 
   .restart-button {
@@ -1220,7 +1349,15 @@
     }
 
     .game-ui {
-      padding-bottom: 2rem;
+      height: 100vh;
+    }
+
+    .game-content {
+      padding: 0.5rem;
+    }
+
+    .bottom-section {
+      padding: 0.5rem;
     }
 
     .stats {
@@ -1283,6 +1420,12 @@
       grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
       gap: 0.5rem;
       margin-bottom: 1rem;
+    }
+
+    .bottom-section .ingredients-grid {
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 0.3rem;
+      margin-bottom: 0;
     }
 
     .ingredient-button {

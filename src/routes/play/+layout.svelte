@@ -1,9 +1,7 @@
 <script lang="ts">
 	import '@fontsource-variable/jetbrains-mono';
-	import Header from '$lib/Header.svelte';
 </script>
 
-<Header />
 <slot />
 
 <style>
