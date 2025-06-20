@@ -23,13 +23,13 @@
     gameStarted: false,
     isPaused: false,
     showNameInput: false,
-    isSubmittingScore: false
+    isSubmittingScore: false,
+    scoreSubmitted: false
   };
 
   let playerName = '';
   let nameInputError = '';
 
-  // Reactive statements for better state management
   $: gameStatusText = gameState.isPaused ? 'PAUSED' : (gameState.gameRunning ? 'PLAYING' : 'STOPPED');
 
   const INGREDIENTS = [
@@ -207,7 +207,7 @@
     // Check if current pizza matches any active order
     const matchingOrder = gameState.activeOrders.find(order => 
       !order.completed && 
-      arraysEqual(order.ingredients.sort(), gameState.currentPizza.ingredients.sort())
+      arraysEqual([...order.ingredients].sort(), [...gameState.currentPizza.ingredients].sort())
     );
 
     if (matchingOrder) {
@@ -301,14 +301,20 @@
       });
 
       if (response.ok) {
-        gameState = { ...gameState, showNameInput: false, isSubmittingScore: false };
-        playSound('success');
+        const result = await response.json();
+        if (result.success) {
+          gameState = { ...gameState, showNameInput: false, isSubmittingScore: false, scoreSubmitted: true };
+          playSound('success');
+        } else {
+          nameInputError = result.error || 'Failed to submit score. Please try again.';
+          gameState = { ...gameState, isSubmittingScore: false };
+        }
       } else {
-        nameInputError = 'Failed to submit score. Please try again.';
+        const errorData = await response.json().catch(() => ({}));
+        nameInputError = errorData.error || 'Failed to submit score. Please try again.';
         gameState = { ...gameState, isSubmittingScore: false };
       }
     } catch (error) {
-      console.error('Error submitting score:', error);
       nameInputError = 'Failed to submit score. Please try again.';
       gameState = { ...gameState, isSubmittingScore: false };
     }
@@ -326,6 +332,7 @@
       isPaused: false,
       showNameInput: false,
       isSubmittingScore: false,
+      scoreSubmitted: false,
       score: 0,
       lives: 3,
       level: 1,
@@ -495,12 +502,26 @@
       </div>
 
       <!-- Game Over Screen -->
-      {#if !gameState.gameRunning && !gameState.showNameInput}
+      {#if !gameState.gameRunning && !gameState.showNameInput && !gameState.scoreSubmitted}
         <div class="game-over-overlay">
           <div class="game-over-content">
             <h2>Thanks for playing!</h2>
             <button on:click={resetGame} class="quit-button">🏠 Quit to Menu</button>
             <button on:click={resetGame} class="restart-button">Play Again</button>
+          </div>
+        </div>
+      {/if}
+
+      <!-- Score Submitted Success -->
+      {#if gameState.scoreSubmitted}
+        <div class="game-over-overlay">
+          <div class="game-over-content">
+            <h2>🎉 Score Submitted!</h2>
+            <div class="success-actions">
+              <a href="/leaderboard" class="leaderboard-button">🏆 View Leaderboard</a>
+              <button on:click={resetGame} class="restart-button">Play Again</button>
+              <button on:click={resetGame} class="quit-button">🏠 Back to Menu</button>
+            </div>
           </div>
         </div>
       {/if}
@@ -1474,5 +1495,47 @@
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+  }
+
+  .success-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+    align-items: center;
+  }
+
+  .success-actions .leaderboard-button {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    color: #2c3e50;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+  }
+
+  .success-actions .leaderboard-button:hover {
+    background: linear-gradient(135deg, #ffed4e 0%, #ffd700 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4);
+  }
+
+  .success-actions .restart-button,
+  .success-actions .quit-button {
+    margin: 0;
+  }
+
+  @media (min-width: 768px) {
+    .success-actions {
+      flex-direction: row;
+      justify-content: center;
+    }
   }
 </style>

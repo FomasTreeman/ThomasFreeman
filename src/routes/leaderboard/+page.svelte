@@ -16,15 +16,28 @@
   async function loadLeaderboard() {
     try {
       loading = true;
-      const response = await fetch('/api/leaderboard');
+      error = '';
+      const response = await fetch(`/api/leaderboard?t=${Date.now()}`, {
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      });
+      
       if (response.ok) {
-        leaderboard = await response.json();
+        const data = await response.json();
+        if (data.error) {
+          error = data.error;
+        } else {
+          leaderboard = data;
+        }
       } else {
-        error = 'Failed to load leaderboard';
+        const errorData = await response.json().catch(() => ({}));
+        error = errorData.error || 'Failed to load leaderboard';
       }
     } catch (err) {
-      console.error('Error loading leaderboard:', err);
-      error = 'Failed to load leaderboard';
+      error = 'Failed to connect to leaderboard service';
     } finally {
       loading = false;
     }

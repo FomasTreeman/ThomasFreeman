@@ -41,6 +41,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@vercel/blob": "^1.1.1",
 		"mdsvex": "^0.12.6",
 		"svelte-cubed": "^0.2.1"
 	}
