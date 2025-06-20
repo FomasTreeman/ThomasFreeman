@@ -494,62 +494,12 @@
         </div>
       </div>
 
-      <!-- Name Input Screen -->
-      {#if gameState.showNameInput}
-        <div class="game-over-overlay">
-          <div class="game-over-content name-input-content">
-            <h2>🏆 Game Over!</h2>
-            <p>Final Score: <strong>{gameState.score}</strong></p>
-            <p>Level Reached: <strong>{gameState.level}</strong></p>
-            
-            <div class="name-input-section">
-              <h3>Enter your name for the leaderboard:</h3>
-              <input 
-                type="text" 
-                bind:value={playerName}
-                placeholder="Your name..."
-                maxlength="20"
-                class="name-input"
-                class:error={nameInputError}
-                on:keydown={(e) => e.key === 'Enter' && submitScore()}
-                disabled={gameState.isSubmittingScore}
-              />
-              {#if nameInputError}
-                <p class="error-message">{nameInputError}</p>
-              {/if}
-            </div>
-
-            <div class="name-input-buttons">
-              <button 
-                on:click={submitScore} 
-                class="submit-score-button"
-                disabled={gameState.isSubmittingScore}
-              >
-                {#if gameState.isSubmittingScore}
-                  ⏳ Submitting...
-                {:else}
-                  🚀 Submit Score
-                {/if}
-              </button>
-              <button 
-                on:click={skipLeaderboard} 
-                class="skip-button"
-                disabled={gameState.isSubmittingScore}
-              >
-                Skip
-              </button>
-            </div>
-          </div>
-        </div>
-      {/if}
-
       <!-- Game Over Screen -->
       {#if !gameState.gameRunning && !gameState.showNameInput}
         <div class="game-over-overlay">
           <div class="game-over-content">
             <h2>Thanks for playing!</h2>
-            <p>Final Score: <strong>{gameState.score}</strong></p>
-            <p>Level Reached: <strong>{gameState.level}</strong></p>
+            <button on:click={resetGame} class="quit-button">🏠 Quit to Menu</button>
             <button on:click={resetGame} class="restart-button">Play Again</button>
           </div>
         </div>
@@ -582,8 +532,11 @@
       {#if gameState.showNameInput}
         <div class="name-input-overlay">
           <div class="name-input-content">
-            <h2>Submit Your Score</h2>
-            <p>Enter your name to submit your score to the leaderboard:</p>
+            <h2>🏆 Game Over!</h2>
+            <p>Final Score: <strong>{gameState.score}</strong></p>
+            <p>Level Reached: <strong>{gameState.level}</strong></p>
+
+            <h3>Enter your name for the leaderboard:</h3>
             <input 
               type="text" 
               bind:value={playerName} 
@@ -594,15 +547,15 @@
               <div class="error-message">{nameInputError}</div>
             {/if}
             <div class="name-input-actions">
+              <button on:click={skipLeaderboard} class="skip-button">
+                Skip
+              </button>
               <button on:click={submitScore} class="submit-button" disabled={gameState.isSubmittingScore}>
                 {#if gameState.isSubmittingScore}
                   <span class="loading-spinner"></span> Submitting...
                 {:else}
                   Submit Score
                 {/if}
-              </button>
-              <button on:click={skipLeaderboard} class="skip-button">
-                Skip
               </button>
             </div>
           </div>
@@ -1342,24 +1295,23 @@
       max-width: 90%;
     }
 
-    .name-input-section h3 {
-      font-size: 1.1rem;
-    }
-
     .name-input {
       font-size: 1rem;
       padding: 0.8rem;
     }
 
-    .name-input-buttons {
-      flex-direction: column;
-      gap: 0.5rem;
+    .submit-button {
+      background: rgb(0 255 15 / 33%);
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      min-width: 150px;
+      margin-left: 0.75rem;
     }
 
-    .submit-score-button, .skip-button {
-      padding: 0.8rem 1.5rem;
-      font-size: 1rem;
-      min-width: auto;
+    .skip-button {
+      padding: 0.7rem 1.2rem;
+      font-size: 0.9rem;
+      min-width: 70px;
     }
 
     .game-over-content h2, .pause-content h2 {
@@ -1443,18 +1395,7 @@
 
   .name-input-content p {
     font-size: 1.1rem;
-    margin-bottom: 2rem;
     opacity: 0.9;
-  }
-
-  .name-input-section {
-    margin: 2rem 0;
-  }
-
-  .name-input-section h3 {
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-    color: #ffd700;
   }
 
   .name-input {
@@ -1477,11 +1418,6 @@
     background: rgba(255, 255, 255, 0.15);
   }
 
-  .name-input.error {
-    border-color: #e74c3c;
-    background: rgba(231, 76, 60, 0.1);
-  }
-
   .name-input::placeholder {
     color: rgba(255, 255, 255, 0.6);
   }
@@ -1497,59 +1433,29 @@
     text-align: center;
   }
 
-  .name-input-buttons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    margin-top: 1rem;
-  }
-
-  .submit-score-button {
-    background: linear-gradient(45deg, #2ecc71, #27ae60);
-    color: white;
-    border: none;
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: inherit;
-    font-weight: bold;
-    min-width: 150px;
-  }
-
-  .submit-score-button:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
-  }
-
-  .submit-score-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-  }
-
   .skip-button {
-    background: linear-gradient(45deg, #95a5a6, #7f8c8d);
-    color: white;
-    border: none;
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: inherit;
-    font-weight: bold;
-    min-width: 100px;
+    font-weight: normal;
+    min-width: 80px;
+    backdrop-filter: blur(5px);
   }
 
   .skip-button:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(149, 165, 166, 0.4);
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
   }
 
   .skip-button:disabled {
-    opacity: 0.6;
+    opacity: 0.4;
     cursor: not-allowed;
     transform: none;
   }
