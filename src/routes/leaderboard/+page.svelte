@@ -168,16 +168,18 @@
 	/* Animated background gradient */
 	.leaderboard-container::before {
 		content: '';
-		position: absolute;
+		position: fixed;
 		top: 0;
 		left: 0;
-		right: 0;
-		bottom: 0;
-		background: radial-gradient(circle at 30% 40%, rgba(255, 138, 0, 0.08) 0%, transparent 50%),
-			radial-gradient(circle at 70% 80%, rgba(0, 121, 255, 0.08) 0%, transparent 50%),
-			radial-gradient(circle at 60% 20%, rgba(249, 220, 0, 0.04) 0%, transparent 50%);
-		animation: backgroundShift 25s ease-in-out infinite;
+		width: 100vw;
+		height: 100vh;
+		height: 100dvh; /* Dynamic viewport height for mobile */
+		background: radial-gradient(circle at 20% 50%, rgba(255, 138, 0, 0.1) 0%, transparent 50%),
+			radial-gradient(circle at 80% 20%, rgba(0, 121, 255, 0.1) 0%, transparent 50%),
+			radial-gradient(circle at 40% 80%, rgba(249, 220, 0, 0.05) 0%, transparent 50%);
+		animation: backgroundShift 20s ease-in-out infinite;
 		z-index: 0;
+		scale: 1.1;
 	}
 
 	@keyframes backgroundShift {
@@ -340,7 +342,7 @@
 
 	.table-header {
 		display: grid;
-		grid-template-columns: 80px 1fr 120px 100px 120px;
+		grid-template-columns: 80px 1fr 120px 120px 120px;
 		background: rgba(255, 255, 255, 0.1);
 		backdrop-filter: blur(10px);
 		padding: 1rem;
@@ -352,7 +354,7 @@
 
 	.table-row {
 		display: grid;
-		grid-template-columns: 80px 1fr 120px 100px 120px;
+		grid-template-columns: 80px 1fr 120px 120px 120px;
 		padding: 1rem;
 		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 		transition: all 0.3s ease;

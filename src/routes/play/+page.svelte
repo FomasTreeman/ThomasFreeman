@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { gameActive } from '$lib/stores';
+	import GameModal from '$lib/GameModal.svelte';
 
 	interface Order {
 		id: number;
@@ -31,8 +32,6 @@
 
 	let playerName = '';
 	let nameInputError = '';
-
-	$: gameStatusText = gameState.isPaused ? 'PAUSED' : gameState.gameRunning ? 'PLAYING' : 'STOPPED';
 
 	const INGREDIENTS = [
 		{ name: 'dough', emoji: '🫓', required: true },
@@ -70,12 +69,13 @@
 	let orderIdCounter = 1;
 	let gameInterval: ReturnType<typeof setInterval>;
 	let orderInterval: ReturnType<typeof setInterval>;
-	let elapsedTime = 0; // Track elapsed game time for difficulty scaling
+	let elapsedTime = 0;
 	let audioContext: AudioContext | null = null;
-
 	let celebrationEffect = false;
+	let exitClicked = false;
 
 	function startGame() {
+		playSound('success');
 		gameState = {
 			...gameState,
 			gameStarted: true,
@@ -89,8 +89,8 @@
 			currentPizza: { ingredients: [] }
 		};
 
-		elapsedTime = 0; // Reset elapsed time
-		gameActive.set(true); // Hide the navigation
+		elapsedTime = 0;
+		gameActive.set(true);
 
 		// Generate initial order
 		generateOrder();
@@ -119,6 +119,7 @@
 		const currentInterval = Math.max(minInterval, baseInterval - timeReduction - levelReduction);
 
 		orderInterval = setInterval(() => {
+			if (!gameState.gameRunning || gameState.isPaused) return;
 			if (gameState.activeOrders.length < 3) {
 				generateOrder();
 			}
@@ -128,6 +129,9 @@
 	}
 
 	function generateOrder(): void {
+		// Don't generate orders if game is not running or paused
+		if (!gameState.gameRunning || gameState.isPaused) return;
+
 		// Progressive difficulty: simpler recipes early, more complex ones later
 		let availableTemplates = ORDER_TEMPLATES;
 
@@ -222,7 +226,7 @@
 		}
 	}
 
-	function playSound(type: 'success' | 'error' | 'click') {
+	function playSound(type: 'success' | 'error' | 'click' | 'gameOver') {
 		try {
 			// Create audio context once and reuse it
 			if (!audioContext) {
@@ -253,14 +257,24 @@
 				case 'click':
 					oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4
 					break;
+				case 'gameOver':
+					// Dramatic descending sequence
+					oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4
+					oscillator.frequency.setValueAtTime(392, audioContext.currentTime + 0.2); // G4
+					oscillator.frequency.setValueAtTime(349.23, audioContext.currentTime + 0.4); // F4
+					oscillator.frequency.setValueAtTime(293.66, audioContext.currentTime + 0.6); // D4
+					break;
 			}
 
 			oscillator.type = 'sine';
 			gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-			gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+
+			// Different durations for different sound types
+			const duration = type === 'gameOver' ? 0.8 : 0.3;
+			gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
 
 			oscillator.start(audioContext.currentTime);
-			oscillator.stop(audioContext.currentTime + 0.3);
+			oscillator.stop(audioContext.currentTime + duration);
 		} catch (error) {
 			// Silently fail if audio context creation fails
 			console.warn('Audio not available:', error);
@@ -344,6 +358,7 @@
 
 	function clearPizza(): void {
 		if (gameState.isPaused) return;
+		playSound('click');
 		gameState = {
 			...gameState,
 			currentPizza: { ingredients: [] }
@@ -355,18 +370,26 @@
 	}
 
 	function endGame(): void {
-		gameState = { ...gameState, gameRunning: false, isPaused: false, showNameInput: true };
+		playSound('gameOver');
+		gameState = {
+			...gameState,
+			gameRunning: false,
+			isPaused: false,
+			showNameInput: true
+		};
 		clearInterval(gameInterval);
 		clearInterval(orderInterval);
 	}
 
 	async function submitScore() {
 		if (!playerName.trim()) {
+			playSound('error');
 			nameInputError = 'Please enter your name';
 			return;
 		}
 
 		if (playerName.trim().length < 2) {
+			playSound('error');
 			nameInputError = 'Name must be at least 2 characters';
 			return;
 		}
@@ -412,11 +435,8 @@
 		}
 	}
 
-	function skipLeaderboard() {
-		gameState = { ...gameState, showNameInput: false };
-	}
-
 	function resetGame(): void {
+		playSound('click');
 		gameState = {
 			...gameState,
 			gameStarted: false,
@@ -435,6 +455,8 @@
 		playerName = '';
 		nameInputError = '';
 		elapsedTime = 0; // Reset elapsed time
+		celebrationEffect = false;
+		exitClicked = false;
 		gameActive.set(false); // Show the navigation again
 		clearInterval(gameInterval);
 		clearInterval(orderInterval);
@@ -453,7 +475,37 @@
 	function resumeGame(): void {
 		if (!gameState.gameRunning) return;
 		gameState = { ...gameState, isPaused: false };
+		exitClicked = false;
 		playSound('click');
+	}
+
+	function showExitModal() {
+		pauseGame();
+		playSound('click');
+		exitClicked = true;
+	}
+
+	function saveAndExit(): void {
+		playSound('success');
+		exitClicked = false;
+		// Don't actually end the game - just show name input while keeping game state intact
+		gameState = { ...gameState, showNameInput: true, isPaused: true };
+	}
+
+	function skipLeaderboard(): void {
+		playSound('click');
+		if (gameState.lives > 0) {
+			// Player still has lives - go back to exit modal
+			gameState = {
+				...gameState,
+				showNameInput: false,
+				isPaused: true
+			};
+			exitClicked = true; // Show the exit modal again
+		} else {
+			// Player has no lives left, game is truly over
+			resetGame();
+		}
 	}
 
 	onMount(() => {
@@ -511,19 +563,34 @@
 		<div class="game-ui">
 			<div class="game-content">
 				<div class="stats">
-					<div class="stat-item">Score: {gameState.score}</div>
-					<div class="stat-item">Lives: {'❤️'.repeat(gameState.lives)}</div>
-					<div class="stat-item">Level: {gameState.level}</div>
-					<div class="stat-item">Combo: {gameState.combo > 0 ? `🔥 ${gameState.combo}` : '0'}</div>
-					<div class="stat-item status-indicator" class:paused={gameState.isPaused}>
-						Status: <span class="status-text">{gameStatusText}</span>
+					<div class="stat-item">
+						<p class="stat-item_header">Score:</p>
+						<p class="stat-item_value">{gameState.score}</p>
 					</div>
+					<div class="stat-item">
+						<p class="stat-item_header">Lives:</p>
+						<p class="stat-item_value">{'❤️'.repeat(gameState.lives)}</p>
+					</div>
+					<div class="stat-item">
+						<p class="stat-item_header">Level:</p>
+						<p class="stat-item_value">{gameState.level}</p>
+					</div>
+					<div class="stat-item">
+						<p class="stat-item_header">Combo:</p>
+						<p class="stat-item_value">{gameState.combo > 0 ? `🔥 ${gameState.combo}` : '0'}</p>
+					</div>
+					<!-- <div class="stat-item status-xindicator" class:paused={gameState.isPaused}>
+						Status: <span class="status-text">{gameStatusText}</span>
+					</div> -->
 					<div class="stat-item">
 						{#if gameState.isPaused}
 							<button on:click={resumeGame} class="pause-play-button play"> ▶️ Resume </button>
 						{:else}
 							<button on:click={pauseGame} class="pause-play-button pause"> ⏸️ Pause </button>
 						{/if}
+					</div>
+					<div class="stat-item">
+						<button on:click={showExitModal} class="pause-play-button quit">🏠 Quit</button>
 					</div>
 				</div>
 
@@ -610,42 +677,64 @@
 				</div>
 			</div>
 
-			<!-- Game Over Screen -->
-			{#if !gameState.gameRunning && !gameState.showNameInput && !gameState.scoreSubmitted}
-				<div class="game-over-overlay">
-					<div class="game-over-content">
-						<h2>Thanks for playing!</h2>
-						<button on:click={resetGame} class="quit-button">🏠 Quit to Menu</button>
-						<button on:click={resetGame} class="restart-button">Play Again</button>
+			<!-- Exit Confirmation Modal -->
+			{#if exitClicked}
+				<GameModal show={exitClicked} title="🚪 Exit Game?" titleColor="#e74c3c" maxWidth="400px">
+					<p>Are you sure you want to exit the game?</p>
+					<div class="exit-actions">
+						<button on:click={saveAndExit} class="exit-confirm-button">Yes, Save and Exit</button>
+						<button on:click={resetGame} class="exit-confirm-button"
+							>Yes, Exit Without Saving</button
+						>
+						<button on:click={resumeGame} class="exit-cancel-button">No, Stay</button>
 					</div>
-				</div>
+				</GameModal>
 			{/if}
+
+			<!-- Leaderboard Submission -->
+			<GameModal
+				show={gameState.showNameInput}
+				title="🏆 Game Over!"
+				titleColor="#ffd700"
+				maxWidth="500px"
+			>
+				<p>Final Score: <strong>{gameState.score}</strong></p>
+				<p>Level Reached: <strong>{gameState.level}</strong></p>
+
+				<h3>Enter your name:</h3>
+				<input type="text" bind:value={playerName} placeholder="Your Name" class="name-input" />
+				{#if nameInputError}
+					<div class="error-message">{nameInputError}</div>
+				{/if}
+				<div class="name-input-actions">
+					<button on:click={skipLeaderboard} class="skip-button"> Skip </button>
+					<button
+						on:click={submitScore}
+						class="submit-button"
+						disabled={gameState.isSubmittingScore}
+					>
+						{#if gameState.isSubmittingScore}
+							<span class="loading-spinner" /> Submitting...
+						{:else}
+							Submit Score
+						{/if}
+					</button>
+				</div>
+			</GameModal>
 
 			<!-- Score Submitted Success -->
-			{#if gameState.scoreSubmitted}
-				<div class="game-over-overlay">
-					<div class="game-over-content">
-						<h2>🎉 Score Submitted!</h2>
-						<div class="success-actions">
-							<a href="/leaderboard" class="leaderboard-button">🏆 View Leaderboard</a>
-							<button on:click={resetGame} class="restart-button">Play Again</button>
-							<button on:click={resetGame} class="quit-button">🏠 Back to Menu</button>
-						</div>
-					</div>
+			<GameModal
+				show={gameState.scoreSubmitted}
+				title="🎉 Score Submitted!"
+				titleColor="#2ecc71"
+				maxWidth="500px"
+			>
+				<div class="success-actions">
+					<a href="/leaderboard" class="leaderboard-button">🏆 View Leaderboard</a>
+					<button on:click={resetGame} class="restart-button">Play Again</button>
+					<button on:click={resetGame} class="quit-button">🏠 Back to Menu</button>
 				</div>
-			{/if}
-
-			<!-- Pause Screen -->
-			{#if gameState.isPaused && gameState.gameRunning}
-				<div class="pause-overlay">
-					<div class="pause-content">
-						<h2>⏸️ Game Paused</h2>
-						<p>Click Resume to continue playing</p>
-						<button on:click={resumeGame} class="resume-button">▶️ Resume Game</button>
-						<button on:click={resetGame} class="quit-button">🏠 Quit to Menu</button>
-					</div>
-				</div>
-			{/if}
+			</GameModal>
 
 			<!-- Celebration Effect -->
 			{#if celebrationEffect}
@@ -657,37 +746,6 @@
 					<div class="confetti" />
 				</div>
 			{/if}
-
-			<!-- Leaderboard Submission -->
-			{#if gameState.showNameInput}
-				<div class="name-input-overlay">
-					<div class="name-input-content">
-						<h2>🏆 Game Over!</h2>
-						<p>Final Score: <strong>{gameState.score}</strong></p>
-						<p>Level Reached: <strong>{gameState.level}</strong></p>
-
-						<h3>Enter your name:</h3>
-						<input type="text" bind:value={playerName} placeholder="Your Name" class="name-input" />
-						{#if nameInputError}
-							<div class="error-message">{nameInputError}</div>
-						{/if}
-						<div class="name-input-actions">
-							<button on:click={skipLeaderboard} class="skip-button"> Skip </button>
-							<button
-								on:click={submitScore}
-								class="submit-button"
-								disabled={gameState.isSubmittingScore}
-							>
-								{#if gameState.isSubmittingScore}
-									<span class="loading-spinner" /> Submitting...
-								{:else}
-									Submit Score
-								{/if}
-							</button>
-						</div>
-					</div>
-				</div>
-			{/if}
 		</div>
 	{/if}
 </div>
@@ -695,26 +753,30 @@
 <style>
 	.game-container {
 		min-height: 100vh;
+		min-height: 100dvh; /* Dynamic viewport height for mobile */
 		background: var(--background-color);
 		font-family: 'JetBrains Mono Variable', monospace;
 		color: var(--color);
 		position: relative;
 		overflow: hidden;
+		width: 100%;
 	}
 
 	/* Animated background gradient */
 	.game-container::before {
 		content: '';
-		position: absolute;
+		position: fixed;
 		top: 0;
 		left: 0;
-		right: 0;
-		bottom: 0;
+		width: 100vw;
+		height: 100vh;
+		height: 100dvh; /* Dynamic viewport height for mobile */
 		background: radial-gradient(circle at 20% 50%, rgba(255, 138, 0, 0.1) 0%, transparent 50%),
 			radial-gradient(circle at 80% 20%, rgba(0, 121, 255, 0.1) 0%, transparent 50%),
 			radial-gradient(circle at 40% 80%, rgba(249, 220, 0, 0.05) 0%, transparent 50%);
 		animation: backgroundShift 20s ease-in-out infinite;
 		z-index: 0;
+		scale: 1.1;
 	}
 
 	@keyframes backgroundShift {
@@ -878,10 +940,11 @@
 		background: rgba(36, 36, 36, 0.95);
 		backdrop-filter: blur(20px);
 		border-top: 1px solid rgba(255, 255, 255, 0.1);
-		padding: 1rem;
 		z-index: 10;
 		border-radius: 16px 16px 0 0;
 		box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+		padding: 2.5rem;
+		padding-top: 1rem;
 	}
 
 	@media (max-width: 768px) {
@@ -904,31 +967,9 @@
 	.stat-item {
 		display: flex;
 		align-items: center;
+		gap: 0.6rem;
 		font-size: 1.2rem;
 		font-weight: bold;
-	}
-
-	.status-indicator {
-		background: rgba(255, 255, 255, 0.1);
-		border-radius: 8px;
-		padding: 0.5rem;
-		border: 2px solid transparent;
-		transition: all 0.3s ease;
-	}
-
-	.status-indicator.paused {
-		border-color: #f39c12;
-		background: rgba(243, 156, 18, 0.2);
-	}
-
-	.status-text {
-		margin-left: 0.5rem;
-		font-weight: bold;
-	}
-
-	.status-indicator.paused .status-text {
-		color: #f39c12;
-		animation: pulse 1s infinite;
 	}
 
 	@keyframes pulse {
@@ -1211,40 +1252,7 @@
 		text-transform: capitalize;
 	}
 
-	/* Game Over */
-	.game-over-overlay {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(0, 0, 0, 0.85);
-		backdrop-filter: blur(5px);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		z-index: 1000;
-	}
-
-	.game-over-content {
-		background: rgba(255, 255, 255, 0.05);
-		backdrop-filter: blur(30px);
-		border: 1px solid rgba(255, 255, 255, 0.2);
-		border-radius: 20px;
-		padding: 3rem;
-		text-align: center;
-		color: var(--color);
-		max-width: 400px;
-	}
-
-	.game-over-content h2 {
-		font-size: 2.5rem;
-		margin-bottom: 1rem;
-		background: linear-gradient(135deg, var(--primary-color1), var(--primary-color2));
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
-	}
+	/* Game Over and Pause overlays now use GameModal component */
 
 	.restart-button {
 		background: linear-gradient(135deg, var(--secondary-color1), var(--secondary-color2));
@@ -1350,6 +1358,17 @@
 		}
 	}
 
+	.exit-actions {
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+		gap: 1rem;
+		margin-top: 1rem;
+	}
+	.name-input {
+		box-sizing: border-box;
+	}
+
 	/* Pause/Play Button */
 	.pause-play-button {
 		background: rgba(255, 255, 255, 0.05);
@@ -1373,6 +1392,10 @@
 		border-color: var(--secondary-color1);
 	}
 
+	.pause-play-button.quit {
+		border-color: rgba(255, 3, 3, 0.3);
+	}
+
 	.pause-play-button:hover {
 		transform: translateY(-1px);
 		background: rgba(255, 255, 255, 0.1);
@@ -1386,47 +1409,12 @@
 		box-shadow: 0 4px 15px rgba(0, 121, 255, 0.3);
 	}
 
-	/* Pause Overlay */
-	.pause-overlay {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(0, 0, 0, 0.7);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		z-index: 1000;
-		backdrop-filter: blur(5px);
+	.pause-play-button.quit:hover {
+		box-shadow: 0 4px 15px rgba(251, 87, 6, 0.3);
 	}
 
-	.pause-content {
-		background: rgba(255, 255, 255, 0.1);
-		backdrop-filter: blur(20px);
-		border-radius: 20px;
-		padding: 3rem;
-		text-align: center;
-		color: white;
-		max-width: 400px;
-		border: 2px solid rgba(255, 255, 255, 0.2);
-	}
-
-	.pause-content h2 {
-		font-size: 2.5rem;
-		margin-bottom: 1rem;
-		color: #f39c12;
-	}
-
-	.pause-content p {
-		font-size: 1.1rem;
-		margin-bottom: 2rem;
-		opacity: 0.9;
-	}
-
-	.resume-button,
 	.quit-button {
-		background: linear-gradient(45deg, #2ecc71, #27ae60);
+		background: linear-gradient(45deg, #95a5a6, #7f8c8d);
 		color: white;
 		border: none;
 		padding: 1rem 2rem;
@@ -1440,15 +1428,6 @@
 		min-width: 150px;
 	}
 
-	.quit-button {
-		background: linear-gradient(45deg, #95a5a6, #7f8c8d);
-	}
-
-	.resume-button:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
-	}
-
 	.quit-button:hover {
 		transform: translateY(-2px);
 		box-shadow: 0 8px 20px rgba(149, 165, 166, 0.4);
@@ -1457,14 +1436,16 @@
 	/* Responsive Design */
 	@media (max-width: 768px) {
 		.game-container {
-			padding: 0.5rem;
 			min-height: auto;
 			overflow-y: visible;
 		}
 
 		.start-screen {
 			min-height: 100vh;
-			padding: 1rem;
+			padding-inline: 1rem;
+			padding-top: 0;
+			padding-bottom: 5rem;
+			box-sizing: border-box;
 		}
 
 		.start-screen h1 {
@@ -1484,10 +1465,15 @@
 
 		.game-ui {
 			height: 100vh;
+			max-height: 100vh;
+			overflow: hidden;
 		}
 
 		.game-content {
-			padding: 0.5rem;
+			padding: 0.3rem;
+			flex: 1;
+			overflow-y: auto;
+			max-height: calc(100vh - 200px); /* Reserve space for bottom section */
 		}
 
 		.bottom-section {
@@ -1495,40 +1481,60 @@
 		}
 
 		.stats {
-			flex-direction: column;
-			gap: 0.5rem;
-			margin-bottom: 1rem;
+			flex-direction: row;
+			flex-wrap: wrap;
+			gap: 0.3rem;
+			margin-bottom: 0.5rem;
+			padding: 0.5rem;
+			font-size: 0.8rem;
 		}
 
 		.stat-item {
 			text-align: center;
-			font-size: 1rem;
+			font-size: 0.8rem;
+			flex: 1;
+			gap: 0;
+			padding: 0.2rem;
+			flex-direction: column;
+			justify-content: center;
+			align-items: start;
+		}
+
+		.stat-item * {
+			margin: 0;
+			padding: 0;
+		}
+
+		.stat-item_value {
+			margin-left: 0.1rem;
 		}
 
 		.pause-play-button {
-			margin-top: 0.5rem;
-			padding: 0.4rem 0.8rem;
-			font-size: 0.8rem;
+			margin-top: 0.2rem;
+			padding: 0.3rem 0.6rem;
+			font-size: 0.7rem;
 		}
 
 		.orders-section {
-			margin-bottom: 1rem;
+			margin-bottom: 0.5rem;
 		}
 
 		.orders-section h3 {
-			font-size: 1.2rem;
-			margin-bottom: 0.5rem;
+			font-size: 1rem;
+			margin-bottom: 0.3rem;
 		}
 
 		.orders-list {
 			flex-direction: column;
 			align-items: center;
-			gap: 0.5rem;
+			gap: 0.3rem;
 		}
 
 		.order-card {
-			min-width: 180px;
-			padding: 0.8rem;
+			min-width: 90%;
+			max-width: 100%;
+			padding: 0.6rem;
+			font-size: 0.9rem;
 		}
 
 		.pizza-section {
@@ -1585,16 +1591,7 @@
 			font-size: 0.9rem;
 		}
 
-		.game-over-content,
-		.pause-content {
-			margin: 1rem;
-			padding: 2rem 1.5rem;
-		}
-
-		.name-input-content {
-			max-width: 90%;
-		}
-
+		/* Form input styling for mobile */
 		.name-input {
 			font-size: 1rem;
 			padding: 0.8rem;
@@ -1614,100 +1611,62 @@
 			min-width: 70px;
 		}
 
-		.game-over-content h2,
-		.pause-content h2 {
-			font-size: 2rem;
-		}
-
 		.instructions {
 			max-width: 90%;
 			padding: 1.5rem;
 		}
 
-		/* Ensure overlays are properly positioned on mobile */
-		.game-over-overlay,
-		.pause-overlay {
-			padding: 1rem;
-			box-sizing: border-box;
-		}
+		/* GameModal component handles overlay positioning */
 	}
 
-	/* Extra small screens */
+	/* Ultra-compact mobile layout for small screens */
 	@media (max-width: 480px) {
-		.game-container {
-			padding: 0rem;
-		}
-
-    .start-screen {
-      padding-block: 0;
-      padding-inline: 1rem;
-      margin-top: 3rem;
-      justify-content: start;
-    }
-
-		.start-screen h1 {
-			font-size: 1.8rem;
-		}
-
 		.stats {
-			padding: 0.8rem;
+			padding: 0.3rem;
+			margin-bottom: 0.3rem;
+			border-radius: 8px;
 		}
 
-		.orders-section,
-		.pizza-section,
-		.ingredients-section {
-			margin-bottom: 0.8rem;
+		.stat-item {
+			font-size: 0.7rem;
+			padding: 0.1rem;
 		}
 
-		.ingredients-grid {
-			grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-		}
-
-		.ingredient-button {
-			padding: 0.6rem 0.3rem;
+		.orders-section h3 {
+			font-size: 0.9rem;
+			margin-bottom: 0.2rem;
 		}
 
 		.order-card {
-			min-width: 160px;
-			padding: 0.6rem;
+			padding: 0.4rem;
+			font-size: 0.8rem;
+			border-radius: 8px;
+		}
+
+		.ingredient-icon {
+			font-size: 1.2rem;
+		}
+
+		.timer-text {
+			font-size: 0.7rem;
+		}
+
+		.game-content {
+			max-height: calc(100vh - 180px);
+		}
+
+		.bottom-section {
+			padding: 0.3rem;
+		}
+
+		.bottom-section .pizza-section h3,
+		.bottom-section .ingredients-section h3 {
+			font-size: 1rem;
+			margin-bottom: 0.3rem;
 		}
 	}
 
-	/* Name Input Overlay */
-	.name-input-overlay {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(0, 0, 0, 0.8);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		z-index: 1000;
-	}
-
-	.name-input-content {
-		background: rgba(255, 255, 255, 0.1);
-		backdrop-filter: blur(20px);
-		border-radius: 20px;
-		padding: 3rem;
-		text-align: center;
-		color: white;
-		max-width: 400px;
-		width: 90%;
-	}
-
-	.name-input-content h2 {
-		font-size: 2.5rem;
-		margin-bottom: 1rem;
-		color: #ffd700;
-	}
-
-	.name-input-content p {
-		font-size: 1.1rem;
-		opacity: 0.9;
-	}
+	/* Form styles for name input (now used within GameModal) */
 
 	.name-input {
 		width: 100%;
