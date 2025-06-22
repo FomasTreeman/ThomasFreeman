@@ -6,7 +6,7 @@
 	import Background from '$lib/Background.svelte';
 	import Header from '../lib/Header.svelte';
 
-	$: hideBackground = $page.route.id === '/play' || $page.route.id === '/leaderboard';
+	$: hideBackground = $page.route.id === '/play' || $page.route.id === '/play/leaderboard';
 	$: hideHeader = $page.route.id === '/play' && $gameActive;
 </script>
 

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	import { gameActive } from '$lib/stores';
 	import GameModal from '$lib/GameModal.svelte';
 
@@ -509,6 +510,15 @@
 	}
 
 	onMount(() => {
+		// Check if we should auto-start the game from URL params
+		const urlParams = $page.url.searchParams;
+		if (urlParams.get('autostart') === 'true') {
+			// Small delay to ensure everything is loaded
+			setTimeout(() => {
+				startGame();
+			}, 100);
+		}
+
 		// Add keyboard event listener for pause/resume
 		const handleKeyPress = (event: KeyboardEvent) => {
 			if (event.code === 'Space' && gameState.gameStarted) {
@@ -545,7 +555,7 @@
 			<p>Make pizzas to match customer orders!</p>
 			<div class="start-buttons">
 				<button on:click={startGame} class="start-button">Start Game</button>
-				<a href="/leaderboard" class="leaderboard-link">🏆 View Leaderboard</a>
+				<a href="/play/leaderboard" class="leaderboard-link">🏆 View Leaderboard</a>
 			</div>
 			<div class="instructions">
 				<h3>How to Play:</h3>
@@ -730,7 +740,7 @@
 				maxWidth="500px"
 			>
 				<div class="success-actions">
-					<a href="/leaderboard" class="leaderboard-button">🏆 View Leaderboard</a>
+					<a href="/play/leaderboard" class="leaderboard-button">🏆 View Leaderboard</a>
 					<button on:click={resetGame} class="restart-button">Play Again</button>
 					<button on:click={resetGame} class="quit-button">🏠 Back to Menu</button>
 				</div>
@@ -752,44 +762,9 @@
 
 <style>
 	.game-container {
-		min-height: 100vh;
-		min-height: 100dvh; /* Dynamic viewport height for mobile */
-		background: var(--background-color);
-		font-family: 'JetBrains Mono Variable', monospace;
-		color: var(--color);
 		position: relative;
-		overflow: hidden;
+		z-index: 1;
 		width: 100%;
-	}
-
-	/* Animated background gradient */
-	.game-container::before {
-		content: '';
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100vw;
-		height: 100vh;
-		height: 100dvh; /* Dynamic viewport height for mobile */
-		background: radial-gradient(circle at 20% 50%, rgba(255, 138, 0, 0.1) 0%, transparent 50%),
-			radial-gradient(circle at 80% 20%, rgba(0, 121, 255, 0.1) 0%, transparent 50%),
-			radial-gradient(circle at 40% 80%, rgba(249, 220, 0, 0.05) 0%, transparent 50%);
-		animation: backgroundShift 20s ease-in-out infinite;
-		z-index: 0;
-		scale: 1.1;
-	}
-
-	@keyframes backgroundShift {
-		0%,
-		100% {
-			transform: translateX(0) translateY(0);
-		}
-		33% {
-			transform: translateX(-20px) translateY(-10px);
-		}
-		66% {
-			transform: translateX(10px) translateY(-20px);
-		}
 	}
 
 	/* Start Screen */

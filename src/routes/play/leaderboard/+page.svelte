@@ -99,7 +99,7 @@
 					🔄 Refresh
 				{/if}
 			</button>
-			<a href="/play" class="play-button">🍕 Play Now</a>
+			<a href="/play?autostart=true" class="play-button">🍕 Play Now</a>
 		</div>
 	</div>
 
@@ -118,7 +118,7 @@
 		<div class="empty-state">
 			<h2>🍕 No scores yet!</h2>
 			<p>Be the first to set a high score!</p>
-			<a href="/play" class="play-button">Start Playing</a>
+			<a href="/play?autostart=true" class="play-button">Start Playing</a>
 		</div>
 	{:else}
 		<div class="leaderboard-table">
@@ -157,42 +157,8 @@
 
 <style>
 	.leaderboard-container {
-		min-height: 100vh;
-		background: var(--background-color);
-		font-family: 'JetBrains Mono Variable', monospace;
-		color: var(--color);
 		position: relative;
-		overflow: hidden;
-	}
-
-	/* Animated background gradient */
-	.leaderboard-container::before {
-		content: '';
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100vw;
-		height: 100vh;
-		height: 100dvh; /* Dynamic viewport height for mobile */
-		background: radial-gradient(circle at 20% 50%, rgba(255, 138, 0, 0.1) 0%, transparent 50%),
-			radial-gradient(circle at 80% 20%, rgba(0, 121, 255, 0.1) 0%, transparent 50%),
-			radial-gradient(circle at 40% 80%, rgba(249, 220, 0, 0.05) 0%, transparent 50%);
-		animation: backgroundShift 20s ease-in-out infinite;
-		z-index: 0;
-		scale: 1.1;
-	}
-
-	@keyframes backgroundShift {
-		0%,
-		100% {
-			transform: translateX(0) translateY(0);
-		}
-		33% {
-			transform: translateX(-15px) translateY(-20px);
-		}
-		66% {
-			transform: translateX(20px) translateY(-15px);
-		}
+		z-index: 1;
 	}
 
 	.leaderboard-header {
