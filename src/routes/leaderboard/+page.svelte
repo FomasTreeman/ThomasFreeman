@@ -1,381 +1,484 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+	import { onMount } from 'svelte';
 
-  interface LeaderboardEntry {
-    name: string;
-    score: number;
-    level: number;
-    date: string;
-    id: string;
-  }
+	interface LeaderboardEntry {
+		name: string;
+		score: number;
+		level: number;
+		date: string;
+		id: string;
+	}
 
-  let leaderboard: LeaderboardEntry[] = [];
-  let loading = true;
-  let error = '';
+	let leaderboard: LeaderboardEntry[] = [];
+	let loading = true;
+	let error = '';
 
-  async function loadLeaderboard() {
-    try {
-      loading = true;
-      error = '';
-      const response = await fetch(`/api/leaderboard?t=${Date.now()}`, {
-        headers: {
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
-        }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        if (data.error) {
-          error = data.error;
-        } else {
-          leaderboard = data;
-        }
-      } else {
-        const errorData = await response.json().catch(() => ({}));
-        error = errorData.error || 'Failed to load leaderboard';
-      }
-    } catch (err) {
-      error = 'Failed to connect to leaderboard service';
-    } finally {
-      loading = false;
-    }
-  }
+	async function loadLeaderboard() {
+		try {
+			loading = true;
+			error = '';
+			const response = await fetch(`/api/leaderboard?t=${Date.now()}`, {
+				headers: {
+					'Cache-Control': 'no-cache, no-store, must-revalidate',
+					Pragma: 'no-cache',
+					Expires: '0'
+				}
+			});
 
-  function formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
-  }
+			if (response.ok) {
+				const data = await response.json();
+				if (data.error) {
+					error = data.error;
+				} else {
+					leaderboard = data;
+				}
+			} else {
+				const errorData = await response.json().catch(() => ({}));
+				error = errorData.error || 'Failed to load leaderboard';
+			}
+		} catch (err) {
+			error = 'Failed to connect to leaderboard service';
+		} finally {
+			loading = false;
+		}
+	}
 
-  function getScoreColor(position: number): string {
-    switch (position) {
-      case 1: return '#ffd700'; // Gold
-      case 2: return '#c0c0c0'; // Silver
-      case 3: return '#cd7f32'; // Bronze
-      default: return '#ffffff';
-    }
-  }
+	function formatDate(dateString: string): string {
+		const date = new Date(dateString);
+		return date.toLocaleDateString('en-US', {
+			month: 'short',
+			day: 'numeric',
+			year: 'numeric'
+		});
+	}
 
-  function getPositionEmoji(position: number): string {
-    switch (position) {
-      case 1: return '🥇';
-      case 2: return '🥈';
-      case 3: return '🥉';
-      default: return `${position}.`;
-    }
-  }
+	function getScoreColor(position: number): string {
+		switch (position) {
+			case 1:
+				return 'var(--primary-color1)'; // Orange/Gold
+			case 2:
+				return 'var(--secondary-color2)'; // Light Blue
+			case 3:
+				return 'var(--primary-color2)'; // Yellow
+			default:
+				return 'var(--color)';
+		}
+	}
 
-  onMount(() => {
-    loadLeaderboard();
-  });
+	function getPositionEmoji(position: number): string {
+		switch (position) {
+			case 1:
+				return '🥇';
+			case 2:
+				return '🥈';
+			case 3:
+				return '🥉';
+			default:
+				return `${position}.`;
+		}
+	}
+
+	onMount(() => {
+		loadLeaderboard();
+	});
 </script>
 
 <svelte:head>
-  <title>Pizza Rush - Leaderboard</title>
+	<title>Pizza Rush - Leaderboard</title>
 </svelte:head>
 
 <div class="leaderboard-container">
-  <div class="leaderboard-header">
-    <h1>🏆 Pizza Rush Leaderboard</h1>
-    <p>Top pizza masters from around the world!</p>
-    <div class="header-actions">
-      <button on:click={loadLeaderboard} class="refresh-button" disabled={loading}>
-        {#if loading}
-          ⏳ Loading...
-        {:else}
-          🔄 Refresh
-        {/if}
-      </button>
-      <a href="/play" class="play-button">🍕 Play Now</a>
-    </div>
-  </div>
+	<div class="leaderboard-header">
+		<h1><span class="emoji">🏆</span> Pizza Rush Leaderboard</h1>
+		<p>Top pizza masters from around the world!</p>
+		<div class="header-actions">
+			<button on:click={loadLeaderboard} class="refresh-button" disabled={loading}>
+				{#if loading}
+					⏳ Loading...
+				{:else}
+					🔄 Refresh
+				{/if}
+			</button>
+			<a href="/play" class="play-button">🍕 Play Now</a>
+		</div>
+	</div>
 
-  {#if loading}
-    <div class="loading-state">
-      <div class="loading-spinner"></div>
-      <p>Loading leaderboard...</p>
-    </div>
-  {:else if error}
-    <div class="error-state">
-      <h2>😢 Oops!</h2>
-      <p>{error}</p>
-      <button on:click={loadLeaderboard} class="retry-button">Try Again</button>
-    </div>
-  {:else if leaderboard.length === 0}
-    <div class="empty-state">
-      <h2>🍕 No scores yet!</h2>
-      <p>Be the first to set a high score!</p>
-      <a href="/play" class="play-button">Start Playing</a>
-    </div>
-  {:else}
-    <div class="leaderboard-table">
-      <div class="table-header">
-        <div class="col-rank">Rank</div>
-        <div class="col-name">Player</div>
-        <div class="col-score">Score</div>
-        <div class="col-level">Level</div>
-        <div class="col-date">Date</div>
-      </div>
-      
-      {#each leaderboard as entry, index}
-        <div class="table-row" class:top-three={index < 3}>
-          <div class="col-rank">
-            <span class="rank-badge" style="color: {getScoreColor(index + 1)}">
-              {getPositionEmoji(index + 1)}
-            </span>
-          </div>
-          <div class="col-name">
-            <span class="player-name">{entry.name}</span>
-          </div>
-          <div class="col-score">
-            <span class="score-value">{entry.score.toLocaleString()}</span>
-          </div>
-          <div class="col-level">
-            <span class="level-badge">Level {entry.level}</span>
-          </div>
-          <div class="col-date">
-            <span class="date-text">{formatDate(entry.date)}</span>
-          </div>
-        </div>
-      {/each}
-    </div>
-  {/if}
+	{#if loading}
+		<div class="loading-state">
+			<div class="loading-spinner" />
+			<p>Loading leaderboard...</p>
+		</div>
+	{:else if error}
+		<div class="error-state">
+			<h2>😢 Oops!</h2>
+			<p>{error}</p>
+			<button on:click={loadLeaderboard} class="retry-button">Try Again</button>
+		</div>
+	{:else if leaderboard.length === 0}
+		<div class="empty-state">
+			<h2>🍕 No scores yet!</h2>
+			<p>Be the first to set a high score!</p>
+			<a href="/play" class="play-button">Start Playing</a>
+		</div>
+	{:else}
+		<div class="leaderboard-table">
+			<div class="table-header">
+				<div class="col-rank">Rank</div>
+				<div class="col-name">Player</div>
+				<div class="col-score">Score</div>
+				<div class="col-level">Level</div>
+				<div class="col-date">Date</div>
+			</div>
+
+			{#each leaderboard as entry, index}
+				<div class="table-row" class:top-three={index < 3}>
+					<div class="col-rank">
+						<span class="rank-badge" style="color: {getScoreColor(index + 1)}">
+							{getPositionEmoji(index + 1)}
+						</span>
+					</div>
+					<div class="col-name">
+						<span class="player-name">{entry.name}</span>
+					</div>
+					<div class="col-score">
+						<span class="score-value">{entry.score.toLocaleString()}</span>
+					</div>
+					<div class="col-level">
+						<span class="level-badge">Level {entry.level}</span>
+					</div>
+					<div class="col-date">
+						<span class="date-text">{formatDate(entry.date)}</span>
+					</div>
+				</div>
+			{/each}
+		</div>
+	{/if}
 </div>
 
 <style>
-  .leaderboard-container {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 2rem;
-    font-family: 'JetBrains Mono Variable', monospace;
-    color: white;
-  }
+	.leaderboard-container {
+		min-height: 100vh;
+		background: var(--background-color);
+		font-family: 'JetBrains Mono Variable', monospace;
+		color: var(--color);
+		position: relative;
+		overflow: hidden;
+	}
 
-  .leaderboard-header {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
+	/* Animated background gradient */
+	.leaderboard-container::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: radial-gradient(circle at 30% 40%, rgba(255, 138, 0, 0.08) 0%, transparent 50%),
+			radial-gradient(circle at 70% 80%, rgba(0, 121, 255, 0.08) 0%, transparent 50%),
+			radial-gradient(circle at 60% 20%, rgba(249, 220, 0, 0.04) 0%, transparent 50%);
+		animation: backgroundShift 25s ease-in-out infinite;
+		z-index: 0;
+	}
 
-  .leaderboard-header h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-  }
+	@keyframes backgroundShift {
+		0%,
+		100% {
+			transform: translateX(0) translateY(0);
+		}
+		33% {
+			transform: translateX(-15px) translateY(-20px);
+		}
+		66% {
+			transform: translateX(20px) translateY(-15px);
+		}
+	}
 
-  .leaderboard-header p {
-    font-size: 1.2rem;
-    opacity: 0.9;
-    margin-bottom: 2rem;
-  }
+	.leaderboard-header {
+		position: relative;
+		z-index: 1;
+		text-align: center;
+		margin-bottom: 3rem;
+		padding: 2rem;
+	}
 
-  .header-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    align-items: center;
-  }
+	.leaderboard-header h1 {
+		font-size: 3.5rem;
+		font-weight: 800;
+		margin-bottom: 1rem;
+		background: linear-gradient(135deg, var(--primary-color1), var(--primary-color2));
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+		text-shadow: none;
+        margin-top: 7rem;
+	}
 
-  .refresh-button, .play-button, .retry-button {
-    background: linear-gradient(45deg, #3498db, #2980b9);
-    color: white;
-    border: none;
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: inherit;
-    font-weight: bold;
-    text-decoration: none;
-    display: inline-block;
-  }
+	.leaderboard-header h1 .emoji {
+		-webkit-text-fill-color: white;
+	}
 
-  .play-button {
-    background: linear-gradient(45deg, #e74c3c, #c0392b);
-  }
+	.leaderboard-header p {
+		font-size: 1.3rem;
+		opacity: 0.9;
+		margin-bottom: 2rem;
+		font-family: 'Work Sans', sans-serif;
+	}
 
-  .refresh-button:hover:not(:disabled), .play-button:hover, .retry-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
-  }
+	.header-actions {
+		display: flex;
+		gap: 1.5rem;
+		justify-content: center;
+		align-items: center;
+	}
 
-  .play-button:hover {
-    box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4);
-  }
+	.refresh-button,
+	.play-button,
+	.retry-button {
+		background: rgba(255, 255, 255, 0.05);
+		backdrop-filter: blur(15px);
+		color: var(--color);
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		padding: 1rem 2rem;
+		font-size: 1.1rem;
+		border-radius: 12px;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		font-family: 'JetBrains Mono Variable', monospace;
+		font-weight: bold;
+		text-decoration: none;
+		display: inline-block;
+		position: relative;
+		overflow: hidden;
+	}
 
-  .refresh-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-  }
+	.play-button {
+		background: linear-gradient(135deg, var(--primary-color1), var(--primary-color2));
+		color: var(--background-color);
+		border-color: var(--primary-color1);
+	}
 
-  .loading-state, .error-state, .empty-state {
-    text-align: center;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 3rem;
-    margin: 2rem auto;
-    max-width: 500px;
-  }
+	.play-button::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: -100%;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+		transition: left 0.5s;
+	}
 
-  .loading-spinner {
-    width: 50px;
-    height: 50px;
-    border: 4px solid rgba(255, 255, 255, 0.3);
-    border-top: 4px solid white;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 1rem;
-  }
+	.play-button:hover::before {
+		left: 100%;
+	}
 
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
+	.refresh-button:hover:not(:disabled),
+	.retry-button:hover {
+		background: rgba(255, 255, 255, 0.1);
+		border-color: var(--secondary-color1);
+		box-shadow: 0 4px 20px rgba(0, 121, 255, 0.3);
+		transform: translateY(-2px);
+	}
 
-  .leaderboard-table {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 16px;
-    overflow: hidden;
-    max-width: 1000px;
-    margin: 0 auto;
-  }
+	.play-button:hover {
+		box-shadow: 0 8px 25px rgba(255, 138, 0, 0.4);
+		transform: translateY(-2px);
+	}
 
-  .table-header {
-    display: grid;
-    grid-template-columns: 80px 1fr 120px 100px 120px;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 1rem;
-    font-weight: bold;
-    font-size: 1.1rem;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-  }
+	.refresh-button:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+		transform: none;
+	}
 
-  .table-row {
-    display: grid;
-    grid-template-columns: 80px 1fr 120px 100px 120px;
-    padding: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-    align-items: center;
-  }
+	.loading-state,
+	.error-state,
+	.empty-state {
+		position: relative;
+		z-index: 1;
+		text-align: center;
+		background: rgba(255, 255, 255, 0.05);
+		backdrop-filter: blur(20px);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: 20px;
+		padding: 3rem;
+		margin: 2rem auto;
+		max-width: 500px;
+	}
 
-  .table-row:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
+	.loading-spinner {
+		width: 50px;
+		height: 50px;
+		border: 4px solid rgba(255, 255, 255, 0.2);
+		border-top: 4px solid var(--primary-color1);
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+		margin: 0 auto 1rem;
+	}
 
-  .table-row.top-three {
-    background: rgba(255, 215, 0, 0.1);
-  }
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
+	}
 
-  .table-row.top-three:hover {
-    background: rgba(255, 215, 0, 0.2);
-  }
+	.leaderboard-table {
+		position: relative;
+		z-index: 1;
+		background: rgba(255, 255, 255, 0.05);
+		backdrop-filter: blur(20px);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: 16px;
+		overflow: hidden;
+		max-width: 1000px;
+		margin: 0 auto;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+	}
 
-  .col-rank, .col-score, .col-level, .col-date {
-    text-align: center;
-  }
+	.table-header {
+		display: grid;
+		grid-template-columns: 80px 1fr 120px 100px 120px;
+		background: rgba(255, 255, 255, 0.1);
+		backdrop-filter: blur(10px);
+		padding: 1rem;
+		font-weight: bold;
+		font-size: 1.1rem;
+		border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+		color: var(--primary-color1);
+	}
 
-  .col-name {
-    text-align: left;
-    padding-left: 1rem;
-  }
+	.table-row {
+		display: grid;
+		grid-template-columns: 80px 1fr 120px 100px 120px;
+		padding: 1rem;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+		transition: all 0.3s ease;
+		align-items: center;
+	}
 
-  .rank-badge {
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
+	.table-row:hover {
+		background: rgba(255, 255, 255, 0.08);
+		transform: translateX(2px);
+	}
 
-  .player-name {
-    font-weight: bold;
-    font-size: 1.1rem;
-  }
+	.table-row.top-three {
+		background: linear-gradient(90deg, rgba(255, 138, 0, 0.1), rgba(249, 220, 0, 0.05));
+		border-left: 3px solid var(--primary-color1);
+	}
 
-  .score-value {
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: #2ecc71;
-  }
+	.table-row.top-three:hover {
+		background: linear-gradient(90deg, rgba(255, 138, 0, 0.15), rgba(249, 220, 0, 0.08));
+	}
 
-  .level-badge {
-    background: rgba(52, 152, 219, 0.3);
-    padding: 0.3rem 0.8rem;
-    border-radius: 12px;
-    font-size: 0.9rem;
-    font-weight: bold;
-  }
+	.col-rank,
+	.col-score,
+	.col-level,
+	.col-date {
+		text-align: center;
+	}
 
-  .date-text {
-    font-size: 0.9rem;
-    opacity: 0.8;
-  }
+	.col-name {
+		text-align: left;
+		padding-left: 1rem;
+	}
 
-  /* Mobile Responsive */
-  @media (max-width: 768px) {
-    .leaderboard-container {
-      padding: 1rem;
-    }
+	.rank-badge {
+		font-size: 1.5rem;
+		font-weight: bold;
+	}
 
-    .leaderboard-header h1 {
-      font-size: 2rem;
-    }
+	.player-name {
+		font-weight: bold;
+		font-size: 1.1rem;
+	}
 
-    .header-actions {
-      flex-direction: column;
-      gap: 0.5rem;
-    }
+	.score-value {
+		font-weight: bold;
+		font-size: 1.2rem;
+		color: var(--secondary-color1);
+	}
 
-    .table-header, .table-row {
-      grid-template-columns: 60px 1fr 80px 70px 80px;
-      padding: 0.8rem 0.5rem;
-      font-size: 0.9rem;
-    }
+	.level-badge {
+		background: linear-gradient(135deg, rgba(0, 121, 255, 0.3), rgba(72, 190, 255, 0.2));
+		border: 1px solid rgba(0, 121, 255, 0.4);
+		padding: 0.3rem 0.8rem;
+		border-radius: 12px;
+		font-size: 0.9rem;
+		font-weight: bold;
+		color: var(--secondary-color1);
+	}
 
-    .col-name {
-      padding-left: 0.5rem;
-    }
+	.date-text {
+		font-size: 0.9rem;
+		opacity: 0.8;
+	}
 
-    .player-name {
-      font-size: 1rem;
-    }
+	/* Mobile Responsive */
+	@media (max-width: 768px) {
+		.leaderboard-container {
+			padding-inline: 1rem;
+		}
 
-    .score-value {
-      font-size: 1rem;
-    }
+		.leaderboard-header h1 {
+			font-size: 2rem;
+            margin-top: 3rem;
+		}
 
-    .rank-badge {
-      font-size: 1.2rem;
-    }
+		.header-actions {
+			flex-direction: column;
+			gap: 0.5rem;
+		}
 
-    .level-badge {
-      padding: 0.2rem 0.5rem;
-      font-size: 0.8rem;
-    }
+		.table-header,
+		.table-row {
+			grid-template-columns: 60px 1fr 80px 70px 80px;
+			padding: 0.8rem 0.5rem;
+			font-size: 0.9rem;
+		}
 
-    .date-text {
-      font-size: 0.8rem;
-    }
-  }
+		.col-name {
+			padding-left: 0.5rem;
+		}
 
-  @media (max-width: 480px) {
-    .table-header, .table-row {
-      grid-template-columns: 50px 1fr 70px;
-      padding: 0.6rem 0.3rem;
-    }
+		.player-name {
+			font-size: 1rem;
+		}
 
-    .col-level, .col-date {
-      display: none;
-    }
+		.score-value {
+			font-size: 1rem;
+		}
 
-    .leaderboard-header h1 {
-      font-size: 1.8rem;
-    }
-  }
+		.rank-badge {
+			font-size: 1.2rem;
+		}
+
+		.level-badge {
+			padding: 0.2rem 0.5rem;
+			font-size: 0.8rem;
+		}
+
+		.date-text {
+			font-size: 0.8rem;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.table-header,
+		.table-row {
+			grid-template-columns: 50px 1fr 70px;
+			padding: 0.6rem 0.3rem;
+		}
+
+		.col-level,
+		.col-date {
+			display: none;
+		}
+
+		.leaderboard-header h1 {
+			font-size: 1.8rem;
+		}
+	}
 </style>
