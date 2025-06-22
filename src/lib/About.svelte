@@ -30,7 +30,7 @@
 		<div class="background" />
 		<div class="inner">
 			<h1>Hi, I'm Tom Freeman 🖖</h1>
-			<h2 class="about--role">A Full Stack Developer</h2>
+			<h2 class="about--role">Software Dev.</h2>
 			<p>I'm {minutesOld} minutes old with a passion for creating beautiful and efficient applications.</p>
 			<a href="/Tom_Freeman.pdf" download class="tracer-border">
 				<svg
