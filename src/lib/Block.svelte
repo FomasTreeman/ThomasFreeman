@@ -20,15 +20,23 @@
 	</h3>
 	<ol class="experience-list">
 		<li class="fac glass-card">
-			FAC <span>- 10 months</span>
+			<a href="https://www.foundersandcoders.com/" target="_blank">
+				FAC <span>- 10 months</span>
+			</a>
 		</li>
 		<li class="rubber-cheese glass-card">
-			Rubber Cheese <span
+			<a href="https://www.rubbercheese.com" target="_blank">
+				Rubber Cheese <span
 				>- {Math.floor(new Date().getFullYear() * 12 + new Date().getMonth() - (2023 * 12 + 8))} months
 				- present</span
-			>
+				>
+			</a>
 		</li>
-		<li class="bsv glass-card">BSV (Open Source) - present</li>
+		<li class="bsv glass-card">
+			<a href="https://bsvblockchain.org" target="_blank">
+				BSV (Open Source) - present
+			</a>
+		</li>
 	</ol>
 
 	<br />
@@ -139,6 +147,13 @@
 		gap: 2%;
 		padding-left: 0;
 		list-style-type: none;
+	}
+
+	.experience-list li a {
+		height: 100%;
+	    display: block;
+    	margin: -1rem;
+		padding: 1rem;
 	}
 
 	.fac {
