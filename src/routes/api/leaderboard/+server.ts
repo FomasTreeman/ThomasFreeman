@@ -114,7 +114,7 @@ export async function GET() {
 }
 
 // POST - Add new score
-export async function POST({ request }) {
+export async function POST({ request }: { request: Request }) {
 	if (!BLOB_READ_WRITE_TOKEN) {
 		return json({ error: 'Leaderboard service not configured' }, { status: 500 });
 	}

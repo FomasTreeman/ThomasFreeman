@@ -1,5 +1,4 @@
-import adapter from '@sveltejs/adapter-auto';
-import { vitePreprocess } from '@sveltejs/kit/vite';
+import adapter from '@sveltejs/adapter-vercel';
 import { mdsvex } from 'mdsvex';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -10,8 +9,7 @@ const config = {
 			// layout: {
 			// 	blog: 'src/routes/blog/[blog]/+page.svelte'
 			// }
-		}),
-		vitePreprocess()
+		})
 	],
 	extensions: ['.svelte', '.md'],
 	kit: {

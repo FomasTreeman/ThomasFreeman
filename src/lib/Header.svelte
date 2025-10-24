@@ -4,14 +4,14 @@
 	import { page } from '$app/stores';
 	import ScrollObserver from './ScrollObserver.svelte';
 
-	let BASE_URL: string;
+	let BASE_URL = $state<string>('');
 	let lastWheelTime = 0;
-	let activeIndex = 0;
-	let menuOffset = spring(2.3, {
+	let activeIndex = $state(0);
+	let menuOffset = spring(2.5, {
 		stiffness: 0.1,
 		damping: 1
 	});
-	let pauseIO = false;
+	let pauseIO = $state(false);
 
 	let homeItems = [
 		{ id: 'home', text: 'Home' },
@@ -24,7 +24,7 @@
 		const newIndex = direction === 'up' ? activeIndex - 1 : activeIndex + 1;
 		if (newIndex >= 0 && newIndex < homeItems.length) {
 			activeIndex = newIndex;
-			menuOffset.set(2.3 - activeIndex * 2.3);
+			menuOffset.set(2.5 - activeIndex * 2.5);
 			scrollToElement(homeItems[newIndex].id);
 		}
 		setTimeout(() => {
@@ -62,11 +62,11 @@
 		BASE_URL = window.location.origin;
 	});
 
-	$: {
-		menuOffset.set(2.3 - activeIndex * 2.3);
-	}
+	$effect(() => {
+		menuOffset.set(2.5 - activeIndex * 2.5);
+	});
 
-	$: currentPath = $page.url.pathname;
+	const currentPath = $derived($page.url.pathname);
 
 	function updateActiveIndex(index: number) {
 		activeIndex = index;
@@ -111,8 +111,8 @@
 		<!-- <li class:active={currentPath === '/blogs'}>
 			<a href="/blogs">Blogs</a>
 		</li> -->
-		<li class:active={currentPath === '/game'}>
-			<a href={`/play`}> Play </a>
+		<li class:active={currentPath.startsWith('/play')}>
+			<a href="/play"> Play </a>
 		</li>
 	</ul>
 </nav>
@@ -135,24 +135,25 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding-block: 0.7rem;
-		gap: 1rem;
+		padding-block: 0.8rem;
+		gap: 1.2rem;
 		width: fit-content;
 		margin-inline: auto;
-		padding-inline: 0.8rem;
+		padding-inline: 1rem;
 		background: rgba(1, 1, 1, 0.6);
 		backdrop-filter: blur(20px) saturate(1.7);
 		border-radius: 1000px;
 	}
 
 	li {
-		padding-block: 0.4rem;
-		padding-inline: 1.3rem;
+		padding-block: 0.5rem;
+		padding-inline: 1.5rem;
 		border-radius: 1000px;
 		transition: background-color 0.3s ease;
-		width: 6ch;
+		width: 6.5ch;
 		text-align: center;
-		height: 2.3rem;
+		height: 2.5rem;
+		font-size: 1.05rem;
 	}
 
 	li:not(.home-items) {
@@ -186,7 +187,7 @@
 	}
 
 	li.home-items a {
-		height: 2.3rem;
+		height: 2.5rem;
 		width: 100%;
 		text-align: center;
 		transition: opacity 0.3s ease;

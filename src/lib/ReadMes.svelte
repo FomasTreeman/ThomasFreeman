@@ -3,11 +3,9 @@
 	import type { Data } from '$lib/types';
 	import { onMount } from 'svelte';
 
-	export let data: Data;
+	let { data }: { data: Data } = $props();
 
-	let projectElements: NodeListOf<HTMLElement>;
-
-	let gradients: { [key: string]: { x: string; y: string } } = {};
+	let gradients = $state<{ [key: string]: { x: string; y: string } }>({});
 
 	function normalizeCoordinates(screenX: number, screenY: number, element: HTMLElement) {
 		const rect = element.getBoundingClientRect();
@@ -20,17 +18,20 @@
 
 	function handleMouseMove(event: MouseEvent) {
 		const { clientX, clientY } = event;
-		projectElements.forEach((element) => {
+		// Query elements dynamically since they may not exist yet
+		const elements = document.querySelectorAll<HTMLElement>('[data-project]');
+		elements.forEach((element) => {
 			const { relativeX, relativeY } = normalizeCoordinates(clientX, clientY, element);
 			if (!element.dataset.project) return;
 			gradients[element.dataset.project] = { x: `${relativeX}px`, y: `${relativeY}px` };
-			gradients = { ...gradients };
 		});
 	}
 
 	onMount(() => {
 		window.addEventListener('mousemove', handleMouseMove);
-		projectElements = document.querySelectorAll('[data-project]');
+		return () => {
+			window.removeEventListener('mousemove', handleMouseMove);
+		};
 	});
 </script>
 

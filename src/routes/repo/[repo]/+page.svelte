@@ -2,9 +2,10 @@
 	import SvelteMarkdown from 'svelte-markdown';
 	import type { IRepo } from '$lib/types';
 	export let data;
-
-	const repo = data.repos.find((obj) => obj.name === data.param) as IRepo; // handled in page.ts;
 </script>
+
+{#await data.repos then repos}
+	{@const repo = repos.find((obj: IRepo) => obj.name === data.param) as IRepo}
 
 <main class="wrapper">
 	<a href="/" class="return">← back to home</a>
@@ -33,6 +34,7 @@
 		<SvelteMarkdown source={repo.md} />
 	</div>
 </main>
+{/await}
 
 <style>
 	a.return {
