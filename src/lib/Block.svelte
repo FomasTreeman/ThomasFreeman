@@ -27,8 +27,8 @@
 		<li class="rubber-cheese glass-card">
 			<a href="https://www.rubbercheese.com" target="_blank">
 				Rubber Cheese <span
-				>- {Math.floor(new Date().getFullYear() * 12 + new Date().getMonth() - (2023 * 12 + 8))} months
-				- present</span
+				>- 2022
+				- 2025</span
 				>
 			</a>
 		</li>
