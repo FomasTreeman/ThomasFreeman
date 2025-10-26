@@ -229,13 +229,18 @@
 	.timeline-item {
 		position: relative;
 		margin-bottom: 3rem;
-		opacity: 0;
-		transform: translateY(50px);
+		/* Items visible by default - animation is progressive enhancement */
+		opacity: 1;
+		transform: translateY(0);
 		transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
-	/* Locomotive Scroll adds .is-inview class when item enters viewport */
-	.timeline-item.is-inview {
+	/* Optional: Add reveal animation if you want (requires adding reveal-up class to timeline-item) */
+	.timeline-item.reveal-up {
+		opacity: 0;
+		transform: translateY(50px);
+	}
+	.timeline-item.reveal-up.is-inview {
 		opacity: 1;
 		transform: translateY(0);
 	}
