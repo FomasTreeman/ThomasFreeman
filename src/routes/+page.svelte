@@ -3,10 +3,6 @@
 	import Block from '../lib/Block.svelte';
 	import ReadMes from '../lib/ReadMes.svelte';
 	import Footer from '../lib/Footer.svelte';
-	// Example sections showcasing different scroll effects
-	import SectionFade from '../lib/components/sections/SectionFade.svelte';
-	import SectionParallaxBg from '../lib/components/sections/SectionParallaxBg.svelte';
-	import SectionTransforms from '../lib/components/sections/SectionTransforms.svelte';
 
 	export let data;
 </script>
@@ -28,25 +24,20 @@
 	<section id="projects" class="no-max-height" data-scroll-section>
 		<ReadMes {data} />
 	</section>
-
-	<!-- EXAMPLE SECTIONS MOVED TO BOTTOM: Scroll down to see different effect demos -->
 	
-	<!-- Example 1: Simple fade transitions between sections -->
-	<SectionFade title="Section Fade Effect" bg="#0f0f0f" />
-	
-	<!-- Example 2: Parallax background (dramatic slow-motion effect) -->
-	<SectionParallaxBg heading="Parallax Depth" speed={-4} />
-	
-	<!-- Example 3: Different transform effects side-by-side -->
-	<SectionTransforms />
-	
-	<!-- Example 4: Another fade separator with different color -->
-	<SectionFade title="Try Different Colors" bg="#1a1a2e" />
+	<!-- Footer section -->
+	<div data-scroll-section>
+		<Footer />
+	</div>
 </main>
 
-<Footer />
-
 <style>
+	/* Section spacing variables for consistent rhythm */
+	:root {
+		--section-y: clamp(64px, 8vw, 128px);
+		--header-offset: clamp(64px, 7vw, 96px);
+	}
+
 	:global(h1) {
 		font-size: 3.5rem;
 	}
@@ -68,7 +59,8 @@
 	section {
 		position: relative;
 		height: 100vh;
-		scroll-margin: 70px;
+		min-height: min(100svh, 900px);
+		scroll-margin-top: calc(var(--header-offset) + 16px);
 	}
 
 	section#about {
@@ -76,13 +68,13 @@
 		position: relative;
 		margin: 0;
 		background: transparent;
-		padding: 0;
-		scroll-margin: 0px;
+		padding-block: var(--section-y);
+		scroll-margin-top: calc(var(--header-offset) + 16px);
 	}
 
 	section#projects {
-		scroll-margin: 100px;
-		padding-block: 4rem;
+		scroll-margin-top: calc(var(--header-offset) + 16px);
+		padding-block: var(--section-y);
 		background: linear-gradient(
 			180deg,
 			transparent 0%,

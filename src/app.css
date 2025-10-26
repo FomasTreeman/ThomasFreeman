@@ -66,6 +66,12 @@
 		--reveal-distance: 80px; /* Still dramatic on mobile */
 		--dur: 900ms;
 	}
+
+	/* Glassmorphism tokens - optimized for dark/black backgrounds */
+	--glass-bg-alpha: 0.12; /* Bump slightly on pure black to ensure visibility */
+	--glass-border-alpha: 0.22;
+	--glass-highlight-alpha: 0.22;
+	--glass-blur: 20px;
 }
 
 html,
@@ -230,6 +236,58 @@ button:hover {
 /* Scroll container setup */
 main[data-scroll-container] {
 	touch-action: pan-y;
+}
+
+/* ============================================
+   Glassmorphism Utilities
+   ============================================ */
+
+/* Base glass effect - works on blur-supporting browsers */
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+	.glass {
+		background: rgba(255, 255, 255, var(--glass-bg-alpha));
+		backdrop-filter: blur(var(--glass-blur)) saturate(1.7);
+		-webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.7);
+		border: 1px solid rgba(255, 255, 255, var(--glass-border-alpha));
+		box-shadow: 
+			0 10px 30px rgba(0, 0, 0, 0.35),
+			inset 0 1px 0 rgba(255, 255, 255, 0.08);
+	}
+
+	.glass--highlight::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 35%;
+		background: linear-gradient(
+			180deg,
+			rgba(255, 255, 255, var(--glass-highlight-alpha)) 0%,
+			rgba(255, 255, 255, 0) 100%
+		);
+		border-radius: inherit;
+		pointer-events: none;
+		z-index: 1;
+	}
+}
+
+/* Fallback for browsers without backdrop-filter support */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+	.glass {
+		background: rgba(255, 255, 255, 0.14);
+		border: 1px solid rgba(255, 255, 255, 0.22);
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+	}
+}
+
+/* Accessibility: reduced transparency */
+@media (prefers-reduced-transparency: reduce) {
+	.glass {
+		background: rgba(255, 255, 255, 0.18) !important;
+		backdrop-filter: none !important;
+		-webkit-backdrop-filter: none !important;
+	}
 }
 
 /* Reduced motion fallback */

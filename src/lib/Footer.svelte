@@ -1,5 +1,5 @@
 <footer>
-	<div class="background" />
+	<div class="background glass" />
 	<h3>Available for select freelance opportunities</h3>
 	<p>Have an exciting project you need help with❓</p>
 	<p>
@@ -9,17 +9,16 @@
 </footer>
 
 <style>
-	.background {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		background: blue;
-		mix-blend-mode: luminosity;
-		z-index: -1;
-		border-radius: 1rem;
-		top: 0;
-		left: 0%;
-	}
+.background {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+	border-radius: 1rem;
+	top: 0;
+	left: 0%;
+	pointer-events: none;
+}
 
 	footer {
 		margin-inline: auto;
@@ -53,11 +52,4 @@
 		}
 	}
 
-	@supports (-webkit-appearance: none) {
-		footer .background {
-			mix-blend-mode: normal;
-			background: rgba(1, 1, 1, 0.6);
-			backdrop-filter: blur(20px) saturate(1.7);
-		}
-	}
 </style>

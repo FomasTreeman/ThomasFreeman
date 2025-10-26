@@ -27,12 +27,12 @@
 </div>
 <div class="wrapper">
 	<div class="isolate">
-		<div class="background" />
-		<div class="inner">
-			<h1>Hi, I'm Tom Freeman 🖖</h1>
-			<h2 class="about--role">Software Dev.</h2>
-			<p>I'm {minutesOld} minutes old with a passion for creating beautiful and efficient applications.</p>
-			<a href="/Tom_Freeman.pdf" download class="tracer-border">
+		<div class="background glass glass--highlight" />
+	<div class="inner">
+		<h1 data-scroll data-scroll-speed="0.8">Hi, I'm Tom Freeman 🖖</h1>
+		<h2 class="about--role" data-scroll data-scroll-speed="0.6">Software Dev.</h2>
+		<p data-scroll data-scroll-speed="0.5">I'm {minutesOld} minutes old with a passion for creating beautiful and efficient applications.</p>
+		<a href="/Tom_Freeman.pdf" download class="tracer-border" data-scroll data-scroll-speed="0.4">
 				<svg
 					stroke="currentColor"
 					fill="currentColor"
@@ -51,7 +51,7 @@
 				>
 				<p>Resume</p>
 			</a>
-			<div class="contact-links">
+		<div class="contact-links" data-scroll data-scroll-speed="0.3">
 				<a href="https://www.foundersandcoders.com/">
 					<img loading="lazy" src="/contact/fac.webp" alt="FAC" />
 				</a>
@@ -212,14 +212,14 @@
 		width: 100%;
 	}
 
-	div.background {
-		mix-blend-mode: luminosity;
-		background: blue;
-		position: absolute;
-		height: 100%;
-		width: 100%;
-		border-radius: 1rem;
-	}
+div.background {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	border-radius: 1rem;
+	pointer-events: none;
+	z-index: 0;
+}
 
 	.isolate {
 		position: relative;
@@ -319,9 +319,10 @@
 			font-size: medium;
 		}
 
-		.background {
-			border-radius: 0;
-		}
+	.background {
+		border-radius: 0;
+		--glass-bg-alpha: 0.14; /* Slightly higher for mobile OLED blacks */
+	}
 
 		.scroll-down-prompt {
 			bottom: 1rem;
@@ -333,11 +334,4 @@
 		}
 	}
 
-	@supports (-webkit-appearance: none) {
-		.isolate .background {
-			mix-blend-mode: normal;
-			background: rgba(1, 1, 1, 0.6);
-			backdrop-filter: blur(20px) saturate(1.7);
-		}
-	}
 </style>

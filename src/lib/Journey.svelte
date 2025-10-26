@@ -55,22 +55,19 @@
 </script>
 
 <div class="journey-wrapper" data-scroll-section>
-	<!-- Parallax background layer - subtle depth effect -->
-	<div class="journey-bg-layer" data-scroll data-scroll-speed="-1"></div>
-	
 	<div class="journey-section">
-		<div class="journey-header">
-			<h2 class="title" data-scroll data-scroll-speed="1">My Journey</h2>
-			<p class="subtitle reveal-fade" data-scroll>From bootcamp to blockchain</p>
-		</div>
+	<div class="journey-header">
+		<h2 class="title" data-scroll data-scroll-speed="0.8">My Journey</h2>
+		<p class="subtitle" data-scroll data-scroll-speed="0.6">From bootcamp to blockchain</p>
+	</div>
 
-		<!-- Timeline: no parallax on content to avoid spacing issues -->
 		<div class="timeline">
-			<div class="timeline-line"></div>
+			<div class="timeline-line" data-scroll data-scroll-speed="-0.4"></div>
 			{#each experiences as exp, index}
 				<div
 					class="timeline-item"
 					data-scroll
+					data-scroll-speed="{0.3 + (index * 0.15)}"
 					style="--i: {index};"
 				>
 					<div
@@ -118,43 +115,19 @@
 </div>
 
 <style>
-	.journey-wrapper {
-		position: relative;
-		background: linear-gradient(
-			180deg,
-			rgba(5, 4, 5, 0.3) 0%,
-			rgb(5, 4, 5) 15%,
-			rgb(5, 4, 5) 85%,
-			rgba(5, 4, 5, 0.3) 100%
-		);
-		padding-block: 6rem 2rem; /* Tighter spacing */
-		overflow: hidden;
-		/* 3D perspective for parallax depth WITHOUT layout shift */
-		perspective: 1000px;
-		perspective-origin: 50% 50%;
-	}
-
-	/* Parallax background layer for depth effect */
-	.journey-bg-layer {
-		position: absolute;
-		top: -20%;
-		left: 0;
-		right: 0;
-		height: 140%;
-		background: radial-gradient(
-			ellipse at 50% 30%,
-			rgba(0, 121, 255, 0.08) 0%,
-			transparent 50%
-		),
-		radial-gradient(
-			ellipse at 80% 70%,
-			rgba(255, 138, 0, 0.06) 0%,
-			transparent 50%
-		);
-		z-index: 0;
-		pointer-events: none;
-		will-change: transform;
-	}
+.journey-wrapper {
+	position: relative;
+	z-index: 0;
+	background: linear-gradient(
+		180deg,
+		rgba(5, 4, 5, 0.3) 0%,
+		rgb(5, 4, 5) 15%,
+		rgb(5, 4, 5) 85%,
+		rgba(5, 4, 5, 0.3) 100%
+	);
+	padding-block: clamp(48px, 6vw, 96px);
+	overflow: clip;
+}
 
 	.journey-wrapper::before {
 		content: '';
@@ -205,17 +178,12 @@
 	.journey-section {
 		position: relative;
 		z-index: 1;
-		/* CSS parallax without affecting layout */
-		transform-style: preserve-3d;
 	}
 
 	.journey-header {
 		text-align: center;
 		margin-bottom: 4rem;
 		padding-inline: 2rem;
-		/* Parallax depth using transform3d */
-		transform: translateZ(20px) scale(0.98);
-		transition: transform 0.5s ease-out;
 	}
 
 	.title {
@@ -241,8 +209,6 @@
 		margin-inline: auto;
 		padding: 2rem var(--margin-left);
 		padding-left: calc(var(--margin-left) + 3rem);
-		/* Parallax depth layer */
-		transform: translateZ(10px) scale(0.99);
 	}
 
 	.timeline-line {
@@ -264,23 +230,8 @@
 	.timeline-item {
 		position: relative;
 		margin-bottom: 3rem;
-		/* ALWAYS VISIBLE by default */
 		opacity: 1;
 		transform: translateY(0);
-		/* Fade in from bottom as you scroll - progressive enhancement */
-		animation: fadeInFromBottom 1s ease-out backwards;
-		animation-delay: calc(var(--i, 0) * 0.15s);
-	}
-
-	@keyframes fadeInFromBottom {
-		from {
-			opacity: 0;
-			transform: translateY(40px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
 	}
 
 	.timeline-dot {
@@ -323,12 +274,10 @@
 		overflow: hidden;
 		text-decoration: none;
 		color: inherit;
-		/* Card depth - pops forward on hover */
-		transform: translateZ(0);
 	}
 
 	.experience-card:hover {
-		transform: translateX(8px) translateZ(30px) scale(1.02);
+		transform: translateX(8px) scale(1.02);
 		border-color: rgba(255, 255, 255, 0.2);
 		box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
 	}
