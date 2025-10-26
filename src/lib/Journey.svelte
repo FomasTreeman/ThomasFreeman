@@ -55,23 +55,22 @@
 </script>
 
 <div class="journey-wrapper" data-scroll-section>
-	<!-- Parallax background layer - moves slower than content -->
-	<div class="journey-bg-layer" data-scroll data-scroll-speed="-2"></div>
+	<!-- Parallax background layer - subtle depth effect -->
+	<div class="journey-bg-layer" data-scroll data-scroll-speed="-1"></div>
 	
 	<div class="journey-section">
 		<div class="journey-header">
-			<h2 class="title" data-scroll data-scroll-speed="3">My Journey</h2>
+			<h2 class="title" data-scroll data-scroll-speed="1">My Journey</h2>
 			<p class="subtitle reveal-fade" data-scroll>From bootcamp to blockchain</p>
 		</div>
 
-		<!-- Parallax container: content moves at different speed than background -->
-		<div class="timeline" data-scroll data-scroll-speed="1">
+		<!-- Timeline: no parallax on content to avoid spacing issues -->
+		<div class="timeline">
 			<div class="timeline-line"></div>
 			{#each experiences as exp, index}
 				<div
 					class="timeline-item"
 					data-scroll
-					data-scroll-speed="0.5"
 					style="--i: {index};"
 				>
 					<div
@@ -128,9 +127,8 @@
 			rgb(5, 4, 5) 85%,
 			rgba(5, 4, 5, 0.3) 100%
 		);
-		padding-block: 8rem 2rem; /* Reduced bottom padding to eliminate gap */
+		padding-block: 6rem 2rem; /* Tighter spacing */
 		overflow: hidden;
-		min-height: 100vh;
 	}
 
 	/* Parallax background layer for depth effect */
