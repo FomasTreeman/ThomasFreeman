@@ -67,8 +67,18 @@
 		--dur: 900ms;
 	}
 
-	/* Glassmorphism tokens - optimized for dark/black backgrounds */
-	--glass-bg-alpha: 0.12; /* Bump slightly on pure black to ensure visibility */
+	/* Glassmorphism tokens - optimized for dark/black backgrounds
+	 * 
+	 * USAGE: Apply the .glass class to elements that need a frosted glass effect.
+	 * For very dark/black backgrounds, use higher alpha values (0.12+) to ensure visibility.
+	 * For lighter backgrounds, reduce alpha to 0.08-0.10 to avoid over-prominence.
+	 * 
+	 * PARALLAX GUIDELINES:
+	 * - Keep data-scroll-speed values between -1.5 and 1.5 for smooth scrolling
+	 * - Apply parallax to inner content elements, not large background containers
+	 * - Avoid parallax on header/footer sections to keep them static
+	 */
+	--glass-bg-alpha: 0.12; /* Bump to 0.14 on pure black/OLED if still too faint */
 	--glass-border-alpha: 0.22;
 	--glass-highlight-alpha: 0.22;
 	--glass-blur: 20px;
