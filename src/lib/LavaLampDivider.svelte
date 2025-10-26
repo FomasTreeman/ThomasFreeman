@@ -41,7 +41,7 @@
 				/>
 
 				<!-- Create soft internal shadow by inverting and blurring the alpha -->
-				<feColorMatrix
+				<!-- <feColorMatrix
 					in="goo"
 					type="matrix"
 					values="0 0 0 0 0
@@ -50,12 +50,12 @@
 					        0 0 0 -1 1"
 					result="inverse-alpha"
 				/>
-				<feGaussianBlur in="inverse-alpha" stdDeviation="20" result="soft-edge" />
+				<feGaussianBlur in="inverse-alpha" stdDeviation="20" result="soft-edge" /> -->
 
 				<!-- Darken it -->
-				<feComponentTransfer in="soft-edge" result="dark-edge">
+				<!-- <feComponentTransfer in="soft-edge" result="dark-edge">
 					<feFuncA type="linear" slope="1.5" />
-				</feComponentTransfer>
+				</feComponentTransfer> -->
 
 				<!-- Fill with black -->
 				<feFlood flood-color="rgba(0, 0, 0, 1)" result="black" />
@@ -161,16 +161,17 @@
 			<ellipse class="floating-blob float-blob-4" cx="100" cy="80" rx="27" ry="31" fill="url(#blob-gradient-4-{position})" />
 		</g>
 
-		<!-- Gradient overlay to fade into black background -->
-		<defs>
+		<!-- Aggressive but smooth gradient overlay to fade into black background -->
+		<!-- <defs>
 			<linearGradient id="fade-to-black-{position}" x1="0%" y1="0%" x2="0%" y2="100%">
-				<stop offset="0%" style="stop-color: rgba(0, 0, 0, 0); stop-opacity: 0" />
-				<stop offset="40%" style="stop-color: rgba(0, 0, 0, 0.3); stop-opacity: 1" />
-				<stop offset="70%" style="stop-color: rgba(0, 0, 0, 0.7); stop-opacity: 1" />
+				<stop offset="0%" style="stop-color: rgba(0, 0, 0, 0); stop-opacity: 1" />
+				<stop offset="45%" style="stop-color: rgba(0, 0, 0, 0); stop-opacity: 1" />
+				<stop offset="60%" style="stop-color: rgba(0, 0, 0, 0.35); stop-opacity: 1" />
+				<stop offset="80%" style="stop-color: rgba(0, 0, 0, 0.98); stop-opacity: 1" />
 				<stop offset="100%" style="stop-color: rgba(0, 0, 0, 1); stop-opacity: 1" />
 			</linearGradient>
 		</defs>
-		<rect x="-100" y="80" width="1400" height="120" fill="url(#fade-to-black-{position})" />
+		<rect x="-100" y="0" width="1400" height="200" fill="url(#fade-to-black-{position})" /> -->
 	</svg>
 </div>
 
@@ -185,14 +186,18 @@
 		z-index: 2;
 	}
 
+	.lava-lamp-divider svg {
+		overflow: visible;
+	}
+
 	.lava-lamp-divider.top {
 		top: 0;
-		transform: translateY(-60%);
+		transform: translateY(-40%);
 	}
 
 	.lava-lamp-divider.bottom {
 		bottom: 0;
-		transform: translateY(60%) rotate(180deg);
+		transform: translateY(40%) rotate(180deg);
 	}
 
 	.lava-svg {
