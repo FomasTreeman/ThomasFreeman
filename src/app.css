@@ -1,3 +1,6 @@
+/* Locomotive Scroll base styles */
+@import 'locomotive-scroll/dist/locomotive-scroll.css';
+
 :root {
 	font-family: 'Work Sans', system-ui, Avenir, Helvetica, Arial, sans-serif;
 	line-height: 1.5;
@@ -29,6 +32,16 @@
 	/* --stack-width: calc(100vw - 110vw + 22 * var(--img-width)); */
 	--stack-width: calc(22 * (var(--icon-width) + var(--icon-margin)));
 
+	/* Locomotive Scroll animation variables */
+	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+	--ease-in: cubic-bezier(0.32, 0, 0.67, 0);
+	--dur-quick: 300ms;
+	--dur: 700ms;
+	--dur-slow: 1100ms;
+	--reveal-distance: 40px;
+	--rotate-deg: 8deg;
+	--scale-from: 0.92;
+
 	@media (min-width: 1440px) {
 		--margin-left: 8rem;
 
@@ -48,6 +61,17 @@
 			font-size: 1.5rem;
 		}
 	}
+
+	@media (max-width: 768px) {
+		--reveal-distance: 24px;
+		--dur: 500ms;
+	}
+}
+
+html,
+body,
+#app {
+	height: 100%;
 }
 
 ƒ h1,
@@ -95,4 +119,111 @@ button:hover {
 	box-shadow: 0px 0px 5px 1px rgba(0, 121, 255, 0.7);
 	scale: 1.05;
 	transition: scale 250ms, box-shadow 250ms;
+}
+
+/* ============================================
+   Locomotive Scroll Reveal Effects
+   ============================================ */
+
+/* Reveal utility classes triggered by .is-inview that Locomotive adds to [data-scroll] elements */
+[data-scroll].reveal-up {
+	opacity: 0;
+	transform: translateY(var(--reveal-distance));
+	transition:
+		transform var(--dur) var(--ease-out),
+		opacity var(--dur) var(--ease-out);
+	will-change: transform, opacity;
+}
+[data-scroll].reveal-up.is-inview {
+	opacity: 1;
+	transform: none;
+}
+
+[data-scroll].reveal-fade {
+	opacity: 0;
+	transition: opacity var(--dur) var(--ease-out);
+}
+[data-scroll].reveal-fade.is-inview {
+	opacity: 1;
+}
+
+[data-scroll].reveal-scale {
+	transform: scale(var(--scale-from));
+	opacity: 0;
+	transition:
+		transform var(--dur) var(--ease-out),
+		opacity var(--dur) var(--ease-out);
+	will-change: transform, opacity;
+}
+[data-scroll].reveal-scale.is-inview {
+	transform: scale(1);
+	opacity: 1;
+}
+
+[data-scroll].reveal-rotate {
+	transform: rotate(var(--rotate-deg)) translateY(var(--reveal-distance));
+	opacity: 0;
+	transition:
+		transform var(--dur) var(--ease-out),
+		opacity var(--dur) var(--ease-out);
+}
+[data-scroll].reveal-rotate.is-inview {
+	transform: rotate(0) translateY(0);
+	opacity: 1;
+}
+
+/* Stagger helper: apply incremental delays to children */
+.stagger > [data-scroll] {
+	transition-delay: calc(var(--i, 0) * 90ms);
+}
+
+/* Parallax background helper */
+.parallax-bg {
+	position: absolute;
+	inset: -10vh 0 0 0;
+	background-size: cover;
+	background-position: center;
+	z-index: -1;
+	will-change: transform;
+}
+
+/* Horizontal gallery basics */
+.h-scroll-container {
+	position: relative;
+	height: 120vh; /* vertical space to play the horizontal animation */
+	overflow: hidden;
+}
+.h-track {
+	display: flex;
+	gap: 2rem;
+	will-change: transform;
+}
+
+/* Performance hints */
+.gpu {
+	transform: translateZ(0);
+	will-change: transform;
+}
+
+/* Scroll container setup */
+main[data-scroll-container] {
+	touch-action: pan-y;
+}
+
+/* Reduced motion fallback */
+@media (prefers-reduced-motion: reduce) {
+	[data-scroll].reveal-up,
+	[data-scroll].reveal-fade,
+	[data-scroll].reveal-scale,
+	[data-scroll].reveal-rotate {
+		transition: none !important;
+		transform: none !important;
+		opacity: 1 !important;
+	}
+}
+
+@media (max-width: 768px) {
+	.h-scroll-container {
+		height: 90vh;
+	}
 }

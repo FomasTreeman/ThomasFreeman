@@ -51,15 +51,22 @@
 	section#about {
 		height: auto;
 		position: relative;
-		margin: 0%;
-		background-color: rgb(5, 4, 5);
-		padding-block: 5rem;
-		margin-bottom: 8rem;
+		margin: 0;
+		background: transparent;
+		padding: 0;
 		scroll-margin: 0px;
 	}
 
 	section#projects {
 		scroll-margin: 100px;
+		padding-block: 4rem;
+		background: linear-gradient(
+			180deg,
+			transparent 0%,
+			rgb(5, 4, 5) 5%,
+			rgb(5, 4, 5) 95%,
+			transparent 100%
+		);
 	}
 
 	.no-max-height {
@@ -67,12 +74,9 @@
 	}
 
 	@media (max-width: 768px) {
-		section#about {
-			padding-block: 1.5rem;
-		}
-
 		section#projects {
 			scroll-margin: 40px;
+			padding-block: 2rem;
 		}
 
 		section#home {
