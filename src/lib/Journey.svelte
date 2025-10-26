@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-
 	const experiences = [
 		{
 			company: 'Founders and Coders',
@@ -52,34 +50,15 @@
 		}
 	];
 
-	onMount(() => {
-		// Intersection Observer for fade-in animations
-		const observer = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						entry.target.classList.add('visible');
-					}
-				});
-			},
-			{ threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
-		);
-
-		// Observe all timeline items
-		const items = document.querySelectorAll('.timeline-item');
-		items.forEach((item) => {
-			observer.observe(item);
-		});
-
-		return () => observer.disconnect();
-	});
+	// Locomotive Scroll now handles all scroll animations via data-scroll attributes
+	// The IntersectionObserver has been removed in favor of Locomotive's .is-inview class
 </script>
 
-<div class="journey-wrapper">
+<div class="journey-wrapper" data-scroll-section>
 	<div class="journey-section">
 		<div class="journey-header">
-			<h2 class="title">My Journey</h2>
-			<p class="subtitle">From bootcamp to blockchain</p>
+			<h2 class="title" data-scroll data-scroll-speed="1">My Journey</h2>
+			<p class="subtitle" data-scroll class="reveal-fade">From bootcamp to blockchain</p>
 		</div>
 
 		<div class="timeline">
@@ -87,7 +66,8 @@
 			{#each experiences as exp, index}
 				<div
 					class="timeline-item"
-					style="--item-index: {index}"
+					data-scroll
+					style="--item-index: {index}; transition-delay: calc({index} * 150ms);"
 				>
 					<div
 						class="timeline-dot"
@@ -203,16 +183,6 @@
 		text-align: center;
 		margin-bottom: 4rem;
 		padding-inline: 2rem;
-		opacity: 0;
-		transform: translateY(30px);
-		animation: fadeInUp 0.8s ease forwards;
-	}
-
-	@keyframes fadeInUp {
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
 	}
 
 	.title {
@@ -261,13 +231,13 @@
 		margin-bottom: 3rem;
 		opacity: 0;
 		transform: translateY(50px);
-		transition: opacity 0.8s ease, transform 0.8s ease;
+		transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
-	.timeline-item.visible {
+	/* Locomotive Scroll adds .is-inview class when item enters viewport */
+	.timeline-item.is-inview {
 		opacity: 1;
 		transform: translateY(0);
-		transition-delay: calc(var(--item-index) * 0.15s);
 	}
 
 	.timeline-dot {
