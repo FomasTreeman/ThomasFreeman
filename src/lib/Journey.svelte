@@ -58,7 +58,7 @@
 	<div class="journey-section">
 		<div class="journey-header">
 			<h2 class="title" data-scroll data-scroll-speed="1">My Journey</h2>
-			<p class="subtitle" data-scroll class="reveal-fade">From bootcamp to blockchain</p>
+			<p class="subtitle reveal-fade" data-scroll>From bootcamp to blockchain</p>
 		</div>
 
 		<div class="timeline">
