@@ -3,6 +3,7 @@
 	import Block from '../lib/Block.svelte';
 	import ReadMes from '../lib/ReadMes.svelte';
 	import Footer from '../lib/Footer.svelte';
+	import LavaLampDivider from '../lib/LavaLampDivider.svelte';
 
 	export let data;
 </script>
@@ -11,22 +12,24 @@
 	<!-- EXISTING SECTIONS: Now enhanced with data-scroll-section -->
 	
 	<!-- Home/Hero section with R2D2 -->
-	<section id="home" data-scroll-section>
+	<section id="home">
 		<About />
 	</section>
 
 	<!-- Journey/Timeline section -->
-	<section id="about" data-scroll-section>
+	<section id="about">
 		<Block />
 	</section>
 
 	<!-- Projects section -->
-	<section id="projects" class="no-max-height" data-scroll-section>
+	<section id="projects" class="no-max-height">
+		<LavaLampDivider position="top" />
 		<ReadMes {data} />
+		<LavaLampDivider position="bottom" />
 	</section>
 	
 	<!-- Footer section -->
-	<div data-scroll-section>
+	<div class="footer-container">
 		<Footer />
 	</div>
 </main>
@@ -34,8 +37,10 @@
 <style>
 	/* Section spacing variables for consistent rhythm */
 	:root {
-		--section-y: clamp(64px, 8vw, 128px);
+		--section-padding-y: clamp(3rem, 8vw, 6rem);
+		--section-gap: clamp(2rem, 5vw, 4rem);
 		--header-offset: clamp(64px, 7vw, 96px);
+		--content-max-width: 1400px;
 	}
 
 	:global(h1) {
@@ -61,6 +66,7 @@
 		height: 100vh;
 		min-height: min(100svh, 900px);
 		scroll-margin-top: calc(var(--header-offset) + 16px);
+		scroll-behavior: smooth;
 	}
 
 	section#about {
@@ -68,24 +74,24 @@
 		position: relative;
 		margin: 0;
 		background: transparent;
-		padding-block: var(--section-y);
+		padding-block: 0;
 		scroll-margin-top: calc(var(--header-offset) + 16px);
 	}
 
 	section#projects {
+		position: relative;
 		scroll-margin-top: calc(var(--header-offset) + 16px);
-		padding-block: var(--section-y);
-		background: linear-gradient(
-			180deg,
-			transparent 0%,
-			rgb(5, 4, 5) 5%,
-			rgb(5, 4, 5) 95%,
-			transparent 100%
-		);
+		padding-block: var(--section-padding-y);
+		background: rgb(5, 4, 5);
 	}
 
 	.no-max-height {
 		height: auto;
+	}
+
+	.footer-container {
+		padding-bottom: clamp(3rem, 6vw, 5rem);
+		min-height: clamp(3rem, 6vw, 5rem);
 	}
 
 	@media (max-width: 768px) {
@@ -97,6 +103,11 @@
 		section#home {
 			height: calc(100vh - 4rem);
 			scroll-margin: -30px;
+		}
+
+		.footer-container {
+			padding-bottom: 7rem;
+			min-height: 7rem;
 		}
 	}
 </style>

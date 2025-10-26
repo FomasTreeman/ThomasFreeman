@@ -3,32 +3,20 @@
 	import * as SC from 'svelte-cubed';
 	import R2D2 from './R2D2.svelte';
 
-	// const combos = [
-	// 	[25, 20, 50],
-	// 	[-25, 20, 50],
-	// 	[0, 15, -30],
-	// 	[15, 15, 15],
-	// 	[0, 15, 30]
-	// ];
-
-	const animations = ['arch', 'straight', 'advanced'] as const;
-
-	let animationCount = 1;
 	let position = [0, 20, 40];
-	let animation: (typeof animations)[number] = animations[0];
+	let innerWidth = 1920; // Default to desktop width
 
-	function onNext() {
-		animation = animations[animationCount];
-		position = [0, 20, 40];
-		animationCount < animations.length - 1 ? animationCount++ : (animationCount = 0);
-	}
+	// Responsive FOV - wider on smaller screens for better view
+	$: fov = innerWidth < 768 ? 55 : // Mobile: wider FOV
+		innerWidth < 1024 ? 50 : // Tablet: medium FOV
+		40; // Desktop: default FOV
 </script>
 
 <!-- fun zs:: 1, -1, -->
 
 <div role="img">
 	<SC.Canvas antialias alpha={true}>
-		<SC.PerspectiveCamera {position} near={0.1} far={200} fov={40} />
+		<SC.PerspectiveCamera {position} near={0.1} far={200} {fov} />
 
 		<!-- <SC.OrbitControls
 			enabled={true}
@@ -46,6 +34,8 @@
 		/>
 		<SC.AmbientLight color={new THREE.Color(0xffffff)} intensity={0.75} />
 
-		<R2D2 {animation} on:next={onNext} />
+		<R2D2 />
 	</SC.Canvas>
 </div>
+
+<svelte:window bind:innerWidth />

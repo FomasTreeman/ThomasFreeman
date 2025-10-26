@@ -108,7 +108,8 @@ a {
 body {
 	min-width: 320px;
 	margin: 0%;
-	width: 100vw;
+	width: 100%;
+	overflow-x: hidden;
 }
 
 button {

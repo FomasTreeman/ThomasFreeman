@@ -1,4 +1,6 @@
 <script lang="ts">
+	import LavaLampDivider from './LavaLampDivider.svelte';
+
 	const experiences = [
 		{
 			company: 'Founders and Coders',
@@ -54,20 +56,19 @@
 	// The IntersectionObserver has been removed in favor of Locomotive's .is-inview class
 </script>
 
-<div class="journey-wrapper" data-scroll-section>
+<div class="journey-wrapper">
+	<LavaLampDivider position="top" />
 	<div class="journey-section">
 	<div class="journey-header">
-		<h2 class="title" data-scroll data-scroll-speed="0.8">My Journey</h2>
-		<p class="subtitle" data-scroll data-scroll-speed="0.6">From bootcamp to blockchain</p>
+		<h2 class="title">My Journey</h2>
+		<p class="subtitle">From bootcamp to blockchain</p>
 	</div>
 
 		<div class="timeline">
-			<div class="timeline-line" data-scroll data-scroll-speed="-0.4"></div>
+			<div class="timeline-line"></div>
 			{#each experiences as exp, index}
 				<div
 					class="timeline-item"
-					data-scroll
-					data-scroll-speed="{0.3 + (index * 0.15)}"
 					style="--i: {index};"
 				>
 					<div
@@ -112,21 +113,16 @@
 			{/each}
 		</div>
 	</div>
+	<LavaLampDivider position="bottom" />
 </div>
 
 <style>
 .journey-wrapper {
 	position: relative;
 	z-index: 0;
-	background: linear-gradient(
-		180deg,
-		rgba(5, 4, 5, 0.3) 0%,
-		rgb(5, 4, 5) 15%,
-		rgb(5, 4, 5) 85%,
-		rgba(5, 4, 5, 0.3) 100%
-	);
-	padding-block: clamp(48px, 6vw, 96px);
-	overflow: clip;
+	background: rgb(5, 4, 5);
+	padding-block: clamp(4rem, 8vw, 7rem);
+	overflow: visible;
 }
 
 	.journey-wrapper::before {
@@ -182,17 +178,14 @@
 
 	.journey-header {
 		text-align: center;
-		margin-bottom: 4rem;
+		margin-bottom: clamp(3rem, 6vw, 5rem);
 		padding-inline: 2rem;
 	}
 
 	.title {
 		font-size: 3rem;
 		margin-bottom: 1rem;
-		background: linear-gradient(135deg, var(--primary-color1), var(--secondary-color1), var(--primary-color2));
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
+		color: white;
 		font-weight: 800;
 	}
 
@@ -229,7 +222,7 @@
 
 	.timeline-item {
 		position: relative;
-		margin-bottom: 3rem;
+		margin-bottom: clamp(2.5rem, 4vw, 4rem);
 		opacity: 1;
 		transform: translateY(0);
 	}
@@ -265,21 +258,23 @@
 	.experience-card {
 		position: relative;
 		display: block;
-		background: rgba(255, 255, 255, 0.05);
-		backdrop-filter: blur(12px) saturate(1.5);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 1rem;
-		padding: 2.5rem;
-		transition: all 0.3s ease;
+		background: rgba(255, 255, 255, 0.03);
+		backdrop-filter: blur(10px) saturate(1.3);
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 1.25rem;
+		padding: clamp(1.75rem, 3vw, 2.5rem);
+		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 		overflow: hidden;
 		text-decoration: none;
 		color: inherit;
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 	}
 
 	.experience-card:hover {
-		transform: translateX(8px) scale(1.02);
-		border-color: rgba(255, 255, 255, 0.2);
-		box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+		transform: translateX(8px) translateY(-4px);
+		border-color: rgba(255, 255, 255, 0.15);
+		background: rgba(255, 255, 255, 0.05);
+		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 	}
 
 	.timeline-item:hover .timeline-dot {
