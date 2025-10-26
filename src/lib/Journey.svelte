@@ -128,7 +128,7 @@
 			rgb(5, 4, 5) 85%,
 			rgba(5, 4, 5, 0.3) 100%
 		);
-		padding-block: 8rem 10rem;
+		padding-block: 8rem 2rem; /* Reduced bottom padding to eliminate gap */
 		overflow: hidden;
 		min-height: 100vh;
 	}

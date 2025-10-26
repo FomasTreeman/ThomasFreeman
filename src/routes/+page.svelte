@@ -29,8 +29,7 @@
 		<ReadMes {data} />
 	</section>
 
-	<!-- EXAMPLE SECTIONS: Remove/keep based on your preference -->
-	<!-- These demonstrate different Locomotive Scroll effects you can use -->
+	<!-- EXAMPLE SECTIONS MOVED TO BOTTOM: Scroll down to see different effect demos -->
 	
 	<!-- Example 1: Simple fade transitions between sections -->
 	<SectionFade title="Section Fade Effect" bg="#0f0f0f" />
