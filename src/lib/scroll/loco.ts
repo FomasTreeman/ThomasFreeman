@@ -1,6 +1,6 @@
 // Locomotive Scroll integration with SSR-guard, mobile optimization, and helpers.
 import { browser } from '$app/environment';
-import { writable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
 
 export type LocoInstance = import('locomotive-scroll').default | null;
 export const locoStore = writable<LocoInstance>(null);
@@ -19,10 +19,8 @@ export async function initLoco(container: HTMLElement) {
 	if (!browser) return null;
 
 	// Avoid double init
-	let current: LocoInstance;
-	const unsub = locoStore.subscribe((v) => (current = v));
-	unsub();
-	if (current) return current!;
+	const current = get(locoStore);
+	if (current) return current;
 
 	const LocomotiveScroll = (await import('locomotive-scroll')).default;
 
@@ -51,9 +49,7 @@ export async function initLoco(container: HTMLElement) {
 }
 
 export function destroyLoco() {
-	let current: LocoInstance;
-	const unsub = locoStore.subscribe((v) => (current = v));
-	unsub();
+	const current = get(locoStore);
 	if (current) {
 		current.destroy();
 		locoStore.set(null);
@@ -61,9 +57,7 @@ export function destroyLoco() {
 }
 
 export function refreshLoco() {
-	let current: LocoInstance;
-	const unsub = locoStore.subscribe((v) => (current = v));
-	unsub();
+	const current = get(locoStore);
 	current?.update();
 }
 
@@ -79,8 +73,6 @@ export function useLoco(node: HTMLElement) {
 }
 
 export function scrollTo(target: number | string | HTMLElement, options?: any) {
-	let current: LocoInstance;
-	const unsub = locoStore.subscribe((v) => (current = v));
-	unsub();
+	const current = get(locoStore);
 	current?.scrollTo(target as any, options);
 }

@@ -18,7 +18,7 @@
 		data-scroll-speed={speed}
 		style="background-image: url('{image}'); background-color: #1a1a2e;"
 		aria-hidden="true"
-	/>
+	></div>
 
 	<div style="position: relative; z-index: 1; text-align: center; padding-inline: 2rem;">
 		<h2 data-scroll class="reveal-up" style="color: white; text-shadow: 0 6px 24px rgba(0,0,0,.7);">
