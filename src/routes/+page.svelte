@@ -3,22 +3,46 @@
 	import Block from '../lib/Block.svelte';
 	import ReadMes from '../lib/ReadMes.svelte';
 	import Footer from '../lib/Footer.svelte';
+	// Example sections showcasing different scroll effects
+	import SectionFade from '../lib/components/sections/SectionFade.svelte';
+	import SectionParallaxBg from '../lib/components/sections/SectionParallaxBg.svelte';
+	import SectionTransforms from '../lib/components/sections/SectionTransforms.svelte';
 
 	export let data;
 </script>
 
 <main>
-	<section id="home">
+	<!-- EXISTING SECTIONS: Now enhanced with data-scroll-section -->
+	
+	<!-- Home/Hero section with R2D2 -->
+	<section id="home" data-scroll-section>
 		<About />
 	</section>
 
-	<section id="about">
+	<!-- Journey/Timeline section -->
+	<section id="about" data-scroll-section>
 		<Block />
 	</section>
 
-	<section id="projects" class="no-max-height">
+	<!-- Projects section -->
+	<section id="projects" class="no-max-height" data-scroll-section>
 		<ReadMes {data} />
 	</section>
+
+	<!-- EXAMPLE SECTIONS: Remove/keep based on your preference -->
+	<!-- These demonstrate different Locomotive Scroll effects you can use -->
+	
+	<!-- Example 1: Simple fade transitions between sections -->
+	<SectionFade title="Section Fade Effect" bg="#0f0f0f" />
+	
+	<!-- Example 2: Parallax background (image optional, shows placeholder) -->
+	<SectionParallaxBg heading="Parallax Depth" speed={-2} />
+	
+	<!-- Example 3: Different transform effects side-by-side -->
+	<SectionTransforms />
+	
+	<!-- Example 4: Another fade separator with different color -->
+	<SectionFade title="Try Different Colors" bg="#1a1a2e" />
 </main>
 
 <Footer />
