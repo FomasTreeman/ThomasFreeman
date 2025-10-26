@@ -129,6 +129,9 @@
 		);
 		padding-block: 6rem 2rem; /* Tighter spacing */
 		overflow: hidden;
+		/* 3D perspective for parallax depth WITHOUT layout shift */
+		perspective: 1000px;
+		perspective-origin: 50% 50%;
 	}
 
 	/* Parallax background layer for depth effect */
@@ -202,12 +205,17 @@
 	.journey-section {
 		position: relative;
 		z-index: 1;
+		/* CSS parallax without affecting layout */
+		transform-style: preserve-3d;
 	}
 
 	.journey-header {
 		text-align: center;
 		margin-bottom: 4rem;
 		padding-inline: 2rem;
+		/* Parallax depth using transform3d */
+		transform: translateZ(20px) scale(0.98);
+		transition: transform 0.5s ease-out;
 	}
 
 	.title {
@@ -233,6 +241,8 @@
 		margin-inline: auto;
 		padding: 2rem var(--margin-left);
 		padding-left: calc(var(--margin-left) + 3rem);
+		/* Parallax depth layer */
+		transform: translateZ(10px) scale(0.99);
 	}
 
 	.timeline-line {
@@ -313,12 +323,14 @@
 		overflow: hidden;
 		text-decoration: none;
 		color: inherit;
+		/* Card depth - pops forward on hover */
+		transform: translateZ(0);
 	}
 
 	.experience-card:hover {
-		transform: translateX(8px);
+		transform: translateX(8px) translateZ(30px) scale(1.02);
 		border-color: rgba(255, 255, 255, 0.2);
-		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+		box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
 	}
 
 	.timeline-item:hover .timeline-dot {
