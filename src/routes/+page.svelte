@@ -35,8 +35,8 @@
 	<!-- Example 1: Simple fade transitions between sections -->
 	<SectionFade title="Section Fade Effect" bg="#0f0f0f" />
 	
-	<!-- Example 2: Parallax background (image optional, shows placeholder) -->
-	<SectionParallaxBg heading="Parallax Depth" speed={-2} />
+	<!-- Example 2: Parallax background (dramatic slow-motion effect) -->
+	<SectionParallaxBg heading="Parallax Depth" speed={-4} />
 	
 	<!-- Example 3: Different transform effects side-by-side -->
 	<SectionTransforms />

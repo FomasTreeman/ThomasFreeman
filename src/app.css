@@ -32,15 +32,15 @@
 	/* --stack-width: calc(100vw - 110vw + 22 * var(--img-width)); */
 	--stack-width: calc(22 * (var(--icon-width) + var(--icon-margin)));
 
-	/* Locomotive Scroll animation variables */
+	/* Locomotive Scroll animation variables - DRAMATIC EFFECTS */
 	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 	--ease-in: cubic-bezier(0.32, 0, 0.67, 0);
-	--dur-quick: 300ms;
-	--dur: 700ms;
-	--dur-slow: 1100ms;
-	--reveal-distance: 40px;
-	--rotate-deg: 8deg;
-	--scale-from: 0.92;
+	--dur-quick: 500ms;
+	--dur: 1200ms;
+	--dur-slow: 1800ms;
+	--reveal-distance: 120px; /* Much larger movement */
+	--rotate-deg: 15deg; /* More rotation */
+	--scale-from: 0.7; /* Start much smaller */
 
 	@media (min-width: 1440px) {
 		--margin-left: 8rem;
@@ -63,8 +63,8 @@
 	}
 
 	@media (max-width: 768px) {
-		--reveal-distance: 24px;
-		--dur: 500ms;
+		--reveal-distance: 80px; /* Still dramatic on mobile */
+		--dur: 900ms;
 	}
 }
 
@@ -128,7 +128,7 @@ button:hover {
 /* Reveal utility classes triggered by .is-inview that Locomotive adds to [data-scroll] elements */
 [data-scroll].reveal-up {
 	opacity: 0;
-	transform: translateY(var(--reveal-distance));
+	transform: translateY(var(--reveal-distance)) scale(0.95);
 	transition:
 		transform var(--dur) var(--ease-out),
 		opacity var(--dur) var(--ease-out);
@@ -137,44 +137,66 @@ button:hover {
 [data-scroll].reveal-up.is-inview {
 	opacity: 1;
 	transform: none;
+	animation: bounceIn 0.6s ease-out;
+}
+
+@keyframes bounceIn {
+	0% { transform: scale(0.95); }
+	50% { transform: scale(1.02); }
+	100% { transform: scale(1); }
 }
 
 [data-scroll].reveal-fade {
 	opacity: 0;
-	transition: opacity var(--dur) var(--ease-out);
+	filter: blur(10px);
+	transition: opacity var(--dur) var(--ease-out), filter var(--dur) var(--ease-out);
 }
 [data-scroll].reveal-fade.is-inview {
 	opacity: 1;
+	filter: blur(0);
 }
 
 [data-scroll].reveal-scale {
-	transform: scale(var(--scale-from));
+	transform: scale(var(--scale-from)) rotate(-5deg);
 	opacity: 0;
+	filter: blur(5px);
 	transition:
 		transform var(--dur) var(--ease-out),
-		opacity var(--dur) var(--ease-out);
+		opacity var(--dur) var(--ease-out),
+		filter var(--dur) var(--ease-out);
 	will-change: transform, opacity;
 }
 [data-scroll].reveal-scale.is-inview {
-	transform: scale(1);
+	transform: scale(1) rotate(0);
 	opacity: 1;
+	filter: blur(0);
+	animation: popIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes popIn {
+	0% { transform: scale(0.7) rotate(-5deg); }
+	60% { transform: scale(1.1) rotate(2deg); }
+	100% { transform: scale(1) rotate(0); }
 }
 
 [data-scroll].reveal-rotate {
-	transform: rotate(var(--rotate-deg)) translateY(var(--reveal-distance));
+	transform: rotate(var(--rotate-deg)) translateY(var(--reveal-distance)) scale(0.8);
 	opacity: 0;
+	filter: blur(8px);
 	transition:
 		transform var(--dur) var(--ease-out),
-		opacity var(--dur) var(--ease-out);
+		opacity var(--dur) var(--ease-out),
+		filter var(--dur) var(--ease-out);
 }
 [data-scroll].reveal-rotate.is-inview {
-	transform: rotate(0) translateY(0);
+	transform: rotate(0) translateY(0) scale(1);
 	opacity: 1;
+	filter: blur(0);
 }
 
 /* Stagger helper: apply incremental delays to children */
 .stagger > [data-scroll] {
-	transition-delay: calc(var(--i, 0) * 90ms);
+	transition-delay: calc(var(--i, 0) * 200ms); /* Longer delays for more noticeable stagger */
 }
 
 /* Parallax background helper */

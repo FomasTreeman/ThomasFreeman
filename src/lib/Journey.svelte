@@ -57,7 +57,7 @@
 <div class="journey-wrapper" data-scroll-section>
 	<div class="journey-section">
 		<div class="journey-header">
-			<h2 class="title" data-scroll data-scroll-speed="1">My Journey</h2>
+			<h2 class="title" data-scroll data-scroll-speed="3">My Journey</h2>
 			<p class="subtitle reveal-fade" data-scroll>From bootcamp to blockchain</p>
 		</div>
 
@@ -65,9 +65,9 @@
 			<div class="timeline-line"></div>
 			{#each experiences as exp, index}
 				<div
-					class="timeline-item"
+					class="timeline-item reveal-up"
 					data-scroll
-					style="--item-index: {index}; transition-delay: calc({index} * 150ms);"
+					style="--i: {index};"
 				>
 					<div
 						class="timeline-dot"
@@ -229,20 +229,19 @@
 	.timeline-item {
 		position: relative;
 		margin-bottom: 3rem;
-		/* Items visible by default - animation is progressive enhancement */
-		opacity: 1;
-		transform: translateY(0);
-		transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
-	/* Optional: Add reveal animation if you want (requires adding reveal-up class to timeline-item) */
+	/* Dramatic reveal animation for timeline items */
 	.timeline-item.reveal-up {
 		opacity: 0;
-		transform: translateY(50px);
+		transform: translateY(100px) scale(0.9) rotate(-3deg);
+		filter: blur(5px);
+		transition-delay: calc(var(--i, 0) * 250ms);
 	}
 	.timeline-item.reveal-up.is-inview {
 		opacity: 1;
-		transform: translateY(0);
+		transform: translateY(0) scale(1) rotate(0);
+		filter: blur(0);
 	}
 
 	.timeline-dot {
