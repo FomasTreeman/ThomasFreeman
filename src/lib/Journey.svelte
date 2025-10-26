@@ -55,18 +55,23 @@
 </script>
 
 <div class="journey-wrapper" data-scroll-section>
+	<!-- Parallax background layer - moves slower than content -->
+	<div class="journey-bg-layer" data-scroll data-scroll-speed="-2"></div>
+	
 	<div class="journey-section">
 		<div class="journey-header">
 			<h2 class="title" data-scroll data-scroll-speed="3">My Journey</h2>
 			<p class="subtitle reveal-fade" data-scroll>From bootcamp to blockchain</p>
 		</div>
 
-		<div class="timeline">
+		<!-- Parallax container: content moves at different speed than background -->
+		<div class="timeline" data-scroll data-scroll-speed="1">
 			<div class="timeline-line"></div>
 			{#each experiences as exp, index}
 				<div
-					class="timeline-item reveal-up"
+					class="timeline-item"
 					data-scroll
+					data-scroll-speed="0.5"
 					style="--i: {index};"
 				>
 					<div
@@ -126,6 +131,28 @@
 		padding-block: 8rem 10rem;
 		overflow: hidden;
 		min-height: 100vh;
+	}
+
+	/* Parallax background layer for depth effect */
+	.journey-bg-layer {
+		position: absolute;
+		top: -20%;
+		left: 0;
+		right: 0;
+		height: 140%;
+		background: radial-gradient(
+			ellipse at 50% 30%,
+			rgba(0, 121, 255, 0.08) 0%,
+			transparent 50%
+		),
+		radial-gradient(
+			ellipse at 80% 70%,
+			rgba(255, 138, 0, 0.06) 0%,
+			transparent 50%
+		);
+		z-index: 0;
+		pointer-events: none;
+		will-change: transform;
 	}
 
 	.journey-wrapper::before {
@@ -229,19 +256,23 @@
 	.timeline-item {
 		position: relative;
 		margin-bottom: 3rem;
+		/* ALWAYS VISIBLE by default */
+		opacity: 1;
+		transform: translateY(0);
+		/* Fade in from bottom as you scroll - progressive enhancement */
+		animation: fadeInFromBottom 1s ease-out backwards;
+		animation-delay: calc(var(--i, 0) * 0.15s);
 	}
 
-	/* Dramatic reveal animation for timeline items */
-	.timeline-item.reveal-up {
-		opacity: 0;
-		transform: translateY(100px) scale(0.9) rotate(-3deg);
-		filter: blur(5px);
-		transition-delay: calc(var(--i, 0) * 250ms);
-	}
-	.timeline-item.reveal-up.is-inview {
-		opacity: 1;
-		transform: translateY(0) scale(1) rotate(0);
-		filter: blur(0);
+	@keyframes fadeInFromBottom {
+		from {
+			opacity: 0;
+			transform: translateY(40px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	}
 
 	.timeline-dot {
