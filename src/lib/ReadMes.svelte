@@ -81,8 +81,12 @@
 
 	@media only screen and (max-width: 768px) {
 		.grid {
-			margin: 0px;
-			margin-bottom: 5rem;
+			margin-inline: 0;
+			margin-bottom: 2rem;
+		}
+
+		.header-section {
+			margin-bottom: 2rem;
 		}
 	}
 
@@ -114,8 +118,7 @@
 
 	@media (max-width: 768px) {
 		.grid {
-			gap: 25px;
-			margin-bottom: 1.5rem;
+			gap: 1.25rem;
 		}
 	}
 

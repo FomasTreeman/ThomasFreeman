@@ -45,21 +45,26 @@
 	section {
 		position: relative;
 		height: 100vh;
-		scroll-margin: 70px;
+		min-height: min(100svh, 900px);
+		scroll-margin-top: 20px;
+		scroll-behavior: smooth;
 	}
 
 	section#about {
 		height: auto;
 		position: relative;
-		margin: 0%;
-		background-color: rgb(5, 4, 5);
-		padding-block: 5rem;
-		margin-bottom: 8rem;
-		scroll-margin: 0px;
+		margin: 0;
+		background: transparent;
+		padding-block: 0;
+		scroll-margin-top: 20px;
 	}
 
 	section#projects {
-		scroll-margin: 100px;
+		position: relative;
+		scroll-margin-top: 20px;
+		padding-block: var(--section-padding-y);
+		background: rgb(5, 4, 5);
+		overflow: visible;
 	}
 
 	.no-max-height {
@@ -67,17 +72,23 @@
 	}
 
 	@media (max-width: 768px) {
+		section {
+			scroll-margin-top: 0;
+		}
+
 		section#about {
-			padding-block: 1.5rem;
+			scroll-margin-top: 0;
 		}
 
 		section#projects {
-			scroll-margin: 40px;
+			scroll-margin-top: 0;
+			padding-block: 2rem;
+			padding-inline: 1.25rem;
 		}
 
 		section#home {
 			height: calc(100vh - 4rem);
-			scroll-margin: -30px;
+			scroll-margin-top: 0;
 		}
 	}
 </style>
