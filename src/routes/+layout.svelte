@@ -10,10 +10,29 @@
 	$: hideHeader = $page.route.id === '/play' && $gameActive;
 </script>
 
-{#if !hideBackground}
-	<Background />
-{/if}
-{#if !hideHeader}
-	<Header />
-{/if}
-<slot />
+<!-- Keep any fixed overlays/header outside the scroll container -->
+<div id="app">
+	<!-- Fixed overlays: Background and Header stay outside scroll container for proper positioning -->
+	{#if !hideBackground}
+		<Background />
+	{/if}
+	{#if !hideHeader}
+		<Header />
+	{/if}
+
+	<!-- Main scroll container -->
+	<main>
+		<slot />
+	</main>
+</div>
+
+<style>
+	main {
+		min-height: 100%;
+		padding-bottom: 0;
+	}
+
+	#app {
+		overflow-x: hidden;
+	}
+</style>

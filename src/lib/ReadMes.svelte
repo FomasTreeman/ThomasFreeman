@@ -35,7 +35,10 @@
 	});
 </script>
 
-<h2 class="center title">My Projects</h2>
+<div class="header-section">
+	<h2 class="center title">My Projects</h2>
+	<p class="subtitle">Building with blockchain, web3, and modern tech</p>
+</div>
 {#if data.error}
 	<h2 class="center">Whoops error 😔</h2>
 {:else}
@@ -51,24 +54,38 @@
 {/if}
 
 <style>
-	h2.title {
-		font-size: 2rem;
-		margin-top: 5rem;
-		max-width: max-content;
-		padding-block: 1rem;
-		padding-inline: 2rem;
-		background: blue;
-		mix-blend-mode: luminosity;
-		border-radius: 1000px;
-	}
+.header-section {
+	text-align: center;
+	margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
 
-	.grid {
-		margin: 5rem;
-		margin-inline: var(--margin-left);
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-		gap: 1.3rem;
-	}
+h2.title {
+	font-size: clamp(1.75rem, 4vw, 2.5rem);
+	margin-top: 0;
+	margin-bottom: 0.75rem;
+	max-width: max-content;
+	padding-block: 0.875rem;
+	padding-inline: 2rem;
+	background: blue;
+	mix-blend-mode: luminosity;
+	border-radius: 1000px;
+}
+
+.subtitle {
+	font-family: 'JetBrains Mono Variable', monospace;
+	font-size: 1rem;
+	opacity: 0.7;
+	margin: 0;
+	margin-top: 1rem;
+}
+
+.grid {
+	margin-block: 0;
+	margin-inline: clamp(1.5rem, 5vw, var(--margin-left));
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+	gap: clamp(1.5rem, 3vw, 2rem);
+}
 
 	@media only screen and (max-width: 1000px) {
 		.grid {
@@ -122,11 +139,11 @@
 		}
 	}
 
-	@supports (-webkit-appearance: none) {
-		h2.title {
-			mix-blend-mode: normal;
-			background: rgba(1, 1, 1, 0.6);
-			backdrop-filter: blur(20px) saturate(1.7);
-		}
+@supports (-webkit-appearance: none) {
+	h2.title {
+		mix-blend-mode: normal;
+		background: rgba(1, 1, 1, 0.6);
+		backdrop-filter: blur(20px) saturate(1.7);
 	}
+}
 </style>

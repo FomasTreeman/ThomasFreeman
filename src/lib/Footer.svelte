@@ -9,31 +9,42 @@
 </footer>
 
 <style>
-	.background {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		background: blue;
-		mix-blend-mode: luminosity;
-		z-index: -1;
-		border-radius: 1rem;
-		top: 0;
-		left: 0%;
-	}
+.background {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: blue;
+	mix-blend-mode: luminosity;
+	z-index: -1;
+	border-radius: 1rem;
+	top: 0;
+	left: 0%;
+}
 
 	footer {
 		margin-inline: auto;
 		position: relative;
-		padding: 2rem;
+		padding: clamp(3rem, 6vw, 4.5rem) clamp(2rem, 4vw, 3rem);
 		text-align: center;
-		font-size: large;
 		width: calc(100% - (var(--margin-left) * 2));
-		margin-bottom: 1.5rem;
+		max-width: 900px;
+		margin-top: clamp(3rem, 6vw, 5rem);
+		margin-bottom: 0;
 		box-sizing: border-box;
 	}
-	footer :not(h3) {
+
+	footer h3 {
+		font-size: clamp(1.5rem, 3vw, 2rem);
+		margin-bottom: 1rem;
+		line-height: 1.3;
+	}
+
+	footer p {
 		font-family: 'JetBrains Mono Variable';
-		font-size: medium;
+		font-size: clamp(0.95rem, 2vw, 1.05rem);
+		line-height: 1.6;
+		margin-block: 0.75rem;
+		opacity: 0.9;
 	}
 
 	a {
@@ -47,17 +58,23 @@
 
 	@media (max-width: 768px) {
 		footer {
-			width: 100%;
-			margin: 0;
-			margin-bottom: 6.5rem;
+			width: calc(100% - 2rem);
+			margin-inline: 1rem;
+			margin-top: 3rem;
+			margin-bottom: 0;
+			padding: 2.5rem 1.5rem;
+		}
+
+		footer h3 {
+			font-size: 1.35rem;
 		}
 	}
 
-	@supports (-webkit-appearance: none) {
-		footer .background {
-			mix-blend-mode: normal;
-			background: rgba(1, 1, 1, 0.6);
-			backdrop-filter: blur(20px) saturate(1.7);
-		}
+@supports (-webkit-appearance: none) {
+	footer .background {
+		mix-blend-mode: normal;
+		background: rgba(1, 1, 1, 0.6);
+		backdrop-filter: blur(20px) saturate(1.7);
 	}
+}
 </style>

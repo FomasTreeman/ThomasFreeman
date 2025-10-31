@@ -7,8 +7,7 @@
 			role: 'Full Stack Developer Training',
 			period: '10 months',
 			year: '2021-2022',
-			description:
-				'Intensive full-stack JavaScript bootcamp focusing on test-driven development, pair programming, and agile methodologies. Built full-stack applications using modern web technologies and collaborative development practices.',
+			description: 'Intensive full-stack JavaScript bootcamp focusing on test-driven development, pair programming, and agile methodologies. Built full-stack applications using modern web technologies and collaborative development practices.',
 			skills: ['JavaScript', 'React', 'Node.js', 'PostgreSQL', 'TDD', 'Git', 'Express'],
 			achievements: [
 				'Completed 16-week intensive coding bootcamp',
@@ -24,8 +23,7 @@
 			role: 'Full Stack Developer',
 			period: '2022 - 2025',
 			year: '2022-2025',
-			description:
-				'Built and maintained production PHP/Laravel applications for enterprise clients. Implemented new features, optimized performance, and modernized legacy codebases with Docker containerization.',
+			description: 'Built and maintained production PHP/Laravel applications for enterprise clients. Implemented new features, optimized performance, and modernized legacy codebases with Docker containerization.',
 			skills: ['PHP', 'Laravel', 'Docker', 'MySQL', 'JavaScript', 'C#', 'Bash', 'Linux'],
 			achievements: [
 				'Reduced deployment time by 70% through Docker containerization',
@@ -41,16 +39,8 @@
 			role: 'Open Source Contributor',
 			period: 'Present',
 			year: '2024-Present',
-			description:
-				'Contributing to TypeScript SDK development and blockchain infrastructure. Building developer tools, writing comprehensive documentation, and implementing advanced cryptographic features for the BSV ecosystem.',
-			skills: [
-				'TypeScript',
-				'Blockchain',
-				'Testing',
-				'Documentation',
-				'Cryptography',
-				'SDK Development'
-			],
+			description: 'Contributing to TypeScript SDK development and blockchain infrastructure. Building developer tools, writing comprehensive documentation, and implementing advanced cryptographic features for the BSV ecosystem.',
+			skills: ['TypeScript', 'Blockchain', 'Testing', 'Documentation', 'Cryptography', 'SDK Development'],
 			achievements: [
 				'Contributed to core TypeScript SDK for BSV blockchain',
 				'Authored technical documentation and developer guides',
@@ -67,22 +57,25 @@
 </script>
 
 <div class="journey-wrapper">
-	<!-- <LavaLampDivider position="top" /> -->
+	<LavaLampDivider position="top" />
 	<div class="journey-section">
-		<div class="journey-header">
-			<h2 class="title">My Journey</h2>
-			<p class="subtitle">From bootcamp to blockchain</p>
-		</div>
+	<div class="journey-header">
+		<h2 class="title">My Journey</h2>
+		<p class="subtitle">From bootcamp to blockchain</p>
+	</div>
 
 		<div class="timeline">
 			<div class="timeline-line"></div>
 			{#each experiences as exp, index}
-				<div class="timeline-item" style="--i: {index};">
+				<div
+					class="timeline-item"
+					style="--i: {index};"
+				>
 					<div
 						class="timeline-dot"
 						class:current={exp.current}
-						style="background: {exp.color.primary}"
-					></div>
+						style="background: {exp.color.primary}">
+					</div>
 					<a href={exp.link} target="_blank" rel="noopener noreferrer" class="experience-card">
 						<div class="card-header">
 							<div>
@@ -113,25 +106,24 @@
 
 						<div
 							class="card-gradient"
-							style="background: linear-gradient(135deg, transparent, {exp.color.primary}20, {exp
-								.color.secondary}20)"
-						></div>
+							style="background: linear-gradient(135deg, transparent, {exp.color.primary}20, {exp.color.secondary}20)">
+						</div>
 					</a>
 				</div>
 			{/each}
 		</div>
 	</div>
-	<!-- <LavaLampDivider position="bottom" /> -->
+	<LavaLampDivider position="bottom" />
 </div>
 
 <style>
-	.journey-wrapper {
-		position: relative;
-		z-index: 0;
-		background: rgb(5, 4, 5);
-		padding-block: 2rem;
-		overflow: visible;
-	}
+.journey-wrapper {
+	position: relative;
+	z-index: 0;
+	background: rgb(5, 4, 5);
+	padding-block: clamp(4rem, 8vw, 7rem);
+	overflow: visible;
+}
 
 	.journey-wrapper::before {
 		content: '';
@@ -140,7 +132,11 @@
 		left: 20%;
 		width: 500px;
 		height: 500px;
-		background: radial-gradient(circle, rgba(0, 121, 255, 0.05) 0%, transparent 70%);
+		background: radial-gradient(
+			circle,
+			rgba(0, 121, 255, 0.05) 0%,
+			transparent 70%
+		);
 		border-radius: 50%;
 		pointer-events: none;
 		animation: float 20s ease-in-out infinite;
@@ -153,15 +149,18 @@
 		right: 20%;
 		width: 400px;
 		height: 400px;
-		background: radial-gradient(circle, rgba(255, 138, 0, 0.04) 0%, transparent 70%);
+		background: radial-gradient(
+			circle,
+			rgba(255, 138, 0, 0.04) 0%,
+			transparent 70%
+		);
 		border-radius: 50%;
 		pointer-events: none;
 		animation: float 25s ease-in-out infinite reverse;
 	}
 
 	@keyframes float {
-		0%,
-		100% {
+		0%, 100% {
 			transform: translateY(0) translateX(0);
 		}
 		33% {
@@ -243,23 +242,16 @@
 
 	.timeline-dot.current {
 		background: var(--secondary-color1) !important;
-		box-shadow:
-			0 0 0 4px rgba(0, 121, 255, 0.4),
-			0 0 20px rgba(0, 121, 255, 0.6);
+		box-shadow: 0 0 0 4px rgba(0, 121, 255, 0.4), 0 0 20px rgba(0, 121, 255, 0.6);
 		animation: pulse 2s ease-in-out infinite;
 	}
 
 	@keyframes pulse {
-		0%,
-		100% {
-			box-shadow:
-				0 0 0 4px rgba(0, 121, 255, 0.4),
-				0 0 20px rgba(0, 121, 255, 0.6);
+		0%, 100% {
+			box-shadow: 0 0 0 4px rgba(0, 121, 255, 0.4), 0 0 20px rgba(0, 121, 255, 0.6);
 		}
 		50% {
-			box-shadow:
-				0 0 0 8px rgba(0, 121, 255, 0.3),
-				0 0 30px rgba(0, 121, 255, 0.8);
+			box-shadow: 0 0 0 8px rgba(0, 121, 255, 0.3), 0 0 30px rgba(0, 121, 255, 0.8);
 		}
 	}
 

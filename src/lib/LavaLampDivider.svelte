@@ -1,26 +1,8 @@
 <script lang="ts">
 	export let position: 'top' | 'bottom' = 'top';
-
-	// Optional vertical offset to fine-tune reveal/overlap
-	// - number: pixels (e.g. 12 => 12px)
-	// - string: any CSS length/calc (e.g. '1rem', 'calc(10px + 1vh)')
-	export let offset: number | string = 0;
-
-	// Optional height of the divider container in px
-	export let height: number = 175;
-
-	// Normalize offset to a CSS length string
-	$: offsetValue = typeof offset === 'number' ? `${offset}px` : offset;
-
-	// Keep positive values consistent: positive means "push further out"
-	// For bottom we invert the sign so semantics match top.
-	$: signedOffsetValue = (() => {
-		if (typeof offset === 'number') return position === 'top' ? `${offset}px` : `${-offset}px`;
-		return position === 'top' ? offset : `calc(-1 * (${offset}))`;
-	})();
 </script>
 
-<div class="lava-lamp-divider {position}" style="--lava-offset: {signedOffsetValue}; height: {height}px;">
+<div class="lava-lamp-divider {position}">
 	<svg
 		class="lava-svg"
 		xmlns="http://www.w3.org/2000/svg"
@@ -198,26 +180,24 @@
 		position: absolute;
 		left: 0;
 		width: 100%;
-		height: 200px; /* default; overridden by inline style from prop */
-		overflow: hidden;
+		height: 200px;
+		overflow: visible;
 		pointer-events: none;
-		z-index: -1;
+		z-index: 2;
 	}
 
 	.lava-lamp-divider svg {
 		overflow: visible;
-		/* Base alignment then fine-tune with --lava-offset */
-		transform: translateY(calc(50% + var(--lava-offset, 0px)));
 	}
 
 	.lava-lamp-divider.top {
-		top: -4rem;
-		transform: translateY(-50%);
+		top: 0;
+		transform: translateY(-40%);
 	}
 
 	.lava-lamp-divider.bottom {
-		bottom: -4rem;
-		transform: translateY(50%) rotate(180deg);
+		bottom: 0;
+		transform: translateY(40%) rotate(180deg);
 	}
 
 	.lava-svg {

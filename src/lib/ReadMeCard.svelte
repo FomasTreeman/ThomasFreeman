@@ -44,16 +44,18 @@
 </a>
 
 <style>
-	article {
-		border-radius: 1rem;
-		padding: 1.5rem;
-		font-family: 'JetBrains Mono Variable';
-		transition: background-color 0.3s ease;
-		background-color: var(--background-color);
-		position: relative; /* Ensure positioning for overlap */
-		z-index: 1; /* Ensure articles stack correctly */
-		height: calc(100% - 3rem);
-	}
+article {
+	border-radius: 1.25rem;
+	padding: clamp(1.25rem, 2.5vw, 1.75rem);
+	font-family: 'JetBrains Mono Variable';
+	transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+	background-color: var(--background-color);
+	position: relative;
+	z-index: 1;
+	height: calc(100% - 2.5rem);
+	border: 1px solid rgba(255, 255, 255, 0.05);
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
 
 	article .img-container {
 		width: 100%;

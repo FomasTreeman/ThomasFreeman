@@ -28,11 +28,11 @@
 <div class="wrapper">
 	<div class="isolate">
 		<div class="background" />
-		<div class="inner">
-			<h1>Hi, I'm Tom Freeman 🖖</h1>
-			<h2 class="about--role">Software Dev.</h2>
-			<p>I'm {minutesOld} minutes old with a passion for creating beautiful and efficient applications.</p>
-			<a href="/Tom_Freeman.pdf" download class="tracer-border">
+	<div class="inner">
+		<h1>Hi, I'm Tom Freeman 🖖</h1>
+		<h2 class="about--role">Software Dev.</h2>
+		<p>I'm {minutesOld} minutes old with a passion for creating beautiful and efficient applications.</p>
+		<a href="/Tom_Freeman.pdf" download class="tracer-border">
 				<svg
 					stroke="currentColor"
 					fill="currentColor"
@@ -51,7 +51,7 @@
 				>
 				<p>Resume</p>
 			</a>
-			<div class="contact-links">
+		<div class="contact-links">
 				<a href="https://www.foundersandcoders.com/">
 					<img loading="lazy" src="/contact/fac.webp" alt="FAC" />
 				</a>
@@ -212,14 +212,14 @@
 		width: 100%;
 	}
 
-	div.background {
-		mix-blend-mode: luminosity;
-		background: blue;
-		position: absolute;
-		height: 100%;
-		width: 100%;
-		border-radius: 1rem;
-	}
+div.background {
+	mix-blend-mode: luminosity;
+	background: blue;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	border-radius: 1rem;
+}
 
 	.isolate {
 		position: relative;
@@ -234,32 +234,37 @@
 		z-index: 2;
 		position: relative;
 		text-align: center;
-		padding-inline: calc(var(--margin-left) / 4 * 3);
-		padding-block: var(--margin-left);
+		padding-inline: clamp(2rem, 6vw, calc(var(--margin-left) / 4 * 3));
+		padding-block: clamp(3rem, 8vw, 6rem);
+		max-width: 800px;
+		margin-inline: auto;
 	}
 
 	.inner > h1 {
-		font-size: xxx-large;
+		font-size: clamp(2.5rem, 6vw, 4rem);
 		z-index: 1;
 		margin-block: 0;
+		line-height: 1.2;
 	}
 
 	.inner > h2 {
-		margin-block: 0;
-		opacity: 0.8;
+		margin-block: 0.5rem 0;
+		opacity: 0.85;
+		line-height: 1.4;
 	}
 
 	.inner > p {
-		margin-top: 1.2rem;
-		font-weight: 500;
-		/* padding: calc(var(--margin-left) / 2); */
-		opacity: 0.9;
+		margin-top: 1.5rem;
+		font-weight: 400;
+		font-size: clamp(0.95rem, 2vw, 1.1rem);
+		line-height: 1.6;
+		opacity: 0.88;
 		margin-bottom: 0;
 	}
 
 	.inner > a {
 		width: fit-content;
-		margin-block: 2rem;
+		margin-block: 2rem 1.5rem;
 		margin-inline: auto;
 	}
 
@@ -319,9 +324,9 @@
 			font-size: medium;
 		}
 
-		.background {
-			border-radius: 0;
-		}
+	.background {
+		border-radius: 0;
+	}
 
 		.scroll-down-prompt {
 			bottom: 1rem;
