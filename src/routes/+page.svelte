@@ -3,7 +3,6 @@
 	import Block from '../lib/Block.svelte';
 	import ReadMes from '../lib/ReadMes.svelte';
 	import Footer from '../lib/Footer.svelte';
-	import LavaLampDivider from '../lib/LavaLampDivider.svelte';
 
 	export let data;
 </script>
@@ -23,9 +22,7 @@
 
 	<!-- Projects section -->
 	<section id="projects" class="no-max-height">
-		<LavaLampDivider position="top" />
 		<ReadMes {data} />
-		<LavaLampDivider position="bottom" />
 	</section>
 	
 	<!-- Footer section -->

@@ -1,6 +1,4 @@
 <script lang="ts">
-	import LavaLampDivider from './LavaLampDivider.svelte';
-
 	const experiences = [
 		{
 			company: 'Founders and Coders',
@@ -57,7 +55,6 @@
 </script>
 
 <div class="journey-wrapper">
-	<LavaLampDivider position="top" />
 	<div class="journey-section">
 	<div class="journey-header">
 		<h2 class="title">My Journey</h2>
@@ -113,7 +110,6 @@
 			{/each}
 		</div>
 	</div>
-	<LavaLampDivider position="bottom" />
 </div>
 
 <style>
