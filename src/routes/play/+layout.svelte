@@ -27,7 +27,8 @@
 		width: 100vw;
 		height: 100vh;
 		height: 100dvh; /* Dynamic viewport height for mobile */
-		background: radial-gradient(circle at 20% 50%, rgba(255, 138, 0, 0.1) 0%, transparent 50%),
+		background:
+			radial-gradient(circle at 20% 50%, rgba(255, 138, 0, 0.1) 0%, transparent 50%),
 			radial-gradient(circle at 80% 20%, rgba(0, 121, 255, 0.1) 0%, transparent 50%),
 			radial-gradient(circle at 40% 80%, rgba(249, 220, 0, 0.05) 0%, transparent 50%);
 		animation: backgroundShift 20s ease-in-out infinite;
@@ -52,7 +53,7 @@
 		overflow-x: hidden;
 		overflow-y: auto;
 	}
-	
+
 	@media (max-width: 768px) {
 		:global(body) {
 			overflow: auto;

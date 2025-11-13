@@ -111,6 +111,5 @@
 		.footer-container {
 			padding-block: 2rem;
 		}
-
 	}
 </style>

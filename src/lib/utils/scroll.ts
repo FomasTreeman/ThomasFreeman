@@ -1,5 +1,5 @@
 interface ScrollIntoViewOptions {
-  target: HTMLElement;
+	target: HTMLElement;
 }
 
 /**
@@ -9,13 +9,13 @@ interface ScrollIntoViewOptions {
  * @param options.target - The target element containing an href attribute to scroll to.
  */
 export default function scrollIntoView({ target }: ScrollIntoViewOptions): void {
-  const href = target.getAttribute('href');
-  if (!href) return;
-  
-  const el = document.querySelector(href);
-  if (!el) return;
-  
-  el.scrollIntoView({
-    behavior: 'smooth',
-  });
+	const href = target.getAttribute('href');
+	if (!href) return;
+
+	const el = document.querySelector(href);
+	if (!el) return;
+
+	el.scrollIntoView({
+		behavior: 'smooth'
+	});
 }

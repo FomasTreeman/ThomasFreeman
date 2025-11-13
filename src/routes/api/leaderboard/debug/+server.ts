@@ -18,13 +18,17 @@ export const GET: RequestHandler = async () => {
 			prefix: LEADERBOARD_BLOB_NAME
 		});
 
-		const leaderboardBlob = blobs.find(blob => blob.pathname === LEADERBOARD_BLOB_NAME);
+		const leaderboardBlob = blobs.find((blob) => blob.pathname === LEADERBOARD_BLOB_NAME);
 
 		if (!leaderboardBlob) {
-			return json({ 
-				exists: false, 
+			return json({
+				exists: false,
 				message: 'Leaderboard blob not found',
-				allBlobs: blobs.map(b => ({ pathname: b.pathname, size: b.size, uploadedAt: b.uploadedAt }))
+				allBlobs: blobs.map((b) => ({
+					pathname: b.pathname,
+					size: b.size,
+					uploadedAt: b.uploadedAt
+				}))
 			});
 		}
 
@@ -40,7 +44,7 @@ export const GET: RequestHandler = async () => {
 			const response = await fetch(`${leaderboardBlob.url}?debug=${Date.now()}`, {
 				headers: {
 					'Cache-Control': 'no-cache, no-store, must-revalidate',
-					'Pragma': 'no-cache'
+					Pragma: 'no-cache'
 				}
 			});
 			if (response.ok) {
@@ -49,13 +53,20 @@ export const GET: RequestHandler = async () => {
 					length: text.length,
 					preview: text.substring(0, 200),
 					isValidJson: (() => {
-						try { JSON.parse(text); return true; } catch { return false; }
+						try {
+							JSON.parse(text);
+							return true;
+						} catch {
+							return false;
+						}
 					})(),
 					entriesCount: (() => {
-						try { 
-							const parsed = JSON.parse(text); 
+						try {
+							const parsed = JSON.parse(text);
 							return Array.isArray(parsed) ? parsed.length : 'not an array';
-						} catch { return 'invalid json'; }
+						} catch {
+							return 'invalid json';
+						}
 					})()
 				};
 			} else {
@@ -82,13 +93,15 @@ export const GET: RequestHandler = async () => {
 			contentError,
 			timestamp: new Date().toISOString()
 		});
-
 	} catch (error) {
 		console.error('Debug endpoint error:', error);
-		return json({ 
-			error: 'Debug check failed', 
-			details: error instanceof Error ? error.message : 'Unknown error',
-			timestamp: new Date().toISOString()
-		}, { status: 500 });
+		return json(
+			{
+				error: 'Debug check failed',
+				details: error instanceof Error ? error.message : 'Unknown error',
+				timestamp: new Date().toISOString()
+			},
+			{ status: 500 }
+		);
 	}
-}
+};

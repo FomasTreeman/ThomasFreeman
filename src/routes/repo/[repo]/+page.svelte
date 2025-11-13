@@ -7,33 +7,33 @@
 {#await data.repos then repos}
 	{@const repo = repos.find((obj: IRepo) => obj.name === data.param) as IRepo}
 
-<main class="wrapper">
-	<a href="/" class="return">← back to home</a>
-	<h1>// {repo.name}</h1>
-	<div class="link-list">
-		<a href={repo.url}>
-			<button>🔗</button>
-		</a>
-		{#if repo.production}
-			<a href={repo.production}>
-				<button>👀</button>
+	<main class="wrapper">
+		<a href="/" class="return">← back to home</a>
+		<h1>// {repo.name}</h1>
+		<div class="link-list">
+			<a href={repo.url}>
+				<button>🔗</button>
 			</a>
-		{/if}
-	</div>
-	<details open>
-		<summary>Stack</summary>
-		<ul>
-			{#each repo.stack as stackElement}
-				<mark>{stackElement}</mark>
-			{/each}
-		</ul>
-	</details>
-	<p><SvelteMarkdown source={repo.description} /></p>
-	<br />
-	<div class="md-wrapper">
-		<SvelteMarkdown source={repo.md} />
-	</div>
-</main>
+			{#if repo.production}
+				<a href={repo.production}>
+					<button>👀</button>
+				</a>
+			{/if}
+		</div>
+		<details open>
+			<summary>Stack</summary>
+			<ul>
+				{#each repo.stack as stackElement}
+					<mark>{stackElement}</mark>
+				{/each}
+			</ul>
+		</details>
+		<p><SvelteMarkdown source={repo.description} /></p>
+		<br />
+		<div class="md-wrapper">
+			<SvelteMarkdown source={repo.md} />
+		</div>
+	</main>
 {/await}
 
 <style>
@@ -51,8 +51,8 @@
 	main.wrapper {
 		position: relative;
 		margin-inline: 5rem;
-		margin-top: 5.7rem; 
-		margin-bottom: 2.5rem; 
+		margin-top: 5.7rem;
+		margin-bottom: 2.5rem;
 		padding: 5rem;
 		background-color: var(--background-color);
 		max-width: 100vw;

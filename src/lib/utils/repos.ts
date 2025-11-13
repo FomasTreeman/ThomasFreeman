@@ -1,26 +1,29 @@
 import type { IPinnedData } from '$lib/types.js';
 
 const PINNED: { [key: string]: IPinnedData } = {
-    'DID': {
+	DID: {
 		summary: 'A decentralized identity service using blockchain technology.',
 		stack: ['Go'],
-		description: 'The service enables the creation and management of DIDs, storing them in a blockchain structure. It primarily explores the advantages and disadvantages of PoW, PoS, and ZKP. Additionally, it pairs with Kubernetes to simulate more realistic performance.'
+		description:
+			'The service enables the creation and management of DIDs, storing them in a blockchain structure. It primarily explores the advantages and disadvantages of PoW, PoS, and ZKP. Additionally, it pairs with Kubernetes to simulate more realistic performance.'
 	},
 	'Trade-o-matic': {
-        summary: 'A trading bot testing different strategies across various markets',
-        stack: ['Java'],
-        description: 'A trading bot in Java testing different strategies across various markets. The bot uses a variety of indicators to make decisions, such as moving averages, RSI, and MACD.'
-    },
-    'Comms': {
-        production: 'https://comm-a.vercel.app/',
-        summary: 'My quick rough messaging app for testing new frameworks',
-        stack: ['react', 'supabase'],
-        description: 'A messaging app using react, (version 2) the current feature in development is introducing Supabases DB and login/auth tools. where originally there wasnt session management'
-    },
-    'Rich_System_Site': {
-        summary: 'A betting bot dashboard',
-        stack: ['Node.js', 'Docker', 'Cypress', 'PM2', 'Svelte', 'shell'],
-        description: `<h2>🤖  __My automated betting bot  📈 </h2>
+		summary: 'A trading bot testing different strategies across various markets',
+		stack: ['Java'],
+		description:
+			'A trading bot in Java testing different strategies across various markets. The bot uses a variety of indicators to make decisions, such as moving averages, RSI, and MACD.'
+	},
+	Comms: {
+		production: 'https://comm-a.vercel.app/',
+		summary: 'My quick rough messaging app for testing new frameworks',
+		stack: ['react', 'supabase'],
+		description:
+			'A messaging app using react, (version 2) the current feature in development is introducing Supabases DB and login/auth tools. where originally there wasnt session management'
+	},
+	Rich_System_Site: {
+		summary: 'A betting bot dashboard',
+		stack: ['Node.js', 'Docker', 'Cypress', 'PM2', 'Svelte', 'shell'],
+		description: `<h2>🤖  __My automated betting bot  📈 </h2>
 	<p>
 		For this project, we had a pretty big task on our hands. Our client had a betting system that was
 		a bit sluggish due to manual input, so we decided to automate it to make things smoother. On top
@@ -65,27 +68,37 @@ const PINNED: { [key: string]: IPinnedData } = {
 		for a more efficient solution, I discovered that making fetch requests to obtain the raw HTML of
 		the page and then parsing it with cheerio.js was a quicker and simpler approach.
 	</p>`
-    },
-    'KodiTV': {
-        summary: 'My kodi auto-play plugin',
-        stack: ['python'],
-        description: 'A Kodi plug-in. A program that automatically recorded TV show episodes you were watching to create a queue for things to watch next. Also using Alexa skills to stop, start and skip.'
-
-    },
-    'home-page': {
-        summary: 'My responsive home page for chrome',
-        stack: ['Svelte-Kit'],
-        description: 'A new Chrome extension for power users. Faster access to your GitHub repos. Integrating my progress tracker, with a shortcut for the projects status Customise and save notes with the sticky note feature and fun widgets like BTC and ETH prices, an age widget, and a clock.Currently building a Rust LLM chatbot to replace my current phind.com hotline.'
-    },
-    'boids': {
-        summary: "My BOID's simulation",
-        stack: ['python'],
-        description: 'This is a simulation to replicate the behaviour of flocks of birds. It follows three rules; separation, alignment, cohesion. Separation - each bird attempts to maintain even spacing among its neighbouring birds. Alignment - each bird tries to gradually follow the same vector as neighbouring birds. Cohesion - each bird ties to move towards the average position of other neighbouring birds (countering separation to create an average position).',
-    },
-    'renude': {
-        summary: "My Vinted inspired clothing app",
-        stack: ['React Native', 'Stripe', 'Clerk', 'Prisma', 'tRPC', 'PlanetScale', 'Cloudflare R2 + Express'],
-        description: `**Project Idea: Fun E-Commerce Clothing App Showcase**
+	},
+	KodiTV: {
+		summary: 'My kodi auto-play plugin',
+		stack: ['python'],
+		description:
+			'A Kodi plug-in. A program that automatically recorded TV show episodes you were watching to create a queue for things to watch next. Also using Alexa skills to stop, start and skip.'
+	},
+	'home-page': {
+		summary: 'My responsive home page for chrome',
+		stack: ['Svelte-Kit'],
+		description:
+			'A new Chrome extension for power users. Faster access to your GitHub repos. Integrating my progress tracker, with a shortcut for the projects status Customise and save notes with the sticky note feature and fun widgets like BTC and ETH prices, an age widget, and a clock.Currently building a Rust LLM chatbot to replace my current phind.com hotline.'
+	},
+	boids: {
+		summary: "My BOID's simulation",
+		stack: ['python'],
+		description:
+			'This is a simulation to replicate the behaviour of flocks of birds. It follows three rules; separation, alignment, cohesion. Separation - each bird attempts to maintain even spacing among its neighbouring birds. Alignment - each bird tries to gradually follow the same vector as neighbouring birds. Cohesion - each bird ties to move towards the average position of other neighbouring birds (countering separation to create an average position).'
+	},
+	renude: {
+		summary: 'My Vinted inspired clothing app',
+		stack: [
+			'React Native',
+			'Stripe',
+			'Clerk',
+			'Prisma',
+			'tRPC',
+			'PlanetScale',
+			'Cloudflare R2 + Express'
+		],
+		description: `**Project Idea: Fun E-Commerce Clothing App Showcase**
  --- 
 **1. Objective and Purpose:**
 Develop a mobile application that showcases your expertise in creating an e-commerce platform for clothing. The app's primary purpose is to demonstrate your skills in UI/UX design, backend integration, and overall app development.
@@ -135,8 +148,7 @@ Create documentation detailing your design decisions, challenges faced, and how 
 Take advantage of learning opportunities throughout the project. Experiment with different UI/UX concepts, explore responsive design principles, and practice effective state management.
 
 By creating this fun e-commerce clothing app, you'll not only have a creative portfolio piece but also gain practical experience in developing a mobile app with real-world features.`
-    }
-
+	}
 };
 
 export default PINNED;

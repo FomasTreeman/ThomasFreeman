@@ -8,9 +8,9 @@ This blog post is really a two-way street - I want to share some ideas, but I'm 
 
 Ever wonder why we collectively agreed that pieces of paper could be valuable? It's a fascinating journey, really. Throughout history, humans have used everything from seashells to cattle as money. Each upgrade taught us something important about what makes good money:
 
--  It needs to be easy to use (imagine trying to split a cow in half to buy groceries!)
--  Everyone needs to agree it's worth something (no one wants to haggle over whether your Pokémon cards are actually valuable)
--  It should hold its value (finding out your savings are worth half as much? Not fun)
+- It needs to be easy to use (imagine trying to split a cow in half to buy groceries!)
+- Everyone needs to agree it's worth something (no one wants to haggle over whether your Pokémon cards are actually valuable)
+- It should hold its value (finding out your savings are worth half as much? Not fun)
 
 Our current system of money - those dollars, euros, and pounds in your pocket - mostly ticks these boxes. But here's the thing: it's actually a pretty recent experiment. Before 1971, money was tied to gold, and before that... well, let's just say there were a lot of creative solutions.
 
@@ -20,9 +20,9 @@ Why do people keep comparing Bitcoin to gold? It's not just because they both sh
 
 Here's why this comparison is fascinating:
 
--  Under the gold standard, governments couldn't just create money out of thin air - each dollar was backed by actual gold.
--  Just like Bitcoin has a fixed supply of 21 million coins, the money supply was limited by how much gold we could dig up.
--  Both assets exist outside of direct government control.
+- Under the gold standard, governments couldn't just create money out of thin air - each dollar was backed by actual gold.
+- Just like Bitcoin has a fixed supply of 21 million coins, the money supply was limited by how much gold we could dig up.
+- Both assets exist outside of direct government control.
 
 But the gold standard had a major flaw - you couldn't exactly carry gold bars around to buy milk. People used paper receipts instead, and eventually, banks started issuing more receipts than they had gold (sound familiar?). Bitcoin actually solves this through digital technology - you can use the actual asset itself while keeping all the scarcity benefits.
 
@@ -32,18 +32,18 @@ Remember asking your parents to get money from your piggy bank? With traditional
 
 The current banking system has some obvious pain points:
 
--  Your account can be frozen.
--  You need permission for large transfers.
--  Bank holidays and processing delays.
--  Account closures without warning.
--  Having to trust third parties with your money.
+- Your account can be frozen.
+- You need permission for large transfers.
+- Bank holidays and processing delays.
+- Account closures without warning.
+- Having to trust third parties with your money.
 
 But here's where it gets interesting - being your own bank isn't all sunshine and roses:
 
--  Lose your private keys? Lose your money.
--  No password reset button.
--  No insurance if you mess up.
--  No customer service to call.
+- Lose your private keys? Lose your money.
+- No password reset button.
+- No insurance if you mess up.
+- No customer service to call.
 
 This is where the concept of an "intermediate layer" comes in. Think of it like training wheels for self-sovereign money - not taking away the decentralization, but making it more user-friendly. We need regulated services that help manage these risks while keeping the core benefits of Bitcoin intact.
 
@@ -51,10 +51,10 @@ This is where the concept of an "intermediate layer" comes in. Think of it like 
 
 "But Bitcoin's so volatile!" Yeah, I hear you. Watching your money swing 10% overnight doesn't exactly inspire confidence for grocery shopping. But let's think about what causes this volatility:
 
--  Small market size (compared to global money).
--  Mostly speculative trading right now.
--  Early adoption uncertainty.
--  Limited real-world use.
+- Small market size (compared to global money).
+- Mostly speculative trading right now.
+- Early adoption uncertainty.
+- Limited real-world use.
 
 Now, imagine Bitcoin as the global monetary standard (big leap, I know). The dynamics would completely change. When something becomes the unit of account - meaning we think in it rather than converting to dollars - its perceived volatility naturally decreases.
 

@@ -12,10 +12,10 @@
 	.return {
 		position: fixed;
 		top: 1rem;
-    left: 2.5rem;
-    font-size: 2.5rem;
-    background-color: transparent;
-    z-index: 51;
+		left: 2.5rem;
+		font-size: 2.5rem;
+		background-color: transparent;
+		z-index: 51;
 	}
 
 	.error-message {

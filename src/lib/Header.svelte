@@ -71,7 +71,6 @@
 	function updateActiveIndex(index: number) {
 		activeIndex = index;
 	}
-	
 </script>
 
 <nav>
@@ -104,8 +103,18 @@
 				{/each}
 			</div>
 			{#if currentPath === '/'}
-				<button class="scroll-arrow up" on:click={() => scrollMenu('up')} title="Scroll Up" class:hidden={activeIndex === 0}>▲</button>
-				<button class="scroll-arrow down" on:click={() => scrollMenu('down')} title="Scroll Down" class:hidden={activeIndex === homeItems.length - 1}>▼</button>
+				<button
+					class="scroll-arrow up"
+					on:click={() => scrollMenu('up')}
+					title="Scroll Up"
+					class:hidden={activeIndex === 0}>▲</button
+				>
+				<button
+					class="scroll-arrow down"
+					on:click={() => scrollMenu('down')}
+					title="Scroll Down"
+					class:hidden={activeIndex === homeItems.length - 1}>▼</button
+				>
 			{/if}
 		</li>
 		<!-- <li class:active={currentPath === '/blogs'}>
@@ -118,7 +127,7 @@
 </nav>
 
 {#if currentPath === '/'}
-	<ScrollObserver onSectionChange={updateActiveIndex} pauseIO={pauseIO} />
+	<ScrollObserver onSectionChange={updateActiveIndex} {pauseIO} />
 {/if}
 
 <style>

@@ -178,7 +178,7 @@
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
 		text-shadow: none;
-        margin-top: 7rem;
+		margin-top: 7rem;
 	}
 
 	.leaderboard-header h1 .emoji {
@@ -392,7 +392,7 @@
 
 		.leaderboard-header h1 {
 			font-size: 2rem;
-            margin-top: 3rem;
+			margin-top: 3rem;
 		}
 
 		.header-actions {

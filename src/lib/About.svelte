@@ -28,11 +28,13 @@
 <div class="wrapper">
 	<div class="isolate">
 		<div class="background" />
-	<div class="inner">
-		<h1>Hi, I'm Tom Freeman 🖖</h1>
-		<h2 class="about--role">Software Dev.</h2>
-		<p>I'm {minutesOld} minutes old with a passion for creating beautiful and efficient applications.</p>
-		<a href="/Tom_Freeman.pdf" download class="tracer-border">
+		<div class="inner">
+			<h1>Hi, I'm Tom Freeman 🖖</h1>
+			<h2 class="about--role">Software Dev.</h2>
+			<p>
+				I'm {minutesOld} minutes old with a passion for creating beautiful and efficient applications.
+			</p>
+			<a href="/Tom_Freeman.pdf" download class="tracer-border">
 				<svg
 					stroke="currentColor"
 					fill="currentColor"
@@ -51,7 +53,7 @@
 				>
 				<p>Resume</p>
 			</a>
-		<div class="contact-links">
+			<div class="contact-links">
 				<a href="https://www.foundersandcoders.com/">
 					<img loading="lazy" src="/contact/fac.webp" alt="FAC" />
 				</a>
@@ -212,14 +214,14 @@
 		width: 100%;
 	}
 
-div.background {
-	mix-blend-mode: luminosity;
-	background: blue;
-	position: absolute;
-	height: 100%;
-	width: 100%;
-	border-radius: 1rem;
-}
+	div.background {
+		mix-blend-mode: luminosity;
+		background: blue;
+		position: absolute;
+		height: 100%;
+		width: 100%;
+		border-radius: 1rem;
+	}
 
 	.isolate {
 		position: relative;
@@ -324,9 +326,9 @@ div.background {
 			font-size: medium;
 		}
 
-	.background {
-		border-radius: 0;
-	}
+		.background {
+			border-radius: 0;
+		}
 
 		.scroll-down-prompt {
 			bottom: 1rem;

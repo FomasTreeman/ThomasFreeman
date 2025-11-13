@@ -28,7 +28,9 @@
 		border-radius: 50%;
 	}
 	div.animate {
-		animation: pulse-animation 1.5s ease-in-out infinite, heart-pulse 3s infinite;
+		animation:
+			pulse-animation 1.5s ease-in-out infinite,
+			heart-pulse 3s infinite;
 	}
 	.globe {
 		scale: 1.05;

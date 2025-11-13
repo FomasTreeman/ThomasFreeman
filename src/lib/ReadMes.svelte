@@ -68,60 +68,65 @@
 	{:then repos}
 		<section class="grid">
 			{#each repos as repo, index}
-				<ReadMeCard {repo} {index} gradientCenter={gradients[repo.name]} animationDelay={index * 0.1} />
+				<ReadMeCard
+					{repo}
+					{index}
+					gradientCenter={gradients[repo.name]}
+					animationDelay={index * 0.1}
+				/>
 			{/each}
 		</section>
 	{/await}
 {/if}
 
 <style>
-/* Scroll animation styles */
-.scroll-animate {
-	opacity: 0;
-	transform: translateY(60px);
-	transition:
-		opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-		transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-	transition-delay: var(--delay, 0s);
-}
+	/* Scroll animation styles */
+	.scroll-animate {
+		opacity: 0;
+		transform: translateY(60px);
+		transition:
+			opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+			transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+		transition-delay: var(--delay, 0s);
+	}
 
-:global(.scroll-animate.animate-in) {
-	opacity: 1;
-	transform: translateY(0);
-}
+	:global(.scroll-animate.animate-in) {
+		opacity: 1;
+		transform: translateY(0);
+	}
 
-.header-section {
-	text-align: center;
-	margin-bottom: clamp(2rem, 4vw, 3rem);
-}
+	.header-section {
+		text-align: center;
+		margin-bottom: clamp(2rem, 4vw, 3rem);
+	}
 
-h2.title {
-	font-size: clamp(1.75rem, 4vw, 2.5rem);
-	margin-top: 0;
-	margin-bottom: 0.75rem;
-	max-width: max-content;
-	padding-block: 0.875rem;
-	padding-inline: 2rem;
-	background: blue;
-	mix-blend-mode: luminosity;
-	border-radius: 1000px;
-}
+	h2.title {
+		font-size: clamp(1.75rem, 4vw, 2.5rem);
+		margin-top: 0;
+		margin-bottom: 0.75rem;
+		max-width: max-content;
+		padding-block: 0.875rem;
+		padding-inline: 2rem;
+		background: blue;
+		mix-blend-mode: luminosity;
+		border-radius: 1000px;
+	}
 
-.subtitle {
-	font-family: 'JetBrains Mono Variable', monospace;
-	font-size: 1rem;
-	opacity: 0.7;
-	margin: 0;
-	margin-top: 1rem;
-}
+	.subtitle {
+		font-family: 'JetBrains Mono Variable', monospace;
+		font-size: 1rem;
+		opacity: 0.7;
+		margin: 0;
+		margin-top: 1rem;
+	}
 
-.grid {
-	margin-block: 0;
-	margin-inline: clamp(1.5rem, 5vw, var(--margin-left));
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
-	gap: clamp(1.25rem, 2.5vw, 1.75rem);
-}
+	.grid {
+		margin-block: 0;
+		margin-inline: clamp(1.5rem, 5vw, var(--margin-left));
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+		gap: clamp(1.25rem, 2.5vw, 1.75rem);
+	}
 
 	@media only screen and (max-width: 1000px) {
 		.grid {
@@ -175,11 +180,11 @@ h2.title {
 		}
 	}
 
-@supports (-webkit-appearance: none) {
-	h2.title {
-		mix-blend-mode: normal;
-		background: rgba(1, 1, 1, 0.6);
-		backdrop-filter: blur(20px) saturate(1.7);
+	@supports (-webkit-appearance: none) {
+		h2.title {
+			mix-blend-mode: normal;
+			background: rgba(1, 1, 1, 0.6);
+			backdrop-filter: blur(20px) saturate(1.7);
+		}
 	}
-}
 </style>

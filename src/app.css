@@ -121,7 +121,10 @@ button {
 	font-family: inherit;
 	background-color: #1a1a1a;
 	cursor: pointer;
-	transition: border-color 0.25s, scale 250ms, box-shadow 250ms;
+	transition:
+		border-color 0.25s,
+		scale 250ms,
+		box-shadow 250ms;
 }
 
 /* button:hover {
@@ -135,7 +138,9 @@ button:focus-visible {
 button:hover {
 	box-shadow: 0px 0px 5px 1px rgba(0, 121, 255, 0.7);
 	scale: 1.05;
-	transition: scale 250ms, box-shadow 250ms;
+	transition:
+		scale 250ms,
+		box-shadow 250ms;
 }
 
 /* ============================================
@@ -158,15 +163,23 @@ button:hover {
 }
 
 @keyframes bounceIn {
-	0% { transform: scale(0.95); }
-	50% { transform: scale(1.02); }
-	100% { transform: scale(1); }
+	0% {
+		transform: scale(0.95);
+	}
+	50% {
+		transform: scale(1.02);
+	}
+	100% {
+		transform: scale(1);
+	}
 }
 
 [data-scroll].reveal-fade {
 	opacity: 0;
 	filter: blur(10px);
-	transition: opacity var(--dur) var(--ease-out), filter var(--dur) var(--ease-out);
+	transition:
+		opacity var(--dur) var(--ease-out),
+		filter var(--dur) var(--ease-out);
 }
 [data-scroll].reveal-fade.is-inview {
 	opacity: 1;
@@ -191,9 +204,15 @@ button:hover {
 }
 
 @keyframes popIn {
-	0% { transform: scale(0.7) rotate(-5deg); }
-	60% { transform: scale(1.1) rotate(2deg); }
-	100% { transform: scale(1) rotate(0); }
+	0% {
+		transform: scale(0.7) rotate(-5deg);
+	}
+	60% {
+		transform: scale(1.1) rotate(2deg);
+	}
+	100% {
+		transform: scale(1) rotate(0);
+	}
 }
 
 [data-scroll].reveal-rotate {
@@ -260,7 +279,7 @@ main[data-scroll-container] {
 		backdrop-filter: blur(var(--glass-blur)) saturate(1.7);
 		-webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.7);
 		border: 1px solid rgba(255, 255, 255, var(--glass-border-alpha));
-		box-shadow: 
+		box-shadow:
 			0 10px 30px rgba(0, 0, 0, 0.35),
 			inset 0 1px 0 rgba(255, 255, 255, 0.08);
 	}

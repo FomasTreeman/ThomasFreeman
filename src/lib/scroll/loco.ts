@@ -36,14 +36,17 @@ export async function initLoco(container: HTMLElement) {
 		smartphone: { smooth: false },
 		tablet: { smooth: false },
 		class: 'is-inview', // class to add when element is in view
-		repeat: false, // don't repeat animations
 		reloadOnContextChange: true
 	});
 
 	// Refresh on window load and resize
-	window.addEventListener('load', () => {
-		loco.update();
-	}, { passive: true });
+	window.addEventListener(
+		'load',
+		() => {
+			loco.update();
+		},
+		{ passive: true }
+	);
 	const ro = new ResizeObserver(() => {
 		loco.update();
 	});

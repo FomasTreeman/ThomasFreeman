@@ -7,9 +7,12 @@
 	let innerWidth = 1920; // Default to desktop width
 
 	// Responsive FOV - wider on smaller screens for better view
-	$: fov = innerWidth < 768 ? 55 : // Mobile: wider FOV
-		innerWidth < 1024 ? 50 : // Tablet: medium FOV
-		40; // Desktop: default FOV
+	$: fov =
+		innerWidth < 768
+			? 55 // Mobile: wider FOV
+			: innerWidth < 1024
+				? 50 // Tablet: medium FOV
+				: 40; // Desktop: default FOV
 </script>
 
 <!-- fun zs:: 1, -1, -->

@@ -8,7 +8,7 @@ import globals from 'globals';
 export default [
 	// Base JS recommended
 	js.configs.recommended,
-	
+
 	// TypeScript files
 	{
 		files: ['**/*.ts', '**/*.tsx'],
@@ -32,7 +32,7 @@ export default [
 			'no-console': ['error', { allow: ['warn', 'error'] }]
 		}
 	},
-	
+
 	// Svelte files
 	{
 		files: ['**/*.svelte'],
@@ -56,7 +56,7 @@ export default [
 			'no-console': ['error', { allow: ['warn', 'error'] }]
 		}
 	},
-	
+
 	// JavaScript files
 	{
 		files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
@@ -71,7 +71,7 @@ export default [
 			'no-console': ['error', { allow: ['warn', 'error'] }]
 		}
 	},
-	
+
 	// Allow console in debug endpoint
 	{
 		files: ['**/api/leaderboard/debug/**/*.ts'],
@@ -79,7 +79,7 @@ export default [
 			'no-console': 'off'
 		}
 	},
-	
+
 	// Prettier config (must be last)
 	prettier
 ];

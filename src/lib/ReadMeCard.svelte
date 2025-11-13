@@ -52,7 +52,13 @@
 	];
 </script>
 
-<a href={`/repo/${repo.name}`} data-project={repo.name} class="scroll-animate" style="--delay: {animationDelay}s;" bind:this={cardElement}>
+<a
+	href={`/repo/${repo.name}`}
+	data-project={repo.name}
+	class="scroll-animate"
+	style="--delay: {animationDelay}s;"
+	bind:this={cardElement}
+>
 	<article
 		style="--overlay-color: {colours[index % colours.length].overlay};
                --background-color: {colours[index % colours.length].before};
@@ -71,36 +77,36 @@
 </a>
 
 <style>
-/* Scroll animation styles */
-a.scroll-animate {
-	display: block;
-	text-decoration: none;
-	color: inherit;
-	opacity: 0;
-	transform: translateY(60px);
-	transition:
-		opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-		transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-	transition-delay: var(--delay, 0s);
-}
+	/* Scroll animation styles */
+	a.scroll-animate {
+		display: block;
+		text-decoration: none;
+		color: inherit;
+		opacity: 0;
+		transform: translateY(60px);
+		transition:
+			opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+			transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+		transition-delay: var(--delay, 0s);
+	}
 
-:global(a.scroll-animate.animate-in) {
-	opacity: 1;
-	transform: translateY(0);
-}
+	:global(a.scroll-animate.animate-in) {
+		opacity: 1;
+		transform: translateY(0);
+	}
 
-article {
-	border-radius: 1.25rem;
-	padding: clamp(1.25rem, 2.5vw, 1.75rem);
-	font-family: 'JetBrains Mono Variable';
-	transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-	background-color: var(--background-color);
-	position: relative;
-	z-index: 1;
-	height: calc(100% - 2.5rem);
-	border: 1px solid rgba(255, 255, 255, 0.05);
-	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-}
+	article {
+		border-radius: 1.25rem;
+		padding: clamp(1.25rem, 2.5vw, 1.75rem);
+		font-family: 'JetBrains Mono Variable';
+		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+		background-color: var(--background-color);
+		position: relative;
+		z-index: 1;
+		height: calc(100% - 2.5rem);
+		border: 1px solid rgba(255, 255, 255, 0.05);
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+	}
 
 	article .img-container {
 		width: 100%;
