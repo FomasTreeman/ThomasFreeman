@@ -1,4 +1,4 @@
-import { json } from '@sveltejs/kit';
+import { json, type RequestHandler } from '@sveltejs/kit';
 import { put, list } from '@vercel/blob';
 import { BLOB_READ_WRITE_TOKEN } from '$env/static/private';
 
@@ -88,7 +88,7 @@ async function writeLeaderboard(entries: LeaderboardEntry[]): Promise<void> {
 }
 
 // GET - Retrieve leaderboard
-export async function GET() {
+export const GET: RequestHandler = async () => {
 	if (!BLOB_READ_WRITE_TOKEN) {
 		return json({ error: 'Leaderboard service not configured' }, { status: 500 });
 	}
@@ -114,7 +114,7 @@ export async function GET() {
 }
 
 // POST - Add new score
-export async function POST({ request }: { request: Request }) {
+export const POST: RequestHandler = async ({ request }) => {
 	if (!BLOB_READ_WRITE_TOKEN) {
 		return json({ error: 'Leaderboard service not configured' }, { status: 500 });
 	}

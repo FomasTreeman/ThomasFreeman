@@ -10,7 +10,6 @@
             if (entry.isIntersecting) {
                 const id = entry.target.id;
                 const itemIndex = ['home', 'about', 'projects'].findIndex((item) => item === id);
-                console.log(pauseIO)
                 if (itemIndex !== -1 && !pauseIO) {
                     onSectionChange(itemIndex);
                 }

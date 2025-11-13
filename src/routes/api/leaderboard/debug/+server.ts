@@ -1,10 +1,10 @@
-import { json } from '@sveltejs/kit';
+import { json, type RequestHandler } from '@sveltejs/kit';
 import { list, head } from '@vercel/blob';
 import { BLOB_READ_WRITE_TOKEN } from '$env/static/private';
 
 const LEADERBOARD_BLOB_NAME = 'pizza-rush-leaderboard.json';
 
-export async function GET() {
+export const GET: RequestHandler = async () => {
 	try {
 		if (!BLOB_READ_WRITE_TOKEN) {
 			return json({ error: 'BLOB_READ_WRITE_TOKEN not configured' }, { status: 500 });

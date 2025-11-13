@@ -16,18 +16,12 @@ dracoLoader.setDecoderConfig({ type: 'js' })
 loader.setDRACOLoader(dracoLoader)
 
 loader.load('/r2d2.glb', function (gltf) {
-
     r2d2Loaded.set(true)
     scene.add(gltf.scene);
-
 }, function (xhr) {
-
-    // console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-
+    // Progress callback
 }, function (error) {
-
     console.error(error);
-
 });
 
 
