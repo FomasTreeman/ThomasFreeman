@@ -1,7 +1,7 @@
 import { Base64 } from 'js-base64';
-import { TOKEN } from '$env/static/private';
 import PINNED from '$lib/utils/repos.js';
 import type { Data } from '$lib/types.js';
+import { env } from '$env/dynamic/private';
 
 interface GitHubRepo {
 	full_name: string;
@@ -10,6 +10,13 @@ interface GitHubRepo {
 /** @type {import('./$types').PageLoad} */
 export async function load() {
 	const getRepos = async (): Promise<Data> => {
+		const TOKEN = env.TOKEN;
+		
+		if (!TOKEN) {
+			console.warn('GitHub TOKEN not configured, repository data will not be loaded');
+			return { error: true, repos: [] };
+		}
+		
 		try {
 			const resp = await fetch(
 				`https://api.github.com/users/FomasTreeman/repos?per_page=100&sort=updated`,
