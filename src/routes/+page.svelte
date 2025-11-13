@@ -7,29 +7,25 @@
 	export let data;
 </script>
 
-<main>
-	<!-- EXISTING SECTIONS: Now enhanced with data-scroll-section -->
-	
-	<!-- Home/Hero section with R2D2 -->
-	<section id="home">
-		<About />
-	</section>
+<!-- Home/Hero section with R2D2 -->
+<section id="home">
+	<About />
+</section>
 
-	<!-- Journey/Timeline section -->
-	<section id="about">
-		<Block />
-	</section>
+<!-- Journey/Timeline section -->
+<section id="about">
+	<Block />
+</section>
 
-	<!-- Projects section -->
-	<section id="projects" class="no-max-height">
-		<ReadMes {data} />
-	</section>
-	
-	<!-- Footer section -->
-	<div class="footer-container">
-		<Footer />
-	</div>
-</main>
+<!-- Projects section -->
+<section id="projects" class="no-max-height">
+	<ReadMes {data} />
+</section>
+
+<!-- Footer section -->
+<div class="footer-container">
+	<Footer />
+</div>
 
 <style>
 	/* Section spacing variables for consistent rhythm */
@@ -78,7 +74,7 @@
 	section#projects {
 		position: relative;
 		scroll-margin-top: 20px;
-		padding-block: var(--section-padding-y);
+		padding-block: clamp(3rem, 5vw, 4.5rem);
 		background: rgb(5, 4, 5);
 		overflow: visible;
 	}
@@ -88,8 +84,8 @@
 	}
 
 	.footer-container {
-		padding-bottom: clamp(3rem, 6vw, 5rem);
-		min-height: clamp(3rem, 6vw, 5rem);
+		padding-block: clamp(2.5rem, 4vw, 3.5rem);
+		min-height: auto;
 	}
 
 	@media (max-width: 768px) {
@@ -113,8 +109,8 @@
 		}
 
 		.footer-container {
-			padding-bottom: 7rem;
-			min-height: 7rem;
+			padding-block: 2rem;
 		}
+
 	}
 </style>

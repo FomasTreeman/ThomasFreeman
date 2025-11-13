@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+
 	const experiences = [
 		{
 			company: 'Founders and Coders',
@@ -50,23 +52,43 @@
 		}
 	];
 
-	// Locomotive Scroll now handles all scroll animations via data-scroll attributes
-	// The IntersectionObserver has been removed in favor of Locomotive's .is-inview class
+	// Simple scroll animation using Intersection Observer
+	onMount(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						entry.target.classList.add('animate-in');
+					}
+				});
+			},
+			{
+				threshold: 0.1,
+				rootMargin: '0px 0px -100px 0px'
+			}
+		);
+
+		// Observe all elements with the scroll-animate class
+		const elements = document.querySelectorAll('.scroll-animate');
+		elements.forEach((el) => observer.observe(el));
+
+		return () => observer.disconnect();
+	});
 </script>
 
 <div class="journey-wrapper">
 	<div class="journey-section">
-	<div class="journey-header">
-		<h2 class="title">My Journey</h2>
-		<p class="subtitle">From bootcamp to blockchain</p>
-	</div>
+		<div class="journey-header">
+			<h2 class="title scroll-animate">My Journey</h2>
+			<p class="subtitle scroll-animate">From bootcamp to blockchain</p>
+		</div>
 
 		<div class="timeline">
 			<div class="timeline-line"></div>
 			{#each experiences as exp, index}
 				<div
-					class="timeline-item"
-					style="--i: {index};"
+					class="timeline-item scroll-animate"
+					style="--delay: {index * 0.15}s;"
 				>
 					<div
 						class="timeline-dot"
@@ -113,11 +135,26 @@
 </div>
 
 <style>
+/* Scroll animation styles */
+.scroll-animate {
+	opacity: 0;
+	transform: translateY(60px);
+	transition:
+		opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+		transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+	transition-delay: var(--delay, 0s);
+}
+
+:global(.scroll-animate.animate-in) {
+	opacity: 1;
+	transform: translateY(0);
+}
+
 .journey-wrapper {
 	position: relative;
 	z-index: 0;
 	background: rgb(5, 4, 5);
-	padding-block: clamp(4rem, 8vw, 7rem);
+	padding-block: clamp(3rem, 6vw, 5rem);
 	overflow: visible;
 }
 
@@ -174,7 +211,7 @@
 
 	.journey-header {
 		text-align: center;
-		margin-bottom: clamp(3rem, 6vw, 5rem);
+		margin-bottom: clamp(2rem, 4vw, 3.5rem);
 		padding-inline: 2rem;
 	}
 
@@ -218,9 +255,7 @@
 
 	.timeline-item {
 		position: relative;
-		margin-bottom: clamp(2.5rem, 4vw, 4rem);
-		opacity: 1;
-		transform: translateY(0);
+		margin-bottom: clamp(2rem, 3vw, 3rem);
 	}
 
 	.timeline-dot {
@@ -399,11 +434,11 @@
 
 	@media (max-width: 768px) {
 		.journey-wrapper {
-			padding-block: 4rem 6rem;
+			padding-block: 2.5rem;
 		}
 
 		.journey-header {
-			margin-bottom: 2rem;
+			margin-bottom: 1.5rem;
 		}
 
 		.title {
@@ -430,7 +465,7 @@
 		}
 
 		.timeline-item {
-			margin-bottom: 2rem;
+			margin-bottom: 1.75rem;
 		}
 
 		.experience-card {

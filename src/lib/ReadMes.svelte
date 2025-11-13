@@ -29,15 +29,36 @@
 
 	onMount(() => {
 		window.addEventListener('mousemove', handleMouseMove);
+
+		// Scroll animation observer for header elements only
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						entry.target.classList.add('animate-in');
+					}
+				});
+			},
+			{
+				threshold: 0.1,
+				rootMargin: '0px 0px -100px 0px'
+			}
+		);
+
+		// Observe header elements
+		const headerElements = document.querySelectorAll('.header-section .scroll-animate');
+		headerElements.forEach((el) => observer.observe(el));
+
 		return () => {
 			window.removeEventListener('mousemove', handleMouseMove);
+			observer.disconnect();
 		};
 	});
 </script>
 
 <div class="header-section">
-	<h2 class="center title">My Projects</h2>
-	<p class="subtitle">Building with blockchain, web3, and modern tech</p>
+	<h2 class="center title scroll-animate">My Projects</h2>
+	<p class="subtitle scroll-animate">Building with blockchain, web3, and modern tech</p>
 </div>
 {#if data.error}
 	<h2 class="center">Whoops error 😔</h2>
@@ -47,16 +68,31 @@
 	{:then repos}
 		<section class="grid">
 			{#each repos as repo, index}
-				<ReadMeCard {repo} {index} gradientCenter={gradients[repo.name]} />
+				<ReadMeCard {repo} {index} gradientCenter={gradients[repo.name]} animationDelay={index * 0.1} />
 			{/each}
 		</section>
 	{/await}
 {/if}
 
 <style>
+/* Scroll animation styles */
+.scroll-animate {
+	opacity: 0;
+	transform: translateY(60px);
+	transition:
+		opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+		transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+	transition-delay: var(--delay, 0s);
+}
+
+:global(.scroll-animate.animate-in) {
+	opacity: 1;
+	transform: translateY(0);
+}
+
 .header-section {
 	text-align: center;
-	margin-bottom: clamp(2.5rem, 5vw, 4rem);
+	margin-bottom: clamp(2rem, 4vw, 3rem);
 }
 
 h2.title {
@@ -84,7 +120,7 @@ h2.title {
 	margin-inline: clamp(1.5rem, 5vw, var(--margin-left));
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
-	gap: clamp(1.5rem, 3vw, 2rem);
+	gap: clamp(1.25rem, 2.5vw, 1.75rem);
 }
 
 	@media only screen and (max-width: 1000px) {
@@ -103,7 +139,7 @@ h2.title {
 		}
 
 		.header-section {
-			margin-bottom: 2rem;
+			margin-bottom: 1.5rem;
 		}
 	}
 
@@ -135,7 +171,7 @@ h2.title {
 
 	@media (max-width: 768px) {
 		.grid {
-			gap: 1.25rem;
+			gap: 1rem;
 		}
 	}
 
