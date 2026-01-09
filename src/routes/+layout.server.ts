@@ -26,25 +26,25 @@ interface GitHubRepo {
 	full_name: string;
 }
 
-function loadCMSContent(isLoggedIn: boolean) {
+async function loadCMSContent(isLoggedIn: boolean) {
 	try {
 		return {
-			footer: JSON.parse(getContent('footer.content', isLoggedIn) || '{}'),
+			footer: JSON.parse((await getContent('footer.content', isLoggedIn)) || '{}'),
 			journey: {
-				header: JSON.parse(getContent('journey.header', isLoggedIn) || '{}'),
-				experiences: JSON.parse(getContent('journey.experiences', isLoggedIn) || '[]')
+				header: JSON.parse((await getContent('journey.header', isLoggedIn)) || '{}'),
+				experiences: JSON.parse((await getContent('journey.experiences', isLoggedIn)) || '[]')
 			},
 			hero: {
-				title: getContent('homepage.hero.title', isLoggedIn) || 'Hi, I\'m Tom Freeman 🖖',
-				subtitle: getContent('homepage.hero.subtitle', isLoggedIn) || 'Software Dev.',
-				bio: getContent('about.bio', isLoggedIn) || 'I\'m a developer with a passion for creating beautiful and efficient applications.',
-				resumeUrl: getContent('about.resume_url', isLoggedIn) || '/Tom_Freeman.pdf',
-				resumeLabel: getContent('about.resume_label', isLoggedIn) || 'Resume'
+				title: (await getContent('homepage.hero.title', isLoggedIn)) || 'Hi, I\'m Tom Freeman 🖖',
+				subtitle: (await getContent('homepage.hero.subtitle', isLoggedIn)) || 'Software Dev.',
+				bio: (await getContent('about.bio', isLoggedIn)) || 'I\'m a developer with a passion for creating beautiful and efficient applications.',
+				resumeUrl: (await getContent('about.resume_url', isLoggedIn)) || '/Tom_Freeman.pdf',
+				resumeLabel: (await getContent('about.resume_label', isLoggedIn)) || 'Resume'
 			},
 			contact: {
-				email: getContent('contact.email', isLoggedIn) || 'tom@team-freeman.com'
+				email: (await getContent('contact.email', isLoggedIn)) || 'tom@team-freeman.com'
 			},
-			socialLinks: JSON.parse(getContent('about.social_links', isLoggedIn) || '[]')
+			socialLinks: JSON.parse((await getContent('about.social_links', isLoggedIn)) || '[]')
 		};
 	} catch (error) {
 		return { header: null, footer: null, journey: null, hero: null, contact: null };
@@ -54,14 +54,14 @@ function loadCMSContent(isLoggedIn: boolean) {
 /** @type {import('./$types').PageLoad} */
 export async function load({ cookies }) {
 	const sessionToken = cookies.get('cms_session');
-	const isLoggedIn = verifySession(sessionToken || '') !== null;
+	const isLoggedIn = (await verifySession(sessionToken || '')) !== null;
 	
-	const cmsContent = loadCMSContent(isLoggedIn);
+	const cmsContent = await loadCMSContent(isLoggedIn);
 	
 	// Load projects configuration from CMS
 	let projectsConfig: any[] = [];
 	try {
-		const configContent = getContent('projects.config', isLoggedIn);
+		const configContent = await getContent('projects.config', isLoggedIn);
 		if (configContent) {
 			projectsConfig = JSON.parse(configContent);
 		}
@@ -87,23 +87,25 @@ export async function load({ cookies }) {
 			const pinnedRepoNames = projectsConfig.map(p => p.name).filter(Boolean);
 
 			// Just return project metadata, no README fetching
-			const repos = projectsConfig.map((project: any) => {
-				const repoName = project.name;
-				if (!repoName) return null;
-				
-				const pinnedData = PINNED[repoName] || {};
-				
-				return {
-					error: false,
-					md: '', // README will be loaded on-demand
-					name: repoName,
-					url: `https://github.com/FomasTreeman/${repoName}`,
-					summary: project.summary || pinnedData.summary,
-					image: project.image,
-					customTitle: project.customTitle,
-					...pinnedData
-				};
-			}).filter(Boolean);
+			const repos = projectsConfig
+				.map((project: any) => {
+					const repoName = project.name;
+					if (!repoName) return null;
+					
+					const pinnedData = PINNED[repoName] || {};
+					
+					return {
+						...pinnedData,
+						error: false,
+						md: '', // README will be loaded on-demand
+						name: repoName,
+						url: `https://github.com/FomasTreeman/${repoName}`,
+						summary: project.summary || pinnedData.summary,
+						image: project.image,
+						customTitle: project.customTitle
+					};
+				})
+				.filter((repo): repo is NonNullable<typeof repo> => repo !== null);
 			
 			// Cache the results
 			setCache(cacheKey, repos);

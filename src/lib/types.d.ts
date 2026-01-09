@@ -10,6 +10,9 @@ export interface IRepo extends IPinnedData {
 	md: string;
 	name: string;
 	url: string;
+	color?: { overlay: string; before: string };
+	image?: string;
+	customTitle?: string;
 }
 
 export type Data = {

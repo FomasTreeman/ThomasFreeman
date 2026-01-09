@@ -7,7 +7,7 @@ import { existsSync } from 'fs';
 export async function POST({ request, cookies }) {
 	// Verify user is logged in
 	const sessionToken = cookies.get('cms_session');
-	const session = verifySession(sessionToken || '');
+	const session = await verifySession(sessionToken || '');
 	
 	if (!session) {
 		return json({ error: 'Unauthorized' }, { status: 401 });

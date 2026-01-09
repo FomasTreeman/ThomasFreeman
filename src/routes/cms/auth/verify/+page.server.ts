@@ -9,14 +9,14 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 		throw redirect(302, '/cms/login');
 	}
 
-	const email = verifyMagicLink(token);
+	const email = await verifyMagicLink(token);
 
 	if (!email) {
 		throw redirect(302, '/cms/login?error=invalid');
 	}
 
 	// Create session
-	const sessionToken = createSession(email);
+	const sessionToken = await createSession(email);
 
 	// Set session cookie (7 days)
 	cookies.set('cms_session', sessionToken, {

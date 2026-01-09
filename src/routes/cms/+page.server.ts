@@ -5,14 +5,14 @@ import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ cookies }) => {
 	const sessionToken = cookies.get('cms_session');
-	const email = verifySession(sessionToken || '');
+	const email = await verifySession(sessionToken || '');
 
 	if (!email) {
 		throw redirect(302, '/cms/login');
 	}
 
 	try {
-		const content = getAllContent();
+		const content = await getAllContent();
 		return {
 			email,
 			content
@@ -29,7 +29,7 @@ export const actions = {
 	logout: async ({ cookies }) => {
 		const sessionToken = cookies.get('cms_session');
 		if (sessionToken) {
-			deleteSession(sessionToken);
+			await deleteSession(sessionToken);
 		}
 		cookies.delete('cms_session', { path: '/' });
 		throw redirect(302, '/cms/login');

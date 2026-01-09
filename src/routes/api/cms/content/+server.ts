@@ -3,14 +3,14 @@ import { verifySession } from '$lib/auth/magic-link.js';
 import { getAllContent, getContent, setContent, deleteContent, publishContent } from '$lib/db/content.js';
 import type { RequestHandler } from './$types';
 
-function checkAuth(cookies: any): boolean {
+async function checkAuth(cookies: any): Promise<boolean> {
 	const sessionToken = cookies.get('cms_session');
-	return verifySession(sessionToken) !== null;
+	return (await verifySession(sessionToken)) !== null;
 }
 
 // GET - Retrieve all content or specific content by key
 export const GET: RequestHandler = async ({ url, cookies }) => {
-	if (!checkAuth(cookies)) {
+	if (!(await checkAuth(cookies))) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
@@ -18,13 +18,13 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 
 	try {
 		if (key) {
-			const value = getContent(key);
+			const value = await getContent(key);
 			if (value === null) {
 				return json({ error: 'Content not found' }, { status: 404 });
 			}
 			return json({ key, value });
 		} else {
-			const allContent = getAllContent();
+			const allContent = await getAllContent();
 			return json({ content: allContent });
 		}
 	} catch (error) {
@@ -34,7 +34,7 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 
 // PUT - Update or create content (as draft by default)
 export const PUT: RequestHandler = async ({ request, cookies }) => {
-	if (!checkAuth(cookies)) {
+	if (!(await checkAuth(cookies))) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
@@ -45,7 +45,7 @@ export const PUT: RequestHandler = async ({ request, cookies }) => {
 			return json({ error: 'Invalid data: key and value are required' }, { status: 400 });
 		}
 
-		setContent(key, value, isDraft);
+		await setContent(key, value, isDraft);
 		return json({ success: true, key, value, isDraft });
 	} catch (error) {
 		return json({ error: 'Failed to update content' }, { status: 500 });
@@ -54,7 +54,7 @@ export const PUT: RequestHandler = async ({ request, cookies }) => {
 
 // POST - Publish content (remove draft flag)
 export const POST: RequestHandler = async ({ request, cookies }) => {
-	if (!checkAuth(cookies)) {
+	if (!(await checkAuth(cookies))) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
@@ -65,7 +65,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 			return json({ error: 'Key is required' }, { status: 400 });
 		}
 
-		const published = publishContent(key);
+		const published = await publishContent(key);
 		if (!published) {
 			return json({ error: 'Content not found' }, { status: 404 });
 		}
@@ -78,7 +78,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
 // DELETE - Remove content by key
 export const DELETE: RequestHandler = async ({ url, cookies }) => {
-	if (!checkAuth(cookies)) {
+	if (!(await checkAuth(cookies))) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 
@@ -89,7 +89,7 @@ export const DELETE: RequestHandler = async ({ url, cookies }) => {
 	}
 
 	try {
-		const deleted = deleteContent(key);
+		const deleted = await deleteContent(key);
 		if (!deleted) {
 			return json({ error: 'Content not found' }, { status: 404 });
 		}

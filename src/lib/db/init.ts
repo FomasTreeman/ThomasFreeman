@@ -1,34 +1,36 @@
-import Database from 'better-sqlite3';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { createClient } from '@libsql/client';
+import { TURSO_DATABASE_URL, TURSO_AUTH_TOKEN } from '$env/static/private';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// Database path - relative to project root
-const DB_PATH = join(__dirname, '../../../data/dashboard.db');
+// Create Turso client
+let client: ReturnType<typeof createClient> | null = null;
 
 export function getDb() {
-	const db = new Database(DB_PATH);
-	db.pragma('journal_mode = WAL');
-	return db;
+	if (!client) {
+		client = createClient({
+			url: TURSO_DATABASE_URL,
+			authToken: TURSO_AUTH_TOKEN
+		});
+	}
+	return client;
 }
 
-export function initDb() {
+export async function initDb() {
 	const db = getDb();
 
 	// Create content table
-	db.exec(`
+	await db.execute(`
 		CREATE TABLE IF NOT EXISTS content (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			key TEXT UNIQUE NOT NULL,
 			value TEXT NOT NULL,
-			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+			updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			is_draft INTEGER DEFAULT 0,
+			display_order INTEGER DEFAULT 0
 		)
 	`);
 
 	// Create sessions table for auth
-	db.exec(`
+	await db.execute(`
 		CREATE TABLE IF NOT EXISTS sessions (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			token TEXT UNIQUE NOT NULL,
@@ -39,7 +41,7 @@ export function initDb() {
 	`);
 
 	// Create magic_links table for temporary login links
-	db.exec(`
+	await db.execute(`
 		CREATE TABLE IF NOT EXISTS magic_links (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			token TEXT UNIQUE NOT NULL,
@@ -50,7 +52,7 @@ export function initDb() {
 	`);
 
 	// Create content_history table for tracking changes
-	db.exec(`
+	await db.execute(`
 		CREATE TABLE IF NOT EXISTS content_history (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			key TEXT NOT NULL,
@@ -61,19 +63,16 @@ export function initDb() {
 		)
 	`);
 
-	// Create index for faster lookups
-	db.exec(`CREATE INDEX IF NOT EXISTS idx_content_key ON content(key)`);
-	db.exec(`CREATE INDEX IF NOT EXISTS idx_sessions_token ON sessions(token)`);
-	db.exec(`CREATE INDEX IF NOT EXISTS idx_magic_links_token ON magic_links(token)`);
-	db.exec(`CREATE INDEX IF NOT EXISTS idx_content_history_key ON content_history(key)`);
-	db.exec(`CREATE INDEX IF NOT EXISTS idx_content_history_changed_at ON content_history(changed_at)`);
-
-	db.close();
+	// Create indexes for faster lookups
+	await db.execute(`CREATE INDEX IF NOT EXISTS idx_content_key ON content(key)`);
+	await db.execute(`CREATE INDEX IF NOT EXISTS idx_sessions_token ON sessions(token)`);
+	await db.execute(`CREATE INDEX IF NOT EXISTS idx_magic_links_token ON magic_links(token)`);
+	await db.execute(`CREATE INDEX IF NOT EXISTS idx_content_history_key ON content_history(key)`);
+	await db.execute(`CREATE INDEX IF NOT EXISTS idx_content_history_changed_at ON content_history(changed_at)`);
+	await db.execute(`CREATE INDEX IF NOT EXISTS idx_content_is_draft ON content(is_draft)`);
 }
 
 // Auto-initialize on first import
-try {
-	initDb();
-} catch (error) {
+initDb().catch(() => {
 	// Silent fail - database will be initialized on first use
-}
+});

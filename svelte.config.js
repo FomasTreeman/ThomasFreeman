@@ -14,6 +14,20 @@ const config = {
 	extensions: ['.svelte', '.md'],
 	kit: {
 		adapter: adapter()
+	},
+	onwarn: (warning, handler) => {
+		// Suppress non-critical warnings
+		if (
+			warning.code === 'a11y-click-events-have-key-events' ||
+			warning.code === 'a11y-no-static-element-interactions' ||
+			warning.code === 'css-unused-selector' ||
+			warning.code === 'self_closing_tag' ||
+			warning.code === 'event_directive_deprecated' ||
+			warning.code === 'state_referenced_locally'
+		) {
+			return;
+		}
+		handler(warning);
 	}
 };
 

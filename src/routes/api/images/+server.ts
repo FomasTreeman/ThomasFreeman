@@ -8,7 +8,7 @@ import { existsSync } from 'fs';
 export async function GET({ cookies }) {
 	// Verify user is logged in
 	const sessionToken = cookies.get('cms_session');
-	const session = verifySession(sessionToken || '');
+	const session = await verifySession(sessionToken || '');
 	
 	if (!session) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
@@ -39,7 +39,7 @@ export async function GET({ cookies }) {
 export async function DELETE({ url, cookies }) {
 	// Verify user is logged in
 	const sessionToken = cookies.get('cms_session');
-	const session = verifySession(sessionToken || '');
+	const session = await verifySession(sessionToken || '');
 	
 	if (!session) {
 		return json({ error: 'Unauthorized' }, { status: 401 });

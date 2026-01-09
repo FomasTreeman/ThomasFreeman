@@ -35,8 +35,7 @@ export async function initLoco(container: HTMLElement) {
 		getDirection: true,
 		smartphone: { smooth: false },
 		tablet: { smooth: false },
-		class: 'is-inview', // class to add when element is in view
-		reloadOnContextChange: true
+		class: 'is-inview' // class to add when element is in view
 	});
 
 	// Refresh on window load and resize

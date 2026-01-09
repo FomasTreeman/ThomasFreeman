@@ -6,9 +6,9 @@ import { getContent } from './db/content.js';
  * @param fallback - Default value if content not found
  * @returns Content value or fallback
  */
-export function loadContent(key: string, fallback: string = ''): string {
+export async function loadContent(key: string, fallback: string = ''): Promise<string> {
 	try {
-		return getContent(key) ?? fallback;
+		return (await getContent(key)) ?? fallback;
 	} catch (error) {
 		return fallback;
 	}
@@ -19,12 +19,12 @@ export function loadContent(key: string, fallback: string = ''): string {
  * @param keys - Array of content keys
  * @returns Object with keys and their values
  */
-export function loadContentBatch(keys: string[]): Record<string, string> {
+export async function loadContentBatch(keys: string[]): Promise<Record<string, string>> {
 	const result: Record<string, string> = {};
 
 	for (const key of keys) {
 		try {
-			result[key] = getContent(key) ?? '';
+			result[key] = (await getContent(key)) ?? '';
 		} catch (error) {
 			result[key] = '';
 		}

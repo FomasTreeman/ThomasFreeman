@@ -32,13 +32,13 @@ export async function createMagicLink(email: string, baseUrl: string): Promise<b
 	const db = getDb();
 	try {
 		// Clean up expired magic links
-		db.prepare('DELETE FROM magic_links WHERE expires_at < CURRENT_TIMESTAMP').run();
+		await db.execute('DELETE FROM magic_links WHERE expires_at < CURRENT_TIMESTAMP');
 
 		// Create new magic link
-		db.prepare(`
-			INSERT INTO magic_links (token, email, expires_at)
-			VALUES (?, ?, ?)
-		`).run(token, email, expiresAt);
+		await db.execute({
+			sql: 'INSERT INTO magic_links (token, email, expires_at) VALUES (?, ?, ?)',
+			args: [token, email, expiresAt]
+		});
 
 		// Send email
 		const magicUrl = `${baseUrl}/cms/auth/verify?token=${token}`;
@@ -56,84 +56,66 @@ export async function createMagicLink(email: string, baseUrl: string): Promise<b
 			`
 		});
 
-	return true;
+		return true;
 	} catch (error) {
 		return false;
-	} finally {
-		db.close();
 	}
 }
 
-export function verifyMagicLink(token: string): string | null {
+export async function verifyMagicLink(token: string): Promise<string | null> {
 	const db = getDb();
-	try {
-		// Get magic link
-		const stmt = db.prepare(`
-			SELECT email FROM magic_links
-			WHERE token = ? AND expires_at > CURRENT_TIMESTAMP
-		`);
-		const magicLink = stmt.get(token) as { email: string } | undefined;
+	// Get magic link
+	const result = await db.execute({
+		sql: 'SELECT email FROM magic_links WHERE token = ? AND expires_at > CURRENT_TIMESTAMP',
+		args: [token]
+	});
+	const magicLink = result.rows[0] as unknown as { email: string } | undefined;
 
-		if (!magicLink) {
-			return null;
-		}
-
-		// Delete used magic link
-		db.prepare('DELETE FROM magic_links WHERE token = ?').run(token);
-
-		return magicLink.email;
-	} finally {
-		db.close();
+	if (!magicLink) {
+		return null;
 	}
+
+	// Delete used magic link
+	await db.execute({ sql: 'DELETE FROM magic_links WHERE token = ?', args: [token] });
+
+	return magicLink.email;
 }
 
-export function createSession(email: string): string {
+export async function createSession(email: string): Promise<string> {
 	const token = nanoid(32);
 	const expiresAt = new Date(Date.now() + SESSION_EXPIRY_DAYS * 24 * 60 * 60 * 1000).toISOString();
 
 	const db = getDb();
-	try {
-		// Clean up expired sessions
-		db.prepare('DELETE FROM sessions WHERE expires_at < CURRENT_TIMESTAMP').run();
+	// Clean up expired sessions
+	await db.execute('DELETE FROM sessions WHERE expires_at < CURRENT_TIMESTAMP');
 
-		// Create new session
-		db.prepare(`
-			INSERT INTO sessions (token, email, expires_at)
-			VALUES (?, ?, ?)
-		`).run(token, email, expiresAt);
+	// Create new session
+	await db.execute({
+		sql: 'INSERT INTO sessions (token, email, expires_at) VALUES (?, ?, ?)',
+		args: [token, email, expiresAt]
+	});
 
-		return token;
-	} finally {
-		db.close();
-	}
+	return token;
 }
 
-export function verifySession(token: string): string | null {
+export async function verifySession(token: string): Promise<string | null> {
 	if (!token) return null;
 
 	const db = getDb();
-	try {
-		const stmt = db.prepare(`
-			SELECT email FROM sessions
-			WHERE token = ? AND expires_at > CURRENT_TIMESTAMP
-		`);
-		const session = stmt.get(token) as { email: string } | undefined;
+	const result = await db.execute({
+		sql: 'SELECT email FROM sessions WHERE token = ? AND expires_at > CURRENT_TIMESTAMP',
+		args: [token]
+	});
+	const session = result.rows[0] as unknown as { email: string } | undefined;
 
-		return session?.email ?? null;
-	} finally {
-		db.close();
-	}
+	return session?.email ?? null;
 }
 
-export function deleteSession(token: string): void {
+export async function deleteSession(token: string): Promise<void> {
 	if (!token) return;
 
 	const db = getDb();
-	try {
-		db.prepare('DELETE FROM sessions WHERE token = ?').run(token);
-	} finally {
-		db.close();
-	}
+	await db.execute({ sql: 'DELETE FROM sessions WHERE token = ?', args: [token] });
 }
 
 export function isAuthorizedEmail(email: string): boolean {

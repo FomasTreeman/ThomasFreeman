@@ -1,5 +1,14 @@
-import { setContent } from '../src/lib/db/content.js';
+import { createClient } from '@libsql/client';
+import { config } from 'dotenv';
 import { DEFAULT_JOURNEY } from '../src/lib/constants/defaults.js';
+
+// Load .env file
+config();
+
+const db = createClient({
+	url: process.env.TURSO_DATABASE_URL!,
+	authToken: process.env.TURSO_AUTH_TOKEN!
+});
 
 // Structured content with nested JSON blocks
 const structuredContent = [
@@ -48,7 +57,18 @@ async function seed() {
 
 	for (const item of structuredContent) {
 		try {
-			setContent(item.key, item.value);
+			// Insert or update content
+			await db.execute({
+				sql: `
+					INSERT INTO content (key, value, is_draft, updated_at)
+					VALUES (?, ?, 0, CURRENT_TIMESTAMP)
+					ON CONFLICT(key) DO UPDATE SET
+						value = excluded.value,
+						is_draft = 0,
+						updated_at = CURRENT_TIMESTAMP
+				`,
+				args: [item.key, item.value]
+			});
 			console.log(`✓ Added: ${item.key}`);
 
 			// Show preview of the content

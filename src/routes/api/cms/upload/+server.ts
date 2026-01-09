@@ -4,13 +4,13 @@ import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import type { RequestHandler } from './$types';
 
-function checkAuth(cookies: any): boolean {
+async function checkAuth(cookies: any): Promise<boolean> {
 	const sessionToken = cookies.get('cms_session');
-	return verifySession(sessionToken) !== null;
+	return (await verifySession(sessionToken)) !== null;
 }
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
-	if (!checkAuth(cookies)) {
+	if (!(await checkAuth(cookies))) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
 	}
 

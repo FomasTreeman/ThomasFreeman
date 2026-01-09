@@ -5,7 +5,7 @@ import { verifySession } from '$lib/auth/magic-link.js';
 export async function GET({ url, cookies }) {
 	// Verify user is logged in
 	const sessionToken = cookies.get('cms_session');
-	const session = verifySession(sessionToken || '');
+	const session = await verifySession(sessionToken || '');
 	
 	if (!session) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
@@ -16,8 +16,8 @@ export async function GET({ url, cookies }) {
 
 	try {
 		const history = key 
-			? getContentHistory(key, limit)
-			: getAllHistory(limit);
+			? await getContentHistory(key, limit)
+			: await getAllHistory(limit);
 		
 		return json({ history });
 	} catch (error) {

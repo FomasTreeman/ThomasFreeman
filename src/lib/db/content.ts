@@ -18,133 +18,101 @@ export interface HistoryEntry {
 	changed_at: string;
 }
 
-export function getAllContent(includePublishedOnly = false): ContentEntry[] {
+export async function getAllContent(includePublishedOnly = false): Promise<ContentEntry[]> {
 	const db = getDb();
-	try {
-		const query = includePublishedOnly
-			? 'SELECT * FROM content WHERE is_draft = 0 ORDER BY display_order, key'
-			: 'SELECT * FROM content ORDER BY display_order, key';
-		const stmt = db.prepare(query);
-		return stmt.all() as ContentEntry[];
-	} finally {
-		db.close();
-	}
+	const query = includePublishedOnly
+		? 'SELECT * FROM content WHERE is_draft = 0 ORDER BY display_order, key'
+		: 'SELECT * FROM content ORDER BY display_order, key';
+	const result = await db.execute(query);
+	return result.rows as unknown as ContentEntry[];
 }
 
-export function getContent(key: string, isLoggedIn = false): string | null {
+export async function getContent(key: string, isLoggedIn = false): Promise<string | null> {
 	const db = getDb();
-	try {
-		// If logged in, get latest version (draft or published)
-		// If not logged in, only get published version
-		const query = isLoggedIn
-			? 'SELECT value FROM content WHERE key = ?'
-			: 'SELECT value FROM content WHERE key = ? AND is_draft = 0';
-		const stmt = db.prepare(query);
-		const result = stmt.get(key) as { value: string } | undefined;
-		return result?.value ?? null;
-	} finally {
-		db.close();
-	}
+	// If logged in, get latest version (draft or published)
+	// If not logged in, only get published version
+	const query = isLoggedIn
+		? 'SELECT value FROM content WHERE key = ?'
+		: 'SELECT value FROM content WHERE key = ? AND is_draft = 0';
+	
+	const result = await db.execute({ sql: query, args: [key] });
+	const row = result.rows[0] as unknown as { value: string } | undefined;
+	return row?.value ?? null;
 }
 
-export function setContent(key: string, value: string, isDraft = true): void {
+export async function setContent(key: string, value: string, isDraft = true): Promise<void> {
 	const db = getDb();
-	try {
-		// Get old value for history tracking
-		const oldStmt = db.prepare('SELECT value FROM content WHERE key = ?');
-		const oldResult = oldStmt.get(key) as { value: string } | undefined;
-		const oldValue = oldResult?.value ?? null;
-		const action = oldValue === null ? 'create' : 'update';
+	// Get old value for history tracking
+	const oldResult = await db.execute({ sql: 'SELECT value FROM content WHERE key = ?', args: [key] });
+	const oldValue = (oldResult.rows[0] as unknown as { value: string } | undefined)?.value ?? null;
+	const action = oldValue === null ? 'create' : 'update';
 
-		// Update/insert content
-		const stmt = db.prepare(`
+	// Update/insert content
+	await db.execute({
+		sql: `
 			INSERT INTO content (key, value, is_draft, updated_at)
 			VALUES (?, ?, ?, CURRENT_TIMESTAMP)
 			ON CONFLICT(key) DO UPDATE SET
 				value = excluded.value,
 				is_draft = excluded.is_draft,
 				updated_at = CURRENT_TIMESTAMP
-		`);
-		stmt.run(key, value, isDraft ? 1 : 0);
+		`,
+		args: [key, value, isDraft ? 1 : 0]
+	});
 
-		// Record history
-		const historyStmt = db.prepare(`
-			INSERT INTO content_history (key, old_value, new_value, action)
-			VALUES (?, ?, ?, ?)
-		`);
-		historyStmt.run(key, oldValue, value, action);
-	} finally {
-		db.close();
-	}
+	// Record history
+	await db.execute({
+		sql: 'INSERT INTO content_history (key, old_value, new_value, action) VALUES (?, ?, ?, ?)',
+		args: [key, oldValue, value, action]
+	});
 }
 
-export function deleteContent(key: string): boolean {
+export async function deleteContent(key: string): Promise<boolean> {
 	const db = getDb();
-	try {
-		// Get old value for history tracking
-		const oldStmt = db.prepare('SELECT value FROM content WHERE key = ?');
-		const oldResult = oldStmt.get(key) as { value: string } | undefined;
-		const oldValue = oldResult?.value ?? null;
+	// Get old value for history tracking
+	const oldResult = await db.execute({ sql: 'SELECT value FROM content WHERE key = ?', args: [key] });
+	const oldValue = (oldResult.rows[0] as unknown as { value: string } | undefined)?.value ?? null;
 
-		// Delete content
-		const stmt = db.prepare('DELETE FROM content WHERE key = ?');
-		const result = stmt.run(key);
+	// Delete content
+	const result = await db.execute({ sql: 'DELETE FROM content WHERE key = ?', args: [key] });
 
-		// Record history if something was deleted
-		if (result.changes > 0 && oldValue !== null) {
-			const historyStmt = db.prepare(`
-				INSERT INTO content_history (key, old_value, new_value, action)
-				VALUES (?, ?, ?, ?)
-			`);
-			historyStmt.run(key, oldValue, null, 'delete');
-		}
-
-		return result.changes > 0;
-	} finally {
-		db.close();
+	// Record history if something was deleted
+	if (result.rowsAffected > 0 && oldValue !== null) {
+		await db.execute({
+			sql: 'INSERT INTO content_history (key, old_value, new_value, action) VALUES (?, ?, ?, ?)',
+			args: [key, oldValue, null, 'delete']
+		});
 	}
+
+	return result.rowsAffected > 0;
 }
 
-export function contentExists(key: string): boolean {
+export async function contentExists(key: string): Promise<boolean> {
 	const db = getDb();
-	try {
-		const stmt = db.prepare('SELECT 1 FROM content WHERE key = ? LIMIT 1');
-		const result = stmt.get(key);
-		return result !== undefined;
-	} finally {
-		db.close();
-	}
+	const result = await db.execute({ sql: 'SELECT 1 FROM content WHERE key = ? LIMIT 1', args: [key] });
+	return result.rows.length > 0;
 }
 
-export function publishContent(key: string): boolean {
+export async function publishContent(key: string): Promise<boolean> {
 	const db = getDb();
-	try {
-		const stmt = db.prepare(`
-			UPDATE content
-			SET is_draft = 0, updated_at = CURRENT_TIMESTAMP
-			WHERE key = ?
-		`);
-		const result = stmt.run(key);
-		return result.changes > 0;
-	} finally {
-		db.close();
-	}
+	const result = await db.execute({
+		sql: 'UPDATE content SET is_draft = 0, updated_at = CURRENT_TIMESTAMP WHERE key = ?',
+		args: [key]
+	});
+	return result.rowsAffected > 0;
 }
 
-export function getContentHistory(key?: string, limit = 50): HistoryEntry[] {
+export async function getContentHistory(key?: string, limit = 50): Promise<HistoryEntry[]> {
 	const db = getDb();
-	try {
-		const query = key
-			? 'SELECT * FROM content_history WHERE key = ? ORDER BY changed_at DESC LIMIT ?'
-			: 'SELECT * FROM content_history ORDER BY changed_at DESC LIMIT ?';
-		const stmt = db.prepare(query);
-		const results = key ? stmt.all(key, limit) : stmt.all(limit);
-		return results as HistoryEntry[];
-	} finally {
-		db.close();
-	}
+	const query = key
+		? 'SELECT * FROM content_history WHERE key = ? ORDER BY changed_at DESC LIMIT ?'
+		: 'SELECT * FROM content_history ORDER BY changed_at DESC LIMIT ?';
+	const result = key 
+		? await db.execute({ sql: query, args: [key, limit] })
+		: await db.execute({ sql: query, args: [limit] });
+	return result.rows as unknown as HistoryEntry[];
 }
 
-export function getAllHistory(limit = 100): HistoryEntry[] {
+export async function getAllHistory(limit = 100): Promise<HistoryEntry[]> {
 	return getContentHistory(undefined, limit);
 }
