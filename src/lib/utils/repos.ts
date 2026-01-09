@@ -152,3 +152,5 @@ By creating this fun e-commerce clothing app, you'll not only have a creative po
 };
 
 export default PINNED;
+
+// images generated from https://deepai.org/machine-learning-model/3d-objects-generator

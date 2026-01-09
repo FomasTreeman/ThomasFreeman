@@ -32,7 +32,7 @@
 		return () => observer.disconnect();
 	});
 
-	const colours = [
+	const defaultColours = [
 		{
 			overlay: '#A05801',
 			before: '#FF8B00'
@@ -50,6 +50,11 @@
 			before: '#0279FF'
 		}
 	];
+	
+	// Use custom color from CMS or default based on index
+	const colour = repo.color || defaultColours[index % defaultColours.length];
+	const imageSrc = repo.image ? `repos/${repo.image}` : `repos/${repo.name.toLowerCase()}.webp`;
+	const displayTitle = (repo.customTitle || repo.name).toLocaleLowerCase();
 </script>
 
 <a
@@ -60,16 +65,16 @@
 	bind:this={cardElement}
 >
 	<article
-		style="--overlay-color: {colours[index % colours.length].overlay};
-               --background-color: {colours[index % colours.length].before};
+		style="--overlay-color: {colour.overlay};
+               --background-color: {colour.before};
                background-image: radial-gradient(circle at {gradientCenter.x} {gradientCenter.y}, #39a05000, var(--overlay-color));"
 	>
 		<div class="img-container">
-			<img src={`repos/${repo.name.toLowerCase()}.webp`} alt="temp gif" loading="lazy" />
-			<h3>// {repo.name.toLocaleLowerCase()}</h3>
+			<img src={imageSrc} alt="{repo.name} project" loading="lazy" />
+			<h3>// {displayTitle}</h3>
 		</div>
 		<footer>
-			<h3>// {repo.name.toLocaleLowerCase()}</h3>
+			<h3>// {displayTitle}</h3>
 			<hr />
 			<p class="description">{repo?.summary || 'Read Me?'}</p>
 		</footer>

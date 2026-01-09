@@ -1,11 +1,27 @@
+<script lang="ts">
+	interface Props {
+		footerData?: any;
+	}
+
+	let { footerData = null }: Props = $props();
+
+	const footer = footerData || {
+		heading: 'Available for select freelance opportunities',
+		paragraphs: [
+			'Have an exciting project you need help with❓',
+			'Send me an <a href="mailto:tom@team-freeman.com">email</a> or contact me via instant message❗'
+		],
+		emoji: '🦙'
+	};
+</script>
+
 <footer>
-	<div class="background" />
-	<h3>Available for select freelance opportunities</h3>
-	<p>Have an exciting project you need help with❓</p>
-	<p>
-		Send me an <a href="mailto:tom@team-freeman.com"> email </a> or contact me via instant message❗
-	</p>
-	🦙
+	<div class="background glass-bg" />
+	<h3>{footer.heading}</h3>
+	{#each footer.paragraphs as paragraph}
+		<p>{@html paragraph}</p>
+	{/each}
+	{footer.emoji}
 </footer>
 
 <style>
@@ -13,8 +29,6 @@
 		position: absolute;
 		width: 100%;
 		height: 100%;
-		background: blue;
-		mix-blend-mode: luminosity;
 		z-index: -1;
 		border-radius: 1rem;
 		top: 0;
@@ -70,11 +84,4 @@
 		}
 	}
 
-	@supports (-webkit-appearance: none) {
-		footer .background {
-			mix-blend-mode: normal;
-			background: rgba(1, 1, 1, 0.6);
-			backdrop-filter: blur(20px) saturate(1.7);
-		}
-	}
 </style>

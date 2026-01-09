@@ -13,11 +13,16 @@
 	});
 	let pauseIO = $state(false);
 
-	let homeItems = [
-		{ id: 'home', text: 'Home' },
-		{ id: 'about', text: 'About' },
-		{ id: 'projects', text: 'Projects' }
-	];
+	const navigation = {
+		homeItems: [
+			{ id: 'home', text: 'Home' },
+			{ id: 'about', text: 'About' },
+			{ id: 'projects', text: 'Projects' }
+		],
+		otherItems: [{ id: 'play', text: 'Play', href: '/play' }]
+	};
+
+	let homeItems = navigation.homeItems;
 
 	function scrollMenu(direction: 'up' | 'down') {
 		pauseIO = true;
@@ -117,12 +122,11 @@
 				>
 			{/if}
 		</li>
-		<!-- <li class:active={currentPath === '/blogs'}>
-			<a href="/blogs">Blogs</a>
-		</li> -->
-		<li class:active={currentPath.startsWith('/play')}>
-			<a href="/play"> Play </a>
-		</li>
+		{#each navigation.otherItems || [] as item}
+			<li class:active={currentPath.startsWith(item.href || '')}>
+				<a href={item.href}>{item.text}</a>
+			</li>
+		{/each}
 	</ul>
 </nav>
 

@@ -332,6 +332,23 @@ main[data-scroll-container] {
 	}
 }
 
+/* ============================================
+   Shared Glass Background Utility
+   ============================================ */
+.glass-bg {
+	mix-blend-mode: luminosity;
+	background: blue;
+}
+
+/* Safari fallback for glass background */
+@supports (-webkit-appearance: none) {
+	.glass-bg {
+		mix-blend-mode: normal;
+		background: rgba(1, 1, 1, 0.6);
+		backdrop-filter: blur(20px) saturate(1.7);
+	}
+}
+
 @media (max-width: 768px) {
 	.h-scroll-container {
 		height: 90vh;

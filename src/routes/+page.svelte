@@ -1,6 +1,6 @@
 <script lang="ts">
 	import About from '../lib/About.svelte';
-	import Block from '../lib/Block.svelte';
+	import Journey from '../lib/Journey.svelte';
 	import ReadMes from '../lib/ReadMes.svelte';
 	import Footer from '../lib/Footer.svelte';
 
@@ -9,12 +9,16 @@
 
 <!-- Home/Hero section with R2D2 -->
 <section id="home">
-	<About />
+	<About 
+		heroData={data?.cmsContent?.hero} 
+		contactData={data?.cmsContent?.contact}
+		socialLinks={data?.cmsContent?.socialLinks}
+	/>
 </section>
 
 <!-- Journey/Timeline section -->
 <section id="about">
-	<Block />
+	<Journey journeyData={data?.cmsContent?.journey} />
 </section>
 
 <!-- Projects section -->
@@ -24,29 +28,21 @@
 
 <!-- Footer section -->
 <div class="footer-container">
-	<Footer />
+	<Footer footerData={data?.cmsContent?.footer} />
 </div>
 
 <style>
-	/* Section spacing variables for consistent rhythm */
-	:root {
-		--section-padding-y: clamp(3rem, 8vw, 6rem);
-		--section-gap: clamp(2rem, 5vw, 4rem);
-		--header-offset: clamp(64px, 7vw, 96px);
-		--content-max-width: 1400px;
-	}
-
 	:global(h1) {
-		font-size: 3.5rem;
+		font-size: clamp(2rem, 5vw, 3.5rem);
 	}
 	:global(h2) {
-		font-size: 2rem;
+		font-size: clamp(1.5rem, 3.5vw, 2rem);
 	}
 	:global(h3) {
-		font-size: 1.5rem;
+		font-size: clamp(1.25rem, 2.5vw, 1.5rem);
 	}
 	:global(p) {
-		font-size: 1rem;
+		font-size: clamp(0.95rem, 1.5vw, 1rem);
 	}
 	:global(.center) {
 		display: block;
@@ -68,12 +64,10 @@
 		margin: 0;
 		background: transparent;
 		padding-block: 0;
-		scroll-margin-top: 20px;
 	}
 
 	section#projects {
 		position: relative;
-		scroll-margin-top: 20px;
 		padding-block: clamp(3rem, 5vw, 4.5rem);
 		background: rgb(5, 4, 5);
 		overflow: visible;
@@ -93,19 +87,13 @@
 			scroll-margin-top: 0;
 		}
 
-		section#about {
-			scroll-margin-top: 0;
-		}
-
 		section#projects {
-			scroll-margin-top: 0;
 			padding-block: 2rem;
 			padding-inline: 1.25rem;
 		}
 
 		section#home {
 			height: calc(100vh - 4rem);
-			scroll-margin-top: 0;
 		}
 
 		.footer-container {

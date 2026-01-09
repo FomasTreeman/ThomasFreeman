@@ -57,7 +57,7 @@
 </script>
 
 <div class="header-section">
-	<h2 class="center title scroll-animate">My Projects</h2>
+	<h2 class="center title scroll-animate glass-bg">My Projects</h2>
 	<p class="subtitle scroll-animate">Building with blockchain, web3, and modern tech</p>
 </div>
 {#if data.error}
@@ -107,8 +107,6 @@
 		max-width: max-content;
 		padding-block: 0.875rem;
 		padding-inline: 2rem;
-		background: blue;
-		mix-blend-mode: luminosity;
 		border-radius: 1000px;
 	}
 
@@ -141,6 +139,7 @@
 		.grid {
 			margin-inline: 0;
 			margin-bottom: 2rem;
+			gap: 1rem;
 		}
 
 		.header-section {
@@ -153,38 +152,4 @@
 		justify-content: center;
 	}
 
-	@-webkit-keyframes -global-slide-in {
-		0% {
-			transform: translateY(1000px);
-			opacity: 0;
-		}
-		100% {
-			transform: translateY(0px);
-			opacity: 1;
-		}
-	}
-	@keyframes -global-slide-in {
-		0% {
-			transform: translateY(1000px);
-			opacity: 0;
-		}
-		100% {
-			transform: translateY(0px);
-			opacity: 1;
-		}
-	}
-
-	@media (max-width: 768px) {
-		.grid {
-			gap: 1rem;
-		}
-	}
-
-	@supports (-webkit-appearance: none) {
-		h2.title {
-			mix-blend-mode: normal;
-			background: rgba(1, 1, 1, 0.6);
-			backdrop-filter: blur(20px) saturate(1.7);
-		}
-	}
 </style>

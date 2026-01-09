@@ -2,24 +2,25 @@
 	import SvelteMarkdown from 'svelte-markdown';
 	import type { IRepo } from '$lib/types';
 	export let data;
+	
+	// Data now comes directly from server load function
+	const repo = data as IRepo;
 </script>
 
-{#await data.repos then repos}
-	{@const repo = repos.find((obj: IRepo) => obj.name === data.param) as IRepo}
-
-	<main class="wrapper">
-		<a href="/" class="return">← back to home</a>
-		<h1>// {repo.name}</h1>
-		<div class="link-list">
-			<a href={repo.url}>
-				<button>🔗</button>
+<main class="wrapper">
+	<a href="/" class="return">← back to home</a>
+	<h1>// {repo.name}</h1>
+	<div class="link-list">
+		<a href={repo.url}>
+			<button>🔗</button>
+		</a>
+		{#if repo.production}
+			<a href={repo.production}>
+				<button>👀</button>
 			</a>
-			{#if repo.production}
-				<a href={repo.production}>
-					<button>👀</button>
-				</a>
-			{/if}
-		</div>
+		{/if}
+	</div>
+	{#if repo.stack}
 		<details open>
 			<summary>Stack</summary>
 			<ul>
@@ -28,13 +29,15 @@
 				{/each}
 			</ul>
 		</details>
+	{/if}
+	{#if repo.description}
 		<p><SvelteMarkdown source={repo.description} /></p>
 		<br />
-		<div class="md-wrapper">
-			<SvelteMarkdown source={repo.md} />
-		</div>
-	</main>
-{/await}
+	{/if}
+	<div class="md-wrapper">
+		<SvelteMarkdown source={repo.md} />
+	</div>
+</main>
 
 <style>
 	a.return {
