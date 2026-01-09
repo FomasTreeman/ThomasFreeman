@@ -24,7 +24,6 @@ loader.load(
 		// Progress callback
 	},
 	function (error) {
-		console.error(error);
 	}
 );
 

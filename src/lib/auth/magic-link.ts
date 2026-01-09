@@ -56,9 +56,8 @@ export async function createMagicLink(email: string, baseUrl: string): Promise<b
 			`
 		});
 
-		return true;
+	return true;
 	} catch (error) {
-		console.error('Error creating magic link:', error);
 		return false;
 	} finally {
 		db.close();

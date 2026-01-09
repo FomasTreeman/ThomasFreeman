@@ -21,7 +21,6 @@ export async function load({ params, parent }) {
 	// Check cache first
 	const cached = readmeCache.get(repoName);
 	if (cached && cached.expires > Date.now()) {
-		console.log(`Using cached README for ${repoName}`);
 		return {
 			...repo,
 			md: cached.md
@@ -50,17 +49,15 @@ export async function load({ params, parent }) {
 			
 			return {
 				...repo,
-				md
-			};
+			md
+		};
 		} else {
-			console.error(`Failed to fetch README for ${repoName}: ${resp.status}`);
 			return {
 				...repo,
 				md: '# README not available\n\nCould not load the README for this project.'
-			};
-		}
+		};
+	}
 	} catch (err) {
-		console.error(`Error fetching README for ${repoName}:`, err);
 		return {
 			...repo,
 			md: '# README not available\n\nCould not load the README for this project.'

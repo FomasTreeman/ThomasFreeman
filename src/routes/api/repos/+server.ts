@@ -23,11 +23,9 @@ export async function GET({ cookies }) {
 			}
 		);
 
-		if (!resp.ok) {
-			const errorText = await resp.text();
-			console.error(`GitHub API error (${resp.status}):`, errorText);
-			return json({ error: `Failed to fetch repositories: ${resp.status}` }, { status: resp.status });
-		}
+	if (!resp.ok) {
+		return json({ error: `Failed to fetch repositories: ${resp.status}` }, { status: resp.status });
+	}
 
 		const repos = await resp.json();
 		const repoList = repos.map((repo: any) => ({
@@ -37,9 +35,8 @@ export async function GET({ cookies }) {
 			updated_at: repo.updated_at
 		}));
 
-		return json({ repos: repoList });
+	return json({ repos: repoList });
 	} catch (error) {
-		console.error('Error fetching repositories:', error);
 		return json({ error: 'Failed to fetch repositories' }, { status: 500 });
 	}
 }

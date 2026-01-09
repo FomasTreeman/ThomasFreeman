@@ -28,7 +28,6 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 			return json({ content: allContent });
 		}
 	} catch (error) {
-		console.error('Error fetching content:', error);
 		return json({ error: 'Failed to fetch content' }, { status: 500 });
 	}
 };
@@ -49,7 +48,6 @@ export const PUT: RequestHandler = async ({ request, cookies }) => {
 		setContent(key, value, isDraft);
 		return json({ success: true, key, value, isDraft });
 	} catch (error) {
-		console.error('Error updating content:', error);
 		return json({ error: 'Failed to update content' }, { status: 500 });
 	}
 };
@@ -74,7 +72,6 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
 		return json({ success: true, key, published: true }, { status: 200 });
 	} catch (error) {
-		console.error('Error publishing content:', error);
 		return json({ error: 'Failed to publish content' }, { status: 500 });
 	}
 };
@@ -98,7 +95,6 @@ export const DELETE: RequestHandler = async ({ url, cookies }) => {
 		}
 		return json({ success: true, key });
 	} catch (error) {
-		console.error('Error deleting content:', error);
 		return json({ error: 'Failed to delete content' }, { status: 500 });
 	}
 };

@@ -18,7 +18,6 @@ export const load: PageServerLoad = async ({ cookies }) => {
 			content
 		};
 	} catch (error) {
-		console.error('Error loading content:', error);
 		return {
 			email,
 			content: []

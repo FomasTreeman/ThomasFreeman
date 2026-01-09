@@ -61,7 +61,6 @@
 			}
 		} catch (error) {
 			alert('Error saving content');
-			console.error(error);
 		} finally {
 			saving = false;
 		}
@@ -91,8 +90,7 @@
 			}
 		} catch (error) {
 			alert('Error publishing content');
-			console.error(error);
-		} finally {
+		} finally{
 			publishing[key] = false;
 		}
 	}
@@ -145,7 +143,6 @@
 			}
 		} catch (error) {
 			alert('Error reverting draft');
-			console.error(error);
 		} finally {
 			undoing[key] = false;
 		}
@@ -199,7 +196,6 @@
 				alert('Failed to load history');
 			}
 		} catch (error) {
-			console.error('Error loading history:', error);
 			alert('Error loading history');
 		} finally {
 			loadingHistory = false;

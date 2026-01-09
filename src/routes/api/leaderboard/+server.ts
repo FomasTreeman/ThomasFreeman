@@ -66,11 +66,10 @@ async function readLeaderboard(): Promise<LeaderboardEntry[]> {
 				error.message.includes('404') ||
 				error.message.includes('does not exist'))
 		) {
-			return [];
-		}
-
-		console.error('Error reading leaderboard:', error);
 		return [];
+	}
+
+	return [];
 	}
 }
 
@@ -104,7 +103,6 @@ export const GET: RequestHandler = async () => {
 			}
 		});
 	} catch (error) {
-		console.error('Error fetching leaderboard:', error);
 		return json({ error: 'Failed to fetch leaderboard' }, { status: 500 });
 	}
 };
@@ -157,7 +155,6 @@ export const POST: RequestHandler = async ({ request }) => {
 			}
 		);
 	} catch (error) {
-		console.error('Error adding score:', error);
 		return json({ error: 'Failed to add score' }, { status: 500 });
 	}
 };

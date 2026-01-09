@@ -10,7 +10,6 @@ export function loadContent(key: string, fallback: string = ''): string {
 	try {
 		return getContent(key) ?? fallback;
 	} catch (error) {
-		console.error(`Error loading content for key "${key}":`, error);
 		return fallback;
 	}
 }
@@ -27,7 +26,6 @@ export function loadContentBatch(keys: string[]): Record<string, string> {
 		try {
 			result[key] = getContent(key) ?? '';
 		} catch (error) {
-			console.error(`Error loading content for key "${key}":`, error);
 			result[key] = '';
 		}
 	}

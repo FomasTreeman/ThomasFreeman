@@ -47,7 +47,6 @@ export async function POST({ request, cookies }) {
 			message: 'Image uploaded successfully' 
 		});
 	} catch (error) {
-		console.error('Error uploading image:', error);
 		return json({ error: 'Failed to upload image' }, { status: 500 });
 	}
 }

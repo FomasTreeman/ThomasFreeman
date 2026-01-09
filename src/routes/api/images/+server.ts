@@ -31,7 +31,6 @@ export async function GET({ cookies }) {
 
 		return json({ images });
 	} catch (error) {
-		console.error('Error listing images:', error);
 		return json({ error: 'Failed to list images' }, { status: 500 });
 	}
 }
@@ -66,7 +65,6 @@ export async function DELETE({ url, cookies }) {
 			message: 'Image deleted successfully' 
 		});
 	} catch (error) {
-		console.error('Error deleting image:', error);
 		return json({ error: 'Failed to delete image' }, { status: 500 });
 	}
 }

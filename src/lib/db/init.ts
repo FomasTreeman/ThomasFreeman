@@ -69,12 +69,11 @@ export function initDb() {
 	db.exec(`CREATE INDEX IF NOT EXISTS idx_content_history_changed_at ON content_history(changed_at)`);
 
 	db.close();
-	console.log('Database initialized successfully');
 }
 
 // Auto-initialize on first import
 try {
 	initDb();
 } catch (error) {
-	console.error('Failed to initialize database:', error);
+	// Silent fail - database will be initialized on first use
 }

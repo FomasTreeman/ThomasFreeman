@@ -27,7 +27,6 @@
 				allRepos = data.repos;
 			} else {
 				const error = await reposResponse.json();
-				console.error('Failed to load repos:', error);
 				alert(`Failed to load repositories: ${error.error || 'Unknown error'}`);
 			}
 			
@@ -67,7 +66,6 @@
 				];
 			}
 		} catch (error) {
-			console.error('Error loading data:', error);
 		} finally {
 			loading = false;
 		}
@@ -81,7 +79,6 @@
 				availableImages = data.images;
 			}
 		} catch (error) {
-			console.error('Error loading images:', error);
 		}
 	}
 	
@@ -105,7 +102,6 @@
 				alert('Error uploading image: ' + error.error);
 			}
 		} catch (error) {
-			console.error('Error uploading image:', error);
 			alert('Error uploading image');
 		} finally {
 			uploadingImage = false;
@@ -163,7 +159,6 @@
 				alert('Error deleting image');
 			}
 		} catch (error) {
-			console.error('Error deleting image:', error);
 			alert('Error deleting image');
 		}
 	}
@@ -238,7 +233,6 @@
 				alert('Error saving projects');
 			}
 		} catch (error) {
-			console.error('Error saving:', error);
 			alert('Error saving projects');
 		} finally {
 			saving = false;

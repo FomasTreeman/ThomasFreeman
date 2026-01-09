@@ -47,7 +47,6 @@ function loadCMSContent(isLoggedIn: boolean) {
 			socialLinks: JSON.parse(getContent('about.social_links', isLoggedIn) || '[]')
 		};
 	} catch (error) {
-		console.error('Error loading CMS content:', error);
 		return { header: null, footer: null, journey: null, hero: null, contact: null };
 	}
 }
@@ -67,7 +66,6 @@ export async function load({ cookies }) {
 			projectsConfig = JSON.parse(configContent);
 		}
 	} catch (error) {
-		console.error('Error loading projects config:', error);
 		// Fallback to PINNED if config fails
 		projectsConfig = Object.keys(PINNED).map(name => ({ name }));
 	}
@@ -83,13 +81,10 @@ export async function load({ cookies }) {
 			const cacheKey = `repos:${JSON.stringify(projectsConfig.map(p => p.name))}`;
 			const cached = getCached<any[]>(cacheKey);
 			if (cached) {
-				console.log('Using cached repos data');
 				return { repos: cached, error: false };
 			}
 			
-			console.log('Projects config:', projectsConfig);
 			const pinnedRepoNames = projectsConfig.map(p => p.name).filter(Boolean);
-			console.log('Pinned repo names:', pinnedRepoNames);
 
 			// Just return project metadata, no README fetching
 			const repos = projectsConfig.map((project: any) => {
@@ -118,7 +113,6 @@ export async function load({ cookies }) {
 				error: false
 			};
 		} catch (err) {
-			console.error('Error fetching GitHub repositories:', err);
 			return { error: true, repos: [] };
 		}
 	};

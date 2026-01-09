@@ -1,4 +1,5 @@
 import { setContent } from '../src/lib/db/content.js';
+import { DEFAULT_JOURNEY } from '../src/lib/constants/defaults.js';
 
 // Structured content with nested JSON blocks
 const structuredContent = [
@@ -34,78 +35,11 @@ const structuredContent = [
 	},
 	{
 		key: 'journey.header',
-		value: JSON.stringify(
-			{
-				title: 'My Journey',
-				subtitle: 'From bootcamp to blockchain'
-			},
-			null,
-			2
-		)
+		value: JSON.stringify(DEFAULT_JOURNEY.header, null, 2)
 	},
 	{
 		key: 'journey.experiences',
-		value: JSON.stringify(
-			[
-				{
-					company: 'Founders and Coders',
-					role: 'Full Stack Developer Training',
-					period: '10 months',
-					year: '2021-2022',
-					description:
-						'Intensive full-stack JavaScript bootcamp focusing on test-driven development, pair programming, and agile methodologies. Built full-stack applications using modern web technologies and collaborative development practices.',
-					skills: ['JavaScript', 'React', 'Node.js', 'PostgreSQL', 'TDD', 'Git', 'Express'],
-					achievements: [
-						'Completed 16-week intensive coding bootcamp',
-						'Built 4 full-stack applications using agile methodologies',
-						'Mentored junior developers in pair programming'
-					],
-					link: 'https://www.foundersandcoders.com/',
-					current: false
-				},
-				{
-					company: 'Rubber Cheese',
-					role: 'Full Stack Developer',
-					period: '2022 - 2025',
-					year: '2022-2025',
-					description:
-						'Built and maintained production PHP/Laravel applications for enterprise clients. Implemented new features, optimized performance, and modernized legacy codebases with Docker containerization.',
-					skills: ['PHP', 'Laravel', 'Docker', 'MySQL', 'JavaScript', 'C#', 'Bash', 'Linux'],
-					achievements: [
-						'Reduced deployment time by 70% through Docker containerization',
-						'Built and maintained 8+ production Laravel applications',
-						'Implemented CI/CD pipelines for automated testing and deployment'
-					],
-					link: 'https://www.rubbercheese.com',
-					current: false
-				},
-				{
-					company: 'BSV Blockchain',
-					role: 'Open Source Contributor',
-					period: 'Present',
-					year: '2024-Present',
-					description:
-						'Contributing to TypeScript SDK development and blockchain infrastructure. Building developer tools, writing comprehensive documentation, and implementing advanced cryptographic features for the BSV ecosystem.',
-					skills: [
-						'TypeScript',
-						'Blockchain',
-						'Testing',
-						'Documentation',
-						'Cryptography',
-						'SDK Development'
-					],
-					achievements: [
-						'Contributed to core TypeScript SDK for BSV blockchain',
-						'Authored technical documentation and developer guides',
-						'Implemented wallet and transaction management features'
-					],
-					link: 'https://bsvblockchain.org',
-					current: true
-				}
-			],
-			null,
-			2
-		)
+		value: JSON.stringify(DEFAULT_JOURNEY.experiences, null, 2)
 	}
 ];
 

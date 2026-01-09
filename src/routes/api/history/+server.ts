@@ -21,7 +21,6 @@ export async function GET({ url, cookies }) {
 		
 		return json({ history });
 	} catch (error) {
-		console.error('Error fetching history:', error);
 		return json({ error: 'Failed to fetch history' }, { status: 500 });
 	}
 }
