@@ -5,7 +5,8 @@
 
 	export let data: PageData;
 
-	let content = data.content;
+	// Filter out projects.config since it's managed via the dedicated Projects page
+	let content = data.content.filter((item) => item.key !== 'projects.config');
 	let editingKey: string | null = null;
 	let editValue = '';
 	let saving = false;
@@ -17,6 +18,7 @@
 	let historyKey: string | null = null;
 	let loadingHistory = false;
 	let undoing: Record<string, boolean> = {};
+	let expandedHistoryEntries: Set<number> = new Set();
 
 	function isJSON(str: string): boolean {
 		try {
@@ -47,11 +49,14 @@
 			});
 
 			if (response.ok) {
-				const idx = content.findIndex((c) => c.key === key);
-				if (idx !== -1) {
-					content[idx].value = value;
-					content[idx].is_draft = 1;
-					content[idx].updated_at = new Date().toISOString();
+				// Don't update if it's projects.config (shouldn't happen, but just in case)
+				if (key !== 'projects.config') {
+					const idx = content.findIndex((c) => c.key === key);
+					if (idx !== -1) {
+						content[idx].value = value;
+						content[idx].is_draft = 1;
+						content[idx].updated_at = new Date().toISOString();
+					}
 				}
 				saveMessage = 'Saved as draft!';
 				setTimeout(() => (saveMessage = ''), 2000);
@@ -77,10 +82,13 @@
 			});
 
 			if (response.ok) {
-				const idx = content.findIndex((c) => c.key === key);
-				if (idx !== -1) {
-					content[idx].is_draft = 0;
-					content[idx].updated_at = new Date().toISOString();
+				// Don't update if it's projects.config (shouldn't happen, but just in case)
+				if (key !== 'projects.config') {
+					const idx = content.findIndex((c) => c.key === key);
+					if (idx !== -1) {
+						content[idx].is_draft = 0;
+						content[idx].updated_at = new Date().toISOString();
+					}
 				}
 				saveMessage = 'Published!';
 				setTimeout(() => (saveMessage = ''), 2000);
@@ -96,31 +104,39 @@
 	}
 
 	async function undoDraft(key: string) {
-		if (!confirm(`Revert "${key}" to last published version?`)) return;
-
+		console.log('[UNDO DRAFT] Starting undo for key:', key);
 		undoing[key] = true;
 
 		try {
+			console.log('[UNDO DRAFT] Fetching history...');
 			// Get history to find the last published version
 			const historyResponse = await fetch(`/api/history?key=${encodeURIComponent(key)}&limit=100`);
 			if (!historyResponse.ok) {
+				console.error('[UNDO DRAFT] Failed to load history');
 				alert('Failed to load history');
+				undoing[key] = false;
 				return;
 			}
 
 			const historyData = await historyResponse.json();
 			const history = historyData.history;
+			console.log('[UNDO DRAFT] History entries:', history.length);
 
 			// Find the most recent 'update' or 'create' action that came before the current draft
-			const lastPublished = history.find((entry: any) => 
+			const lastPublished = history.find((entry: any) =>
 				entry.action === 'update' || entry.action === 'create'
 			);
 
+			console.log('[UNDO DRAFT] Last published entry:', lastPublished);
+
 			if (!lastPublished || !lastPublished.old_value) {
+				console.error('[UNDO DRAFT] No previous version found');
 				alert('No previous version found to revert to');
+				undoing[key] = false;
 				return;
 			}
 
+			console.log('[UNDO DRAFT] Reverting to old value...');
 			// Restore the old value and publish it
 			const saveResponse = await fetch('/api/cms/content', {
 				method: 'PUT',
@@ -128,17 +144,25 @@
 				body: JSON.stringify({ key, value: lastPublished.old_value, isDraft: false })
 			});
 
+			console.log('[UNDO DRAFT] Save response status:', saveResponse.status);
+
 			if (saveResponse.ok) {
-				const idx = content.findIndex((c) => c.key === key);
-				if (idx !== -1) {
-					content[idx].value = lastPublished.old_value;
-					content[idx].is_draft = 0;
-					content[idx].updated_at = new Date().toISOString();
+				console.log('[UNDO DRAFT] Success! Updating UI...');
+				// Don't update if it's projects.config (shouldn't happen, but just in case)
+				if (key !== 'projects.config') {
+					const idx = content.findIndex((c) => c.key === key);
+					if (idx !== -1) {
+						content[idx].value = lastPublished.old_value;
+						content[idx].is_draft = 0;
+						content[idx].updated_at = new Date().toISOString();
+						content = [...content]; // Trigger reactivity
+					}
 				}
 				saveMessage = 'Reverted to published version!';
 				setTimeout(() => (saveMessage = ''), 2000);
 			} else {
 				const error = await saveResponse.json();
+				console.error('[UNDO DRAFT] Server error:', error);
 				alert('Error reverting: ' + error.error);
 			}
 		} catch (error) {
@@ -206,12 +230,65 @@
 		showHistory = false;
 		historyData = [];
 		historyKey = null;
+		expandedHistoryEntries = new Set();
+	}
+
+	function toggleExpanded(index: number) {
+		if (expandedHistoryEntries.has(index)) {
+			expandedHistoryEntries.delete(index);
+		} else {
+			expandedHistoryEntries.add(index);
+		}
+		expandedHistoryEntries = expandedHistoryEntries; // trigger reactivity
 	}
 
 	function truncateValue(value: string | null, maxLength = 100): string {
 		if (!value) return 'null';
 		if (value.length <= maxLength) return value;
 		return value.substring(0, maxLength) + '...';
+	}
+
+	async function revertToVersion(key: string, value: string) {
+		console.log('[REVERT] Starting revert for key:', key);
+		console.log('[REVERT] Value length:', value?.length);
+		console.log('[REVERT] Sending API request...');
+
+		try {
+			// Save as draft (isDraft: true)
+			const response = await fetch('/api/cms/content', {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ key, value, isDraft: true })
+			});
+
+			console.log('[REVERT] API response status:', response.status);
+
+			if (response.ok) {
+				console.log('[REVERT] Success! Updating UI...');
+				// Update the content in the UI
+				const idx = content.findIndex((c) => c.key === key);
+				console.log('[REVERT] Found content at index:', idx);
+
+				if (idx !== -1) {
+					content[idx].value = value;
+					content[idx].is_draft = 1;  // Set as draft
+					content[idx].updated_at = new Date().toISOString();
+					content = [...content]; // Trigger reactivity
+					console.log('[REVERT] UI updated');
+				}
+				saveMessage = '✓ Reverted to draft! Review and publish when ready.';
+				setTimeout(() => (saveMessage = ''), 3000);
+				console.log('[REVERT] Closing history modal');
+				closeHistory();
+			} else {
+				const errorData = await response.json();
+				console.error('[REVERT] Server returned error:', errorData);
+				alert(`Error reverting content: ${errorData.error || errorData.details || 'Unknown error'}`);
+			}
+		} catch (error) {
+			console.error('[REVERT] Exception caught:', error);
+			alert('Error reverting content: ' + String(error));
+		}
 	}
 
 	async function previewSite() {
@@ -350,23 +427,27 @@
 					<div class="empty-history">No change history found</div>
 				{:else}
 					<div class="history-list">
-						{#each historyData as entry}
-							<div class="history-entry">
-								<div class="history-header">
-									<span class="history-key">{entry.key}</span>
-									<span class="history-action action-{entry.action}">{entry.action}</span>
-									<span class="history-date">{formatDate(entry.changed_at)}</span>
-								</div>
-								{#if entry.old_value}
-									<div class="history-value">
-										<strong>Old:</strong>
-										<pre>{truncateValue(entry.old_value, 200)}</pre>
+						{#each historyData as entry, index}
+							<div class="history-entry" class:expanded={expandedHistoryEntries.has(index)}>
+								<div class="history-item-header" on:click={() => toggleExpanded(index)} on:keydown={() => {}}>
+									<div class="history-item-info">
+										<span class="history-date">{formatDate(entry.changed_at)}</span>
+										<span class="history-action action-{entry.action}">{entry.action}</span>
 									</div>
-								{/if}
-								{#if entry.new_value}
-									<div class="history-value">
-										<strong>New:</strong>
-										<pre>{truncateValue(entry.new_value, 200)}</pre>
+									<span class="expand-icon">{expandedHistoryEntries.has(index) ? '▼' : '▶'}</span>
+								</div>
+
+								{#if expandedHistoryEntries.has(index)}
+									<div class="history-content">
+										{#if entry.old_value}
+											<div class="history-version">
+												<div class="version-label">Previous Version:</div>
+												<pre>{entry.old_value}</pre>
+												<button class="revert-btn-simple" on:click={() => revertToVersion(entry.key, entry.old_value)}>
+													↩️ Revert to This
+												</button>
+											</div>
+										{/if}
 									</div>
 								{/if}
 							</div>
@@ -821,30 +902,53 @@
 	}
 
 	.history-entry {
-		background: #f8f9fa;
+		background: white;
 		border-radius: 8px;
-		padding: 1rem;
-		border-left: 3px solid #667eea;
+		border: 1px solid #e0e0e0;
+		overflow: hidden;
+		transition: all 0.2s;
 	}
 
-	.history-header {
+	.history-entry:hover {
+		border-color: #667eea;
+		box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+	}
+
+	.history-entry.expanded {
+		border-color: #667eea;
+	}
+
+	.history-item-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 1rem;
+		cursor: pointer;
+		user-select: none;
+		transition: background 0.2s;
+	}
+
+	.history-item-header:hover {
+		background: #f8f9fa;
+	}
+
+	.history-item-info {
 		display: flex;
 		gap: 0.75rem;
 		align-items: center;
-		margin-bottom: 0.75rem;
 		flex-wrap: wrap;
 	}
 
-	.history-key {
-		font-family: 'Courier New', monospace;
-		font-weight: 600;
-		color: #667eea;
+	.history-date {
+		font-size: 0.9rem;
+		color: #333;
+		font-weight: 500;
 	}
 
 	.history-action {
-		padding: 0.2rem 0.5rem;
+		padding: 0.25rem 0.5rem;
 		border-radius: 4px;
-		font-size: 0.75rem;
+		font-size: 0.7rem;
 		font-weight: 700;
 		text-transform: uppercase;
 	}
@@ -864,30 +968,72 @@
 		color: white;
 	}
 
-	.history-date {
-		color: #999;
+	.expand-icon {
+		color: #667eea;
+		font-size: 0.9rem;
+		transition: transform 0.2s;
+	}
+
+	.history-content {
+		padding: 0 1rem 1rem 1rem;
+		border-top: 1px solid #f0f0f0;
+		animation: slideDown 0.2s ease;
+	}
+
+	@keyframes slideDown {
+		from {
+			opacity: 0;
+			transform: translateY(-10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.history-version {
+		margin-top: 1rem;
+	}
+
+	.version-label {
 		font-size: 0.85rem;
-	}
-
-	.history-value {
-		margin-top: 0.5rem;
-	}
-
-	.history-value strong {
 		color: #666;
-		font-size: 0.85rem;
+		margin-bottom: 0.5rem;
+		font-weight: 600;
 	}
 
-	.history-value pre {
-		margin: 0.25rem 0 0 0;
-		padding: 0.5rem;
-		background: white;
-		border-radius: 4px;
+	.history-version pre {
+		margin: 0;
+		padding: 1rem;
+		background: #f8f9fa;
+		border: 1px solid #e0e0e0;
+		border-radius: 6px;
 		font-size: 0.85rem;
 		color: #333;
 		white-space: pre-wrap;
 		word-wrap: break-word;
 		font-family: 'Courier New', monospace;
+		max-height: 400px;
+		overflow-y: auto;
+	}
+
+	.revert-btn-simple {
+		margin-top: 0.75rem;
+		padding: 0.5rem 1rem;
+		background: #ffc107;
+		color: #000;
+		border: none;
+		border-radius: 6px;
+		cursor: pointer;
+		font-size: 0.85rem;
+		font-weight: 600;
+		transition: all 0.2s;
+	}
+
+	.revert-btn-simple:hover {
+		background: #e0a800;
+		transform: translateY(-1px);
+		box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
 	}
 
 	@media (max-width: 768px) {

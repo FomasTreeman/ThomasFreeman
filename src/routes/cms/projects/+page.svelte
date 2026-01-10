@@ -7,6 +7,7 @@
 	let loading = true;
 	let saving = false;
 	let saveMessage = '';
+	let errorMessage = '';
 	let availableImages: string[] = [];
 	let showImageManager = false;
 	let uploadingImage = false;
@@ -214,6 +215,28 @@
 	async function saveProjects() {
 		saving = true;
 		saveMessage = '';
+		errorMessage = '';
+
+		// Validate all required fields
+		const errors: string[] = [];
+		selectedProjects.forEach((project, index) => {
+			const projectNum = index + 1;
+			if (!project.name || project.name.trim() === '') {
+				errors.push(`Project #${projectNum}: Repository is required`);
+			}
+			if (!project.summary || project.summary.trim() === '') {
+				errors.push(`Project #${projectNum}: Summary is required`);
+			}
+			if (!project.image || project.image.trim() === '') {
+				errors.push(`Project #${projectNum}: Image is required`);
+			}
+		});
+
+		if (errors.length > 0) {
+			errorMessage = errors.join(', ');
+			saving = false;
+			return;
+		}
 
 		try {
 			const response = await fetch('/api/cms/content', {
@@ -262,6 +285,9 @@
 				{#if saveMessage}
 					<span class="save-message">{saveMessage}</span>
 				{/if}
+				{#if errorMessage}
+					<span class="error-message">⚠️ {errorMessage}</span>
+				{/if}
 			</div>
 
 			<div class="projects-list">
@@ -294,8 +320,8 @@
 
 						<div class="project-fields">
 							<div class="field">
-								<label>Repository</label>
-								<select bind:value={project.name}>
+								<label>Repository <span class="required">*</span></label>
+								<select bind:value={project.name} required>
 									<option value="">Select a repository...</option>
 									{#each allRepos as repo}
 										<option value={repo.name}>{repo.name}</option>
@@ -313,12 +339,12 @@
 							</div>
 
 							<div class="field">
-								<label>Summary</label>
-								<input type="text" bind:value={project.summary} placeholder="Brief summary" />
+								<label>Summary <span class="required">*</span></label>
+								<input type="text" bind:value={project.summary} placeholder="Brief summary" required />
 							</div>
 
 							<div class="field">
-								<label>Project Image</label>
+								<label>Project Image <span class="required">*</span></label>
 								<div class="image-selector">
 									{#if project.image}
 										<div class="selected-image">
@@ -491,6 +517,15 @@
 		font-weight: 600;
 	}
 
+	.error-message {
+		color: #dc3545;
+		font-weight: 600;
+		background: #f8d7da;
+		border: 1px solid #f5c6cb;
+		padding: 0.5rem 1rem;
+		border-radius: 6px;
+	}
+
 	.projects-list {
 		display: flex;
 		flex-direction: column;
@@ -576,6 +611,11 @@
 		font-weight: 600;
 		color: #333;
 		font-size: 0.9rem;
+	}
+
+	.field label .required {
+		color: #dc3545;
+		margin-left: 0.25rem;
 	}
 
 	.field input,

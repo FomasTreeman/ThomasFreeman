@@ -31,9 +31,27 @@ const structuredContent = [
 		key: 'about.social_links',
 		value: JSON.stringify(
 			[
-				{ platform: 'GitHub', url: 'https://github.com/FomasTreeman' },
-				{ platform: 'LinkedIn', url: 'https://linkedin.com/in/thomas-freeman' },
-				{ platform: 'Email', url: 'mailto:tom@team-freeman.com' }
+				{
+					name: 'FAC',
+					url: 'https://www.foundersandcoders.com/',
+					icon: '/contact/fac.webp',
+					type: 'image'
+				},
+				{
+					name: 'GitHub',
+					url: 'https://github.com/FomasTreeman',
+					type: 'icon_github'
+				},
+				{
+					name: 'LinkedIn',
+					url: 'https://www.linkedin.com/in/fomas-treeman/',
+					type: 'icon_linkedin'
+				},
+				{
+					name: 'Email',
+					url: 'mailto:tom@team-freeman.com',
+					type: 'icon_email'
+				}
 			],
 			null,
 			2

@@ -13,7 +13,13 @@
 		"lint:fix": "eslint . --fix",
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
-		"test:unit": "vitest"
+		"test:unit": "vitest",
+		"db:init:staging": "dotenv -e .env.staging -- npx tsx scripts/init-turso-db.ts",
+		"db:seed:staging": "dotenv -e .env.staging -- npx tsx scripts/seed-structured-content.ts",
+		"db:init:production": "dotenv -e .env.production -- npx tsx scripts/init-turso-db.ts",
+		"db:seed:production": "dotenv -e .env.production -- npx tsx scripts/seed-structured-content.ts",
+		"db:migrate:staging": "dotenv -e .env.staging -- npx tsx scripts/migrate-db.ts",
+		"db:migrate:production": "dotenv -e .env.production -- npx tsx scripts/migrate-db.ts"
 	},
 	"devDependencies": {
 		"@fontsource-variable/jetbrains-mono": "^5.2.6",
@@ -25,6 +31,7 @@
 		"@typescript-eslint/eslint-plugin": "^8.46.4",
 		"@typescript-eslint/parser": "^8.46.4",
 		"dotenv": "^17.2.3",
+		"dotenv-cli": "^11.0.0",
 		"eslint": "^9.39.1",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.13.0",

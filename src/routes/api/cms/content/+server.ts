@@ -28,7 +28,8 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 			return json({ content: allContent });
 		}
 	} catch (error) {
-		return json({ error: 'Failed to fetch content' }, { status: 500 });
+		console.error('GET /api/cms/content error:', error);
+		return json({ error: 'Failed to fetch content', details: String(error) }, { status: 500 });
 	}
 };
 
@@ -48,7 +49,8 @@ export const PUT: RequestHandler = async ({ request, cookies }) => {
 		await setContent(key, value, isDraft);
 		return json({ success: true, key, value, isDraft });
 	} catch (error) {
-		return json({ error: 'Failed to update content' }, { status: 500 });
+		console.error('PUT /api/cms/content error:', error);
+		return json({ error: 'Failed to update content', details: String(error) }, { status: 500 });
 	}
 };
 
@@ -72,7 +74,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
 		return json({ success: true, key, published: true }, { status: 200 });
 	} catch (error) {
-		return json({ error: 'Failed to publish content' }, { status: 500 });
+		console.error('POST /api/cms/content error:', error);
+		return json({ error: 'Failed to publish content', details: String(error) }, { status: 500 });
 	}
 };
 
@@ -95,6 +98,7 @@ export const DELETE: RequestHandler = async ({ url, cookies }) => {
 		}
 		return json({ success: true, key });
 	} catch (error) {
-		return json({ error: 'Failed to delete content' }, { status: 500 });
+		console.error('DELETE /api/cms/content error:', error);
+		return json({ error: 'Failed to delete content', details: String(error) }, { status: 500 });
 	}
 };
