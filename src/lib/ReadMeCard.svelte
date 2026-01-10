@@ -50,7 +50,7 @@
 			before: '#0279FF'
 		}
 	];
-	
+
 	// Use custom color from CMS or default based on index
 	const colour = repo.color || defaultColours[index % defaultColours.length];
 	const imageSrc = repo.image ? `repos/${repo.image}` : `repos/${repo.name.toLowerCase()}.webp`;
@@ -108,7 +108,7 @@
 		background-color: var(--background-color);
 		position: relative;
 		z-index: 1;
-		height: calc(100% - 2.5rem);
+		height: -webkit-fill-available;
 		border: 1px solid rgba(255, 255, 255, 0.05);
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 	}
@@ -137,6 +137,10 @@
 		animation: fadeInFromUnderneath 0.6s ease forwards;
 		visibility: visible;
 		opacity: 1;
+	}
+
+	footer {
+		margin-bottom: 1rem;
 	}
 
 	@keyframes fadeInFromUnderneath {
