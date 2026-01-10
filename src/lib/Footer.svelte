@@ -42,7 +42,6 @@
 		text-align: center;
 		width: calc(100% - (var(--margin-left) * 2));
 		max-width: 900px;
-		margin-top: clamp(3rem, 6vw, 5rem);
 		margin-bottom: 0;
 		box-sizing: border-box;
 	}
@@ -74,8 +73,8 @@
 		footer {
 			width: calc(100% - 2rem);
 			margin-inline: 1rem;
-			margin-top: 3rem;
-			margin-bottom: 0;
+			margin-top: 0;
+			margin-bottom: 6rem;
 			padding: 2.5rem 1.5rem;
 		}
 
