@@ -36,25 +36,27 @@
 			<h1>{title}</h1>
 			<h2 class="about--role">{subtitle}</h2>
 			<p> {bio} </p>
-			<a href={resumeUrl} target="_blank" rel="noopener noreferrer" class="tracer-border">
-				<svg
-					stroke="currentColor"
-					fill="currentColor"
-					stroke-width="0"
-					viewBox="0 0 384 512"
-					class="mr-2"
-					height="18"
-					width="18"
-					xmlns="http://www.w3.org/2000/svg"
-					data-darkreader-inline-stroke=""
-					style="--darkreader-inline-stroke: currentColor; --darkreader-inline-fill: currentColor;"
-					data-darkreader-inline-fill=""
-					><path
-						d="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zm76.45 211.36l-96.42 95.7c-6.65 6.61-17.39 6.61-24.04 0l-96.42-95.7C73.42 337.29 80.54 320 94.82 320H160v-80c0-8.84 7.16-16 16-16h32c8.84 0 16 7.16 16 16v80h65.18c14.28 0 21.4 17.29 11.27 27.36zM377 105L279.1 7c-4.5-4.5-10.6-7-17-7H256v128h128v-6.1c0-6.3-2.5-12.4-7-16.9z"
-					/></svg
-				>
-				<p>{resumeLabel}</p>
-			</a>
+			<span class="tracer-wrapper">
+				<a href={resumeUrl} target="_blank" rel="noopener noreferrer" class="tracer-border">
+					<svg
+						stroke="currentColor"
+						fill="currentColor"
+						stroke-width="0"
+						viewBox="0 0 384 512"
+						class="mr-2"
+						height="18"
+						width="18"
+						xmlns="http://www.w3.org/2000/svg"
+						data-darkreader-inline-stroke=""
+						style="--darkreader-inline-stroke: currentColor; --darkreader-inline-fill: currentColor;"
+						data-darkreader-inline-fill=""
+						><path
+							d="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zm76.45 211.36l-96.42 95.7c-6.65 6.61-17.39 6.61-24.04 0l-96.42-95.7C73.42 337.29 80.54 320 94.82 320H160v-80c0-8.84 7.16-16 16-16h32c8.84 0 16 7.16 16 16v80h65.18c14.28 0 21.4 17.29 11.27 27.36zM377 105L279.1 7c-4.5-4.5-10.6-7-17-7H256v128h128v-6.1c0-6.3-2.5-12.4-7-16.9z"
+						/></svg
+					>
+					<p>{resumeLabel}</p>
+				</a>
+			</span>
 			<div class="contact-links">
 				{#each links as link}
 					<a href={link.url} target="_blank" rel="noopener noreferrer">
@@ -128,18 +130,28 @@
 		}
 	}
 
+	.tracer-wrapper {
+		display: inline-block;
+		position: relative;
+		padding: 2px;
+		border-radius: 1000px;
+		background: linear-gradient(66deg, #ff8b00, #0c79fe, #f9dc02, #47bfff);
+		background-size: 400% 400%;
+		animation: steam 3s ease infinite;
+		filter: drop-shadow(0 0 30px rgba(255, 139, 0, 0.4));
+	}
+
 	.tracer-border {
 		padding: 7px 15px;
-		margin: 0px;
-		background-color: transparent;
-		vertical-align: middle;
+		margin: 0;
+		background: linear-gradient(0deg, #000, #272727);
 		display: flex;
-		position: relative;
 		align-items: center;
 		gap: 0.6rem;
 		border-radius: 1000px;
-		background: linear-gradient(0deg, #000, #272727);
-		transition: all 0.5s ease;
+		transition: background 0.5s ease, color 0.5s ease;
+		text-decoration: none;
+		color: inherit;
 	}
 
 	.tracer-border:hover {
@@ -151,22 +163,8 @@
 		margin: 0;
 	}
 
-	.tracer-border:before,
-	.tracer-border:after {
-		content: '';
-		position: absolute;
-		left: -2px;
-		top: -2px;
-		width: calc(100% + 4px);
-		height: calc(100% + 4px);
-		z-index: -1;
-		border-radius: 1000px;
-		background: linear-gradient(66deg, #ff8b00, #0c79fe, #f9dc02, #47bfff);
-		background-size: 400% 400%;
-
-		-webkit-animation: steam 3s ease infinite;
-		-moz-animation: steam 3s ease infinite;
-		animation: steam 3s ease infinite;
+	.tracer-border svg {
+		flex-shrink: 0;
 	}
 
 	@-webkit-keyframes steam {
@@ -201,10 +199,6 @@
 		100% {
 			background-position: 0% 47%;
 		}
-	}
-
-	.tracer-border:after {
-		filter: blur(50px);
 	}
 
 	div.wrapper {
@@ -265,9 +259,10 @@
 		margin-bottom: 0;
 	}
 
-	.inner > a {
+	.inner > .tracer-wrapper {
+		display: block;
 		width: fit-content;
-		margin-block: 2rem 1.5rem;
+		margin-block: 1.75rem 1.4rem;
 		margin-inline: auto;
 	}
 

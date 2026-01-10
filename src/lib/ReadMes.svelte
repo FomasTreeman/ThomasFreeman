@@ -124,6 +124,7 @@
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
 		gap: clamp(1.25rem, 2.5vw, 1.75rem);
+		align-items: stretch;
 	}
 
 	@media only screen and (max-width: 1000px) {

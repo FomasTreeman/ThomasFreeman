@@ -87,6 +87,7 @@
 		display: block;
 		text-decoration: none;
 		color: inherit;
+		height: 100%;
 		opacity: 0;
 		transform: translateY(60px);
 		transition:
@@ -108,9 +109,14 @@
 		background-color: var(--background-color);
 		position: relative;
 		z-index: 1;
-		height: -webkit-fill-available;
 		border: 1px solid rgba(255, 255, 255, 0.05);
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+		display: flex;
+		flex-direction: column;
+		min-height: 100%;
+		height: 100%;
+		box-sizing: border-box;
+		width: 100%;
 	}
 
 	article .img-container {
