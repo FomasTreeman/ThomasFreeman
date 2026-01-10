@@ -414,8 +414,8 @@
 </div>
 
 {#if showHistory}
-	<div class="modal-overlay" on:click={closeHistory}>
-		<div class="modal-content" on:click|stopPropagation>
+	<div class="modal-overlay" on:click={closeHistory} on:keydown={(e) => e.key === 'Escape' && closeHistory()} role="button" tabindex="0">
+		<div class="modal-content" on:click|stopPropagation on:keydown={(e) => e.stopPropagation()} role="dialog" aria-modal="true" tabindex="-1">
 			<div class="modal-header">
 				<h2>📜 Change History {historyKey ? `- ${historyKey}` : ''}</h2>
 				<button class="close-btn" on:click={closeHistory}>✕</button>
@@ -429,7 +429,7 @@
 					<div class="history-list">
 						{#each historyData as entry, index}
 							<div class="history-entry" class:expanded={expandedHistoryEntries.has(index)}>
-								<div class="history-item-header" on:click={() => toggleExpanded(index)} on:keydown={() => {}}>
+								<div class="history-item-header" on:click={() => toggleExpanded(index)} on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && toggleExpanded(index)} role="button" tabindex="0">
 									<div class="history-item-info">
 										<span class="history-date">{formatDate(entry.changed_at)}</span>
 										<span class="history-action action-{entry.action}">{entry.action}</span>

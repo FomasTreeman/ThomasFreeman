@@ -320,8 +320,8 @@
 
 						<div class="project-fields">
 							<div class="field">
-								<label>Repository <span class="required">*</span></label>
-								<select bind:value={project.name} required>
+								<label for="repo-{i}">Repository <span class="required">*</span></label>
+								<select id="repo-{i}" bind:value={project.name} required>
 									<option value="">Select a repository...</option>
 									{#each allRepos as repo}
 										<option value={repo.name}>{repo.name}</option>
@@ -330,8 +330,9 @@
 							</div>
 
 							<div class="field">
-								<label>Custom Title (optional)</label>
+								<label for="title-{i}">Custom Title (optional)</label>
 								<input
+									id="title-{i}"
 									type="text"
 									bind:value={project.customTitle}
 									placeholder="Leave empty to use repo name"
@@ -339,12 +340,12 @@
 							</div>
 
 							<div class="field">
-								<label>Summary <span class="required">*</span></label>
-								<input type="text" bind:value={project.summary} placeholder="Brief summary" required />
+								<label for="summary-{i}">Summary <span class="required">*</span></label>
+								<input id="summary-{i}" type="text" bind:value={project.summary} placeholder="Brief summary" required />
 							</div>
 
 							<div class="field">
-								<label>Project Image <span class="required">*</span></label>
+								<label for="image-{i}">Project Image <span class="required">*</span></label>
 								<div class="image-selector">
 									{#if project.image}
 										<div class="selected-image">
@@ -374,19 +375,21 @@
 </div>
 
 {#if showImageManager}
-	<div class="modal-overlay" on:click={() => (showImageManager = false)}>
-		<div class="modal-content image-manager-modal" on:click|stopPropagation>
+	<div class="modal-overlay" on:click={() => (showImageManager = false)} on:keydown={(e) => e.key === 'Escape' && (showImageManager = false)} role="button" tabindex="0">
+		<div class="modal-content image-manager-modal" on:click|stopPropagation on:keydown={(e) => e.stopPropagation()} role="dialog" aria-modal="true" tabindex="-1">
 			<div class="modal-header">
 				<h2>🖼️ Manage Images</h2>
 				<button class="close-btn" on:click={() => (showImageManager = false)}>✕</button>
 			</div>
 			<div class="modal-body">
-				<div 
-					class="upload-section" 
+				<div
+					class="upload-section"
 					class:dragging={isDragging}
 					on:dragover={handleDragOver}
 					on:dragleave={handleDragLeave}
 					on:drop={handleDrop}
+					role="region"
+					aria-label="Image upload area"
 				>
 					<div class="upload-icon">🖼️</div>
 					<h3>Drop image here or</h3>
@@ -400,7 +403,9 @@
 				<div class="images-grid">
 					{#each availableImages as imageName}
 						<div class="image-item">
-							<img src="/repos/{imageName}" alt={imageName} on:click={() => selectImage(imageName)} />
+							<button class="image-button" on:click={() => selectImage(imageName)} type="button">
+								<img src="/repos/{imageName}" alt={imageName} />
+							</button>
 							<div class="image-actions">
 								<span class="image-name">{imageName}</span>
 								<button class="delete-image-btn" on:click={() => deleteImage(imageName)}>🗑️</button>
@@ -857,17 +862,23 @@
 		border-radius: 12px;
 		overflow: hidden;
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		cursor: pointer;
 		background: white;
 		position: relative;
 	}
-	
+
+	.image-button {
+		all: unset;
+		display: block;
+		width: 100%;
+		cursor: pointer;
+	}
+
 	.image-item:hover {
 		border-color: #667eea;
 		transform: translateY(-4px);
 		box-shadow: 0 8px 24px rgba(102, 126, 234, 0.25);
 	}
-	
+
 	.image-item img {
 		width: 100%;
 		height: 180px;
@@ -875,7 +886,7 @@
 		display: block;
 		transition: transform 0.3s;
 	}
-	
+
 	.image-item:hover img {
 		transform: scale(1.05);
 	}
