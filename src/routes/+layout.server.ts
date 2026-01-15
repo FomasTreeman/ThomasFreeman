@@ -1,5 +1,3 @@
-import { Base64 } from 'js-base64';
-import { TOKEN } from '$env/static/private';
 import PINNED from '$lib/utils/repos.js';
 import type { Data } from '$lib/types.js';
 import { getContent } from '$lib/db/content.js';
@@ -86,21 +84,21 @@ export async function load({ cookies }) {
 			
 			const pinnedRepoNames = projectsConfig.map(p => p.name).filter(Boolean);
 
-			// Just return project metadata, no README fetching
+			// Just return project metadata
 			const repos = projectsConfig
 				.map((project: any) => {
 					const repoName = project.name;
 					if (!repoName) return null;
-					
+
 					const pinnedData = PINNED[repoName] || {};
-					
+
 					return {
 						...pinnedData,
 						error: false,
-						md: '', // README will be loaded on-demand
 						name: repoName,
 						url: `https://github.com/FomasTreeman/${repoName}`,
 						summary: project.summary || pinnedData.summary,
+						description: project.description || pinnedData.description || '',
 						image: project.image,
 						customTitle: project.customTitle
 					};

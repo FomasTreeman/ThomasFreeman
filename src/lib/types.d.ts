@@ -7,7 +7,6 @@ export interface IPinnedData {
 
 export interface IRepo extends IPinnedData {
 	error: boolean; // error for specific repo
-	md: string;
 	name: string;
 	url: string;
 	color?: { overlay: string; before: string };

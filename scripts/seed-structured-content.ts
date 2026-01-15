@@ -76,7 +76,7 @@ const structuredContent = [
 		value: JSON.stringify(DEFAULT_JOURNEY.experiences, null, 2)
 	},
 	
-	// === PROJECTS SECTION ===
+	/// === PROJECTS SECTION ===
 	{
 		key: 'projects.config',
 		value: JSON.stringify(

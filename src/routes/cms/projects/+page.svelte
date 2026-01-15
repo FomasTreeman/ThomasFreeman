@@ -184,6 +184,7 @@
 				name: '',
 				customTitle: '',
 				summary: '',
+				description: '',
 				image: ''
 			}
 		];
@@ -320,8 +321,8 @@
 
 						<div class="project-fields">
 							<div class="field">
-								<label for="repo-{i}">Repository <span class="required">*</span></label>
-								<select id="repo-{i}" bind:value={project.name} required>
+								<label for="repo-{index}">Repository <span class="required">*</span></label>
+								<select id="repo-{index}" bind:value={project.name} required>
 									<option value="">Select a repository...</option>
 									{#each allRepos as repo}
 										<option value={repo.name}>{repo.name}</option>
@@ -330,9 +331,9 @@
 							</div>
 
 							<div class="field">
-								<label for="title-{i}">Custom Title (optional)</label>
+								<label for="title-{index}">Custom Title (optional)</label>
 								<input
-									id="title-{i}"
+									id="title-{index}"
 									type="text"
 									bind:value={project.customTitle}
 									placeholder="Leave empty to use repo name"
@@ -340,12 +341,23 @@
 							</div>
 
 							<div class="field">
-								<label for="summary-{i}">Summary <span class="required">*</span></label>
-								<input id="summary-{i}" type="text" bind:value={project.summary} placeholder="Brief summary" required />
+								<label for="summary-{index}">Summary <span class="required">*</span></label>
+								<input id="summary-{index}" type="text" bind:value={project.summary} placeholder="Brief summary" required />
 							</div>
 
 							<div class="field">
-								<label for="image-{i}">Project Image <span class="required">*</span></label>
+								<label for="description-{index}">Description (Supports Markdown)</label>
+								<textarea
+									id="description-{index}"
+									bind:value={project.description}
+									placeholder="Full project description - supports Markdown formatting"
+									rows="8"
+								></textarea>
+								<small>This is the main content shown on the project page. Markdown is supported.</small>
+							</div>
+
+							<div class="field">
+								<label for="image-{index}">Project Image <span class="required">*</span></label>
 								<div class="image-selector">
 									{#if project.image}
 										<div class="selected-image">
@@ -624,21 +636,35 @@
 	}
 
 	.field input,
-	.field select {
+	.field select,
+	.field textarea {
 		padding: 0.75rem;
 		border: 2px solid #e0e0e0;
 		border-radius: 6px;
 		font-size: 1rem;
 		font-family: inherit;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.field textarea {
+		resize: vertical;
+		min-height: 150px;
 	}
 
 	.field input:focus,
-	.field select:focus {
+	.field select:focus,
+	.field textarea:focus {
 		outline: none;
 		border-color: #667eea;
 	}
 
 	.field small {
+		display: block;
+		margin-top: 0.5rem;
+		color: #666;
+		font-size: 0.875rem;
+		font-style: italic;
 		color: #999;
 		font-size: 0.85rem;
 	}

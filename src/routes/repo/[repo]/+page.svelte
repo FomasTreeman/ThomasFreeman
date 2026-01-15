@@ -1,13 +1,24 @@
 <script lang="ts">
 	import SvelteMarkdown from 'svelte-markdown';
 	import type { IRepo } from '$lib/types';
+	import { afterNavigate } from '$app/navigation';
 	export let data;
-	
+
 	// Data now comes directly from server load function
 	const repo = data as IRepo;
+
+	let mainElement: HTMLElement;
+
+	// Reset scroll when navigating to this page (fixes issue where clicking from homepage preserves scroll)
+	afterNavigate(() => {
+		// Scroll to show the main content, accounting for fixed navigation
+		if (mainElement) {
+			mainElement.scrollIntoView({ behavior: 'instant', block: 'start' });
+		}
+	});
 </script>
 
-<main class="wrapper">
+<main class="wrapper" bind:this={mainElement}>
 	<a href="/" class="return">← back to home</a>
 	<h1>// {repo.name}</h1>
 	<div class="link-list">
@@ -31,12 +42,10 @@
 		</details>
 	{/if}
 	{#if repo.description}
-		<p><SvelteMarkdown source={repo.description} /></p>
-		<br />
+		<div class="description-wrapper">
+			<SvelteMarkdown source={repo.description} />
+		</div>
 	{/if}
-	<div class="md-wrapper">
-		<SvelteMarkdown source={repo.md} />
-	</div>
 </main>
 
 <style>
@@ -54,7 +63,8 @@
 	main.wrapper {
 		position: relative;
 		margin-inline: 5rem;
-		margin-top: 5.7rem;
+		margin-top: 7.5rem;
+		top: 7.5rem;
 		margin-bottom: 2.5rem;
 		padding: 5rem;
 		background-color: var(--background-color);
@@ -62,11 +72,7 @@
 		border-radius: 1rem;
 	}
 
-	image {
-		width: 100%;
-	}
-
-	main.wrapper > :not(a.return):not(h1):not(div.link-list):not(.md-wrapper) {
+	main.wrapper > :not(a.return):not(h1):not(div.link-list):not(.description-wrapper) {
 		font-family: 'JetBrains Mono Variable';
 		padding: 1rem 0rem 0rem 1rem;
 	}
@@ -94,10 +100,10 @@
 		margin-top: 1rem;
 	}
 
-	.md-wrapper {
-		margin-top: 1rem;
-		border: 3px solid white;
+	.description-wrapper {
+		margin-top: 2rem;
 		padding: 1rem;
+		line-height: 1.6;
 	}
 
 	@media (max-width: 768px) {
@@ -106,6 +112,7 @@
 			margin-top: 0;
 			margin-bottom: 2rem;
 			padding: 2rem;
+			padding-bottom: 5rem; /* Add space for bottom navigation */
 		}
 
 		div.link-list {
