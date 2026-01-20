@@ -14,11 +14,18 @@ const PINNED: { [key: string]: IPinnedData } = {
 			'A trading bot in Java testing different strategies across various markets. The bot uses a variety of indicators to make decisions, such as moving averages, RSI, and MACD.'
 	},
 	Comms: {
-		production: 'https://comm-a.vercel.app/',
 		summary: 'My quick rough messaging app for testing new frameworks',
 		stack: ['react', 'supabase'],
 		description:
-			'A messaging app using react, (version 2) the current feature in development is introducing Supabases DB and login/auth tools. where originally there wasnt session management'
+			'A messaging app using react, (version 2) the current feature in development is introducing Supabases DB and login/auth tools. where originally there wasnt session management',
+		externalLinks: [
+			{
+				id: '1',
+				name: 'Live Demo',
+				url: 'https://comm-a.vercel.app/',
+				type: 'preview'
+			}
+		]
 	},
 	Rich_System_Site: {
 		summary: 'A betting bot dashboard',

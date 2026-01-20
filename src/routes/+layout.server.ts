@@ -33,9 +33,11 @@ async function loadCMSContent(isLoggedIn: boolean) {
 				experiences: JSON.parse((await getContent('journey.experiences', isLoggedIn)) || '[]')
 			},
 			hero: {
-				title: (await getContent('homepage.hero.title', isLoggedIn)) || 'Hi, I\'m Tom Freeman 🖖',
+				title: (await getContent('homepage.hero.title', isLoggedIn)) || "Hi, I'm Tom Freeman 🖖",
 				subtitle: (await getContent('homepage.hero.subtitle', isLoggedIn)) || 'Software Dev.',
-				bio: (await getContent('about.bio', isLoggedIn)) || 'I\'m a developer with a passion for creating beautiful and efficient applications.',
+				bio:
+					(await getContent('about.bio', isLoggedIn)) ||
+					"I'm a developer with a passion for creating beautiful and efficient applications.",
 				resumeUrl: (await getContent('about.resume_url', isLoggedIn)) || '/Tom_Freeman.pdf',
 				resumeLabel: (await getContent('about.resume_label', isLoggedIn)) || 'Resume'
 			},
@@ -53,9 +55,9 @@ async function loadCMSContent(isLoggedIn: boolean) {
 export async function load({ cookies }) {
 	const sessionToken = cookies.get('cms_session');
 	const isLoggedIn = (await verifySession(sessionToken || '')) !== null;
-	
+
 	const cmsContent = await loadCMSContent(isLoggedIn);
-	
+
 	// Load projects configuration from CMS
 	let projectsConfig: any[] = [];
 	try {
@@ -65,24 +67,24 @@ export async function load({ cookies }) {
 		}
 	} catch (error) {
 		// Fallback to PINNED if config fails
-		projectsConfig = Object.keys(PINNED).map(name => ({ name }));
+		projectsConfig = Object.keys(PINNED).map((name) => ({ name }));
 	}
-	
+
 	// If no projects configured, use default PINNED
 	if (projectsConfig.length === 0) {
-		projectsConfig = Object.keys(PINNED).map(name => ({ name }));
+		projectsConfig = Object.keys(PINNED).map((name) => ({ name }));
 	}
-	
+
 	const getRepos = async (): Promise<Data> => {
 		try {
 			// Check cache first
-			const cacheKey = `repos:${JSON.stringify(projectsConfig.map(p => p.name))}`;
+			const cacheKey = `repos:${JSON.stringify(projectsConfig.map((p) => p.name))}`;
 			const cached = getCached<any[]>(cacheKey);
 			if (cached) {
 				return { repos: cached, error: false };
 			}
-			
-			const pinnedRepoNames = projectsConfig.map(p => p.name).filter(Boolean);
+
+			const pinnedRepoNames = projectsConfig.map((p) => p.name).filter(Boolean);
 
 			// Just return project metadata
 			const repos = projectsConfig
@@ -100,14 +102,16 @@ export async function load({ cookies }) {
 						summary: project.summary || pinnedData.summary,
 						description: project.description || pinnedData.description || '',
 						image: project.image,
-						customTitle: project.customTitle
+						customTitle: project.customTitle,
+						production: project.production || pinnedData.production,
+						externalLinks: project.externalLinks || pinnedData.externalLinks || []
 					};
 				})
 				.filter((repo): repo is NonNullable<typeof repo> => repo !== null);
-			
+
 			// Cache the results
 			setCache(cacheKey, repos);
-			
+
 			return {
 				repos,
 				error: false

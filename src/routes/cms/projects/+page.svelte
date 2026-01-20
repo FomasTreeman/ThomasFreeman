@@ -30,7 +30,7 @@
 				const error = await reposResponse.json();
 				alert(`Failed to load repositories: ${error.error || 'Unknown error'}`);
 			}
-			
+
 			// Load available images
 			await loadImages();
 
@@ -43,27 +43,107 @@
 				} else {
 					// Initialize with default projects from PINNED
 					selectedProjects = [
-						{ name: 'DID', summary: 'A decentralized identity service using blockchain technology.', image: 'did.webp' },
-						{ name: 'Trade-o-matic', summary: 'A trading bot testing different strategies across various markets', image: 'trade-o-matic.webp' },
-						{ name: 'Comms', summary: 'My quick rough messaging app for testing new frameworks', image: 'comms.webp' },
-						{ name: 'Rich_System_Site', summary: 'A betting bot dashboard', image: 'rich_system_site.webp' },
-						{ name: 'KodiTV', summary: 'My kodi auto-play plugin', image: 'koditv.webp' },
-						{ name: 'home-page', summary: 'My responsive home page for chrome', image: 'home-page.webp' },
-						{ name: 'boids', summary: "My BOID's simulation", image: 'boids.webp' },
-						{ name: 'renude', summary: 'My Vinted inspired clothing app', image: 'renude.webp' }
+						{
+							name: 'DID',
+							summary: 'A decentralized identity service using blockchain technology.',
+							image: 'did.webp',
+							externalLinks: []
+						},
+						{
+							name: 'Trade-o-matic',
+							summary: 'A trading bot testing different strategies across various markets',
+							image: 'trade-o-matic.webp',
+							externalLinks: []
+						},
+						{
+							name: 'Comms',
+							summary: 'My quick rough messaging app for testing new frameworks',
+							image: 'comms.webp',
+							externalLinks: []
+						},
+						{
+							name: 'Rich_System_Site',
+							summary: 'A betting bot dashboard',
+							image: 'rich_system_site.webp',
+							externalLinks: []
+						},
+						{
+							name: 'KodiTV',
+							summary: 'My kodi auto-play plugin',
+							image: 'koditv.webp',
+							externalLinks: []
+						},
+						{
+							name: 'home-page',
+							summary: 'My responsive home page for chrome',
+							image: 'home-page.webp',
+							externalLinks: []
+						},
+						{
+							name: 'boids',
+							summary: "My BOID's simulation",
+							image: 'boids.webp',
+							externalLinks: []
+						},
+						{
+							name: 'renude',
+							summary: 'My Vinted inspired clothing app',
+							image: 'renude.webp',
+							externalLinks: []
+						}
 					];
 				}
 			} else {
 				// Initialize with default projects from PINNED
 				selectedProjects = [
-					{ name: 'DID', summary: 'A decentralized identity service using blockchain technology.', image: 'did.webp' },
-					{ name: 'Trade-o-matic', summary: 'A trading bot testing different strategies across various markets', image: 'trade-o-matic.webp' },
-					{ name: 'Comms', summary: 'My quick rough messaging app for testing new frameworks', image: 'comms.webp' },
-					{ name: 'Rich_System_Site', summary: 'A betting bot dashboard', image: 'rich_system_site.webp' },
-					{ name: 'KodiTV', summary: 'My kodi auto-play plugin', image: 'koditv.webp' },
-					{ name: 'home-page', summary: 'My responsive home page for chrome', image: 'home-page.webp' },
-					{ name: 'boids', summary: "My BOID's simulation", image: 'boids.webp' },
-					{ name: 'renude', summary: 'My Vinted inspired clothing app', image: 'renude.webp' }
+					{
+						name: 'DID',
+						summary: 'A decentralized identity service using blockchain technology.',
+						image: 'did.webp',
+						externalLinks: []
+					},
+					{
+						name: 'Trade-o-matic',
+						summary: 'A trading bot testing different strategies across various markets',
+						image: 'trade-o-matic.webp',
+						externalLinks: []
+					},
+					{
+						name: 'Comms',
+						summary: 'My quick rough messaging app for testing new frameworks',
+						image: 'comms.webp',
+						externalLinks: []
+					},
+					{
+						name: 'Rich_System_Site',
+						summary: 'A betting bot dashboard',
+						image: 'rich_system_site.webp',
+						externalLinks: []
+					},
+					{
+						name: 'KodiTV',
+						summary: 'My kodi auto-play plugin',
+						image: 'koditv.webp',
+						externalLinks: []
+					},
+					{
+						name: 'home-page',
+						summary: 'My responsive home page for chrome',
+						image: 'home-page.webp',
+						externalLinks: []
+					},
+					{
+						name: 'boids',
+						summary: "My BOID's simulation",
+						image: 'boids.webp',
+						externalLinks: []
+					},
+					{
+						name: 'renude',
+						summary: 'My Vinted inspired clothing app',
+						image: 'renude.webp',
+						externalLinks: []
+					}
 				];
 			}
 		} catch (error) {
@@ -71,7 +151,7 @@
 			loading = false;
 		}
 	}
-	
+
 	async function loadImages() {
 		try {
 			const response = await fetch('/api/images');
@@ -79,22 +159,21 @@
 				const data = await response.json();
 				availableImages = data.images;
 			}
-		} catch (error) {
-		}
+		} catch (error) {}
 	}
-	
+
 	async function uploadImageFile(file: File) {
 		uploadingImage = true;
-		
+
 		try {
 			const formData = new FormData();
 			formData.append('file', file);
-			
+
 			const response = await fetch('/api/upload-image', {
 				method: 'POST',
 				body: formData
 			});
-			
+
 			if (response.ok) {
 				await loadImages();
 				alert('Image uploaded successfully!');
@@ -108,52 +187,52 @@
 			uploadingImage = false;
 		}
 	}
-	
+
 	async function uploadImage(event: Event) {
 		const input = event.target as HTMLInputElement;
 		const file = input.files?.[0];
 		if (!file) return;
-		
+
 		await uploadImageFile(file);
 		input.value = ''; // Reset input
 	}
-	
+
 	function handleDragOver(event: DragEvent) {
 		event.preventDefault();
 		isDragging = true;
 	}
-	
+
 	function handleDragLeave(event: DragEvent) {
 		event.preventDefault();
 		isDragging = false;
 	}
-	
+
 	async function handleDrop(event: DragEvent) {
 		event.preventDefault();
 		isDragging = false;
-		
+
 		const files = event.dataTransfer?.files;
 		if (!files || files.length === 0) return;
-		
+
 		const file = files[0];
-		
+
 		// Validate it's an image
 		if (!file.type.startsWith('image/')) {
 			alert('Please drop an image file');
 			return;
 		}
-		
+
 		await uploadImageFile(file);
 	}
-	
+
 	async function deleteImage(fileName: string) {
 		if (!confirm(`Delete "${fileName}"?`)) return;
-		
+
 		try {
 			const response = await fetch(`/api/images?file=${encodeURIComponent(fileName)}`, {
 				method: 'DELETE'
 			});
-			
+
 			if (response.ok) {
 				await loadImages();
 			} else {
@@ -163,18 +242,37 @@
 			alert('Error deleting image');
 		}
 	}
-	
+
 	function openImageManager(projectIndex: number) {
 		currentProjectIndex = projectIndex;
 		showImageManager = true;
 	}
-	
+
 	function selectImage(fileName: string) {
 		if (currentProjectIndex !== null) {
 			selectedProjects[currentProjectIndex].image = fileName;
 		}
 		showImageManager = false;
 		currentProjectIndex = null;
+	}
+
+	function addExternalLink(projectIndex: number) {
+		if (!selectedProjects[projectIndex].externalLinks) {
+			selectedProjects[projectIndex].externalLinks = [];
+		}
+		selectedProjects[projectIndex].externalLinks.push({
+			id: Date.now().toString(),
+			name: '',
+			url: '',
+			icon: '🔗',
+			type: 'custom'
+		});
+		selectedProjects = [...selectedProjects];
+	}
+
+	function removeExternalLink(projectIndex: number, linkIndex: number) {
+		selectedProjects[projectIndex].externalLinks.splice(linkIndex, 1);
+		selectedProjects = [...selectedProjects];
 	}
 
 	function addProject() {
@@ -185,7 +283,8 @@
 				customTitle: '',
 				summary: '',
 				description: '',
-				image: ''
+				image: '',
+				externalLinks: []
 			}
 		];
 	}
@@ -231,6 +330,23 @@
 			if (!project.image || project.image.trim() === '') {
 				errors.push(`Project #${projectNum}: Image is required`);
 			}
+			// Validate external links
+			if (project.externalLinks && project.externalLinks.length > 4) {
+				errors.push(
+					`Project #${projectNum}: Maximum 4 external links allowed (currently has ${project.externalLinks.length})`
+				);
+			}
+			// Validate external link fields are not empty if links exist
+			if (project.externalLinks && project.externalLinks.length > 0) {
+				project.externalLinks.forEach((link: any, linkIndex: number) => {
+					if (!link.name || link.name.trim() === '') {
+						errors.push(`Project #${projectNum}, Link #${linkIndex + 1}: Name is required`);
+					}
+					if (!link.url || link.url.trim() === '') {
+						errors.push(`Project #${projectNum}, Link #${linkIndex + 1}: URL is required`);
+					}
+				});
+			}
 		});
 
 		if (errors.length > 0) {
@@ -269,6 +385,9 @@
 		<div class="header-content">
 			<h1>🎨 Manage Projects</h1>
 			<div class="header-actions">
+				<button class="preview-btn" on:click={() => window.open('/', '_blank')}
+					>👁️ Preview Site</button
+				>
 				<button class="back-btn" on:click={() => goto('/cms')}>← Back to CMS</button>
 			</div>
 		</div>
@@ -342,7 +461,13 @@
 
 							<div class="field">
 								<label for="summary-{index}">Summary <span class="required">*</span></label>
-								<input id="summary-{index}" type="text" bind:value={project.summary} placeholder="Brief summary" required />
+								<input
+									id="summary-{index}"
+									type="text"
+									bind:value={project.summary}
+									placeholder="Brief summary"
+									required
+								/>
 							</div>
 
 							<div class="field">
@@ -353,7 +478,9 @@
 									placeholder="Full project description - supports Markdown formatting"
 									rows="8"
 								></textarea>
-								<small>This is the main content shown on the project page. Markdown is supported.</small>
+								<small
+									>This is the main content shown on the project page. Markdown is supported.</small
+								>
 							</div>
 
 							<div class="field">
@@ -372,6 +499,55 @@
 									</button>
 								</div>
 							</div>
+
+							<div class="field">
+								<label>External Links (optional)</label>
+								<div class="external-links">
+									{#each project.externalLinks || [] as link, linkIndex (link.id)}
+										<div class="external-link-item">
+											<div class="link-fields">
+												<input
+													type="text"
+													bind:value={link.name}
+													placeholder="Link name (e.g., Documentation)"
+													class="link-name"
+												/>
+												<input
+													type="url"
+													bind:value={link.url}
+													placeholder="https://example.com"
+													class="link-url"
+												/>
+												<select bind:value={link.type} class="link-type">
+													<option value="custom">🔗 Custom</option>
+													<option value="preview">👀 Preview</option>
+													<option value="docs">📚 Docs</option>
+													<option value="demo">🎮 Demo</option>
+												</select>
+											</div>
+											<button
+												class="remove-link-btn"
+												on:click={() => removeExternalLink(index, linkIndex)}
+												type="button"
+											>
+												🗑️
+											</button>
+										</div>
+									{/each}
+									<button
+										class="add-link-btn"
+										on:click={() => addExternalLink(index)}
+										type="button"
+									>
+										+ Add External Link
+									</button>
+								</div>
+								<small
+									>Add additional external links like documentation, demos, or related resources. <strong
+										>Maximum 4 links recommended</strong
+									> for optimal mobile display.</small
+								>
+							</div>
 						</div>
 					</div>
 				{/each}
@@ -387,8 +563,21 @@
 </div>
 
 {#if showImageManager}
-	<div class="modal-overlay" on:click={() => (showImageManager = false)} on:keydown={(e) => e.key === 'Escape' && (showImageManager = false)} role="button" tabindex="0">
-		<div class="modal-content image-manager-modal" on:click|stopPropagation on:keydown={(e) => e.stopPropagation()} role="dialog" aria-modal="true" tabindex="-1">
+	<div
+		class="modal-overlay"
+		on:click={() => (showImageManager = false)}
+		on:keydown={(e) => e.key === 'Escape' && (showImageManager = false)}
+		role="button"
+		tabindex="0"
+	>
+		<div
+			class="modal-content image-manager-modal"
+			on:click|stopPropagation
+			on:keydown={(e) => e.stopPropagation()}
+			role="dialog"
+			aria-modal="true"
+			tabindex="-1"
+		>
 			<div class="modal-header">
 				<h2>🖼️ Manage Images</h2>
 				<button class="close-btn" on:click={() => (showImageManager = false)}>✕</button>
@@ -411,7 +600,7 @@
 					</label>
 					<small>Supports JPG, PNG, WEBP • Recommended: .webp for best performance</small>
 				</div>
-				
+
 				<div class="images-grid">
 					{#each availableImages as imageName}
 						<div class="image-item">
@@ -459,6 +648,12 @@
 		font-size: 1.75rem;
 	}
 
+	.header-actions {
+		display: flex;
+		gap: 0.75rem;
+	}
+
+	.preview-btn,
 	.back-btn {
 		padding: 0.5rem 1rem;
 		background: rgba(255, 255, 255, 0.2);
@@ -467,11 +662,23 @@
 		border-radius: 6px;
 		cursor: pointer;
 		font-size: 0.875rem;
-		transition: background 0.2s;
+		transition: all 0.2s;
 	}
 
+	.preview-btn:hover,
 	.back-btn:hover {
 		background: rgba(255, 255, 255, 0.3);
+		transform: translateY(-1px);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+	}
+
+	.preview-btn {
+		background: rgba(255, 255, 255, 0.25);
+		border-color: rgba(255, 255, 255, 0.4);
+	}
+
+	.preview-btn:hover {
+		background: rgba(255, 255, 255, 0.35);
 	}
 
 	main {
@@ -676,13 +883,13 @@
 		border-radius: 12px;
 		color: #666;
 	}
-	
+
 	.image-selector {
 		display: flex;
 		flex-direction: column;
 		gap: 0.75rem;
 	}
-	
+
 	.selected-image {
 		display: flex;
 		align-items: center;
@@ -693,11 +900,11 @@
 		border-radius: 8px;
 		transition: all 0.2s;
 	}
-	
+
 	.selected-image:hover {
 		border-color: #667eea;
 	}
-	
+
 	.selected-image img {
 		width: 100px;
 		height: 100px;
@@ -706,13 +913,13 @@
 		border: 2px solid #667eea;
 		box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
 	}
-	
+
 	.selected-image span {
 		font-family: 'Courier New', monospace;
 		color: #666;
 		font-size: 0.9rem;
 	}
-	
+
 	.no-image {
 		padding: 3rem 1rem;
 		background: #f8f9fa;
@@ -722,7 +929,7 @@
 		color: #999;
 		font-size: 0.9rem;
 	}
-	
+
 	.select-image-btn {
 		padding: 0.75rem 1.5rem;
 		background: #667eea;
@@ -736,13 +943,13 @@
 		box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 		align-self: flex-start;
 	}
-	
+
 	.select-image-btn:hover {
 		background: #5568d3;
 		transform: translateY(-2px);
 		box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 	}
-	
+
 	.modal-overlay {
 		position: fixed;
 		top: 0;
@@ -755,7 +962,7 @@
 		align-items: center;
 		z-index: 1000;
 	}
-	
+
 	.modal-content {
 		background: white;
 		border-radius: 12px;
@@ -766,11 +973,11 @@
 		flex-direction: column;
 		box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 	}
-	
+
 	.image-manager-modal {
 		max-width: 1000px;
 	}
-	
+
 	.modal-header {
 		padding: 1.5rem;
 		border-bottom: 1px solid #e0e0e0;
@@ -778,12 +985,12 @@
 		justify-content: space-between;
 		align-items: center;
 	}
-	
+
 	.modal-header h2 {
 		margin: 0;
 		font-size: 1.5rem;
 	}
-	
+
 	.close-btn {
 		background: none;
 		border: none;
@@ -792,16 +999,16 @@
 		color: #999;
 		transition: color 0.2s;
 	}
-	
+
 	.close-btn:hover {
 		color: #333;
 	}
-	
+
 	.modal-body {
 		padding: 1.5rem;
 		overflow-y: auto;
 	}
-	
+
 	.upload-section {
 		margin-bottom: 2rem;
 		padding: 3rem 1.5rem;
@@ -811,7 +1018,7 @@
 		border: 3px dashed #d0d0d0;
 		transition: all 0.3s ease;
 	}
-	
+
 	.upload-section.dragging {
 		background: #e8ecff;
 		border-color: #667eea;
@@ -819,45 +1026,46 @@
 		transform: scale(1.02);
 		box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
 	}
-	
+
 	.upload-icon {
 		font-size: 3rem;
 		margin-bottom: 1rem;
 		opacity: 0.7;
 	}
-	
+
 	.upload-section.dragging .upload-icon {
 		opacity: 1;
 		animation: bounce 0.5s ease infinite;
 	}
-	
+
 	@keyframes bounce {
-		0%, 100% {
+		0%,
+		100% {
 			transform: translateY(0);
 		}
 		50% {
 			transform: translateY(-10px);
 		}
 	}
-	
+
 	.upload-section h3 {
 		margin: 0 0 1rem 0;
 		font-size: 1.1rem;
 		color: #666;
 		font-weight: 500;
 	}
-	
+
 	.upload-section.dragging h3 {
 		color: #667eea;
 	}
-	
+
 	.upload-section small {
 		display: block;
 		margin-top: 1rem;
 		color: #999;
 		font-size: 0.85rem;
 	}
-	
+
 	.upload-btn {
 		display: inline-block;
 		padding: 0.875rem 2rem;
@@ -870,19 +1078,19 @@
 		transition: all 0.2s;
 		box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 	}
-	
+
 	.upload-btn:hover {
 		transform: translateY(-2px);
 		box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
 	}
-	
+
 	.images-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 		gap: 1.25rem;
 		margin-top: 1.5rem;
 	}
-	
+
 	.image-item {
 		border: 3px solid #e0e0e0;
 		border-radius: 12px;
@@ -916,7 +1124,7 @@
 	.image-item:hover img {
 		transform: scale(1.05);
 	}
-	
+
 	.image-actions {
 		padding: 0.75rem;
 		background: white;
@@ -925,7 +1133,7 @@
 		align-items: center;
 		gap: 0.5rem;
 	}
-	
+
 	.image-name {
 		font-size: 0.8rem;
 		color: #666;
@@ -936,7 +1144,7 @@
 		font-family: 'Courier New', monospace;
 		font-weight: 500;
 	}
-	
+
 	.delete-image-btn {
 		background: #dc3545;
 		color: white;
@@ -951,12 +1159,12 @@
 		transition: all 0.2s;
 		font-size: 1rem;
 	}
-	
+
 	.delete-image-btn:hover {
 		background: #c82333;
 		transform: scale(1.1);
 	}
-	
+
 	.no-images {
 		grid-column: 1 / -1;
 		text-align: center;
@@ -966,6 +1174,118 @@
 		border: 2px dashed #e0e0e0;
 		border-radius: 12px;
 		font-size: 1rem;
+	}
+
+	.external-links {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.external-link-item {
+		display: flex;
+		gap: 0.75rem;
+		align-items: flex-start;
+		padding: 1rem;
+		background: #f8f9fa;
+		border: 2px solid #e0e0e0;
+		border-radius: 8px;
+		transition: all 0.2s;
+	}
+
+	.external-link-item:hover {
+		border-color: #667eea;
+		background: #f0f4ff;
+	}
+
+	.link-fields {
+		display: grid;
+		grid-template-columns: 1fr 2fr auto;
+		gap: 0.75rem;
+		flex: 1;
+		align-items: center;
+	}
+
+	.link-name,
+	.link-url,
+	.link-type {
+		padding: 0.5rem;
+		border: 1px solid #d0d0d0;
+		border-radius: 4px;
+		font-size: 0.9rem;
+		font-family: inherit;
+		background: white;
+		color: #333;
+		transition: all 0.2s;
+	}
+
+	.link-name:focus,
+	.link-url:focus,
+	.link-type:focus {
+		outline: none;
+		border-color: #667eea;
+		box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+	}
+
+	.link-type {
+		cursor: pointer;
+	}
+
+	.remove-link-btn {
+		padding: 0.5rem;
+		background: #dc3545;
+		color: white;
+		border: none;
+		border-radius: 6px;
+		cursor: pointer;
+		font-size: 0.875rem;
+		transition: all 0.2s;
+		flex-shrink: 0;
+		width: 36px;
+		height: 36px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.remove-link-btn:hover {
+		background: #c82333;
+		transform: scale(1.05);
+	}
+
+	.add-link-btn {
+		padding: 0.75rem 1.5rem;
+		background: #28a745;
+		color: white;
+		border: none;
+		border-radius: 8px;
+		cursor: pointer;
+		font-weight: 600;
+		font-size: 0.9rem;
+		transition: all 0.2s;
+		align-self: flex-start;
+		box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+	}
+
+	.add-link-btn:hover {
+		background: #218838;
+		transform: translateY(-2px);
+		box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+	}
+
+	@media (max-width: 768px) {
+		.link-fields {
+			grid-template-columns: 1fr;
+			gap: 0.5rem;
+		}
+
+		.external-link-item {
+			flex-direction: column;
+		}
+
+		.remove-link-btn {
+			align-self: flex-end;
+		}
 	}
 
 	@media (max-width: 768px) {
