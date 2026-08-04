@@ -139,13 +139,23 @@
 		margin-bottom: 6rem;
 	}
 
+	/* The animated Background sits behind this page, so anything that carries
+	   text needs its own opaque-enough surface to stay legible over it. */
+	.intro {
+		max-width: 62ch;
+		padding: 1.5rem;
+		border-radius: 1rem;
+		background: rgba(18, 18, 18, 0.82);
+		backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+		border: 1px solid rgba(255, 255, 255, 0.12);
+	}
+
 	.intro h1 {
 		margin: 0 0 0.5rem 0;
 	}
 
 	.intro p {
-		max-width: 60ch;
-		opacity: 0.75;
+		opacity: 0.8;
 		margin: 0;
 	}
 
@@ -162,7 +172,8 @@
 		padding: 0.75rem 1rem;
 		border-radius: 1000px;
 		border: 1px solid rgba(255, 255, 255, 0.18);
-		background: rgba(255, 255, 255, 0.06);
+		background: rgba(18, 18, 18, 0.85);
+		backdrop-filter: blur(var(--glass-blur));
 		color: var(--color);
 		font: inherit;
 		font-size: 1rem;
@@ -183,7 +194,8 @@
 		padding: 0.5rem 1rem;
 		border-radius: 1000px;
 		border: 1px solid rgba(255, 255, 255, 0.18);
-		background: transparent;
+		background: rgba(18, 18, 18, 0.85);
+		backdrop-filter: blur(var(--glass-blur));
 		color: inherit;
 		font: inherit;
 		font-size: 0.9rem;
@@ -194,13 +206,13 @@
 	}
 
 	.chip:hover {
-		background: rgba(255, 255, 255, 0.08);
+		background: rgba(40, 40, 40, 0.9);
 	}
 
 	.chip.active {
 		background: linear-gradient(135deg, var(--primary-color1), var(--primary-color2));
 		border-color: transparent;
-		color: #1a1a1a;
+		color: var(--cms-accent-contrast);
 		font-weight: 600;
 	}
 
@@ -209,6 +221,11 @@
 	}
 
 	.group h2 {
+		width: fit-content;
+		padding: 0.35rem 0.9rem;
+		border-radius: 0.6rem;
+		background: rgba(18, 18, 18, 0.82);
+		backdrop-filter: blur(var(--glass-blur));
 		display: flex;
 		align-items: baseline;
 		gap: 0.6rem;
@@ -241,7 +258,8 @@
 		text-decoration: none;
 		color: inherit;
 		border: 1px solid rgba(255, 255, 255, 0.12);
-		background: rgba(255, 255, 255, 0.05);
+		background: rgba(18, 18, 18, 0.85);
+		backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
 		transition:
 			transform 0.2s ease,
 			border-color 0.2s ease,
@@ -251,8 +269,8 @@
 	.card:hover,
 	.card:focus-visible {
 		transform: translateY(-3px);
-		border-color: rgba(255, 255, 255, 0.28);
-		background: rgba(255, 255, 255, 0.09);
+		border-color: rgba(255, 255, 255, 0.32);
+		background: rgba(30, 30, 30, 0.92);
 	}
 
 	.body {
@@ -298,8 +316,13 @@
 	}
 
 	.empty {
+		width: fit-content;
 		margin-top: 3rem;
-		opacity: 0.6;
+		padding: 0.75rem 1.1rem;
+		border-radius: 0.6rem;
+		background: rgba(18, 18, 18, 0.82);
+		backdrop-filter: blur(var(--glass-blur));
+		opacity: 0.85;
 	}
 
 	@media (max-width: 768px) {

@@ -19,7 +19,10 @@ export const GET: RequestHandler = async ({ url, cookies }) => {
 
 	try {
 		if (key) {
-			const value = await getContent(key);
+			// The caller is an authenticated admin, so serve the latest version
+			// including unpublished drafts. Without this the dedicated editors
+			// reload a draft as "not found" and silently start from empty.
+			const value = await getContent(key, true);
 			if (value === null) {
 				return json({ error: 'Content not found' }, { status: 404 });
 			}

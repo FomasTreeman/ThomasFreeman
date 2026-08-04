@@ -474,6 +474,9 @@
 
 	input,
 	textarea {
+		/* no global border-box in app.css, so width:100% + padding would
+		   otherwise overflow the row and run under the action buttons */
+		box-sizing: border-box;
 		width: 100%;
 		padding: 0.6rem 0.75rem;
 		border-radius: 8px;
@@ -574,6 +577,7 @@
 	.resource-actions {
 		display: flex;
 		flex-direction: column;
+		flex-shrink: 0;
 		gap: 0.35rem;
 	}
 
