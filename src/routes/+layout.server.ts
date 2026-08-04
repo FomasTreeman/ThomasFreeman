@@ -1,130 +1,111 @@
 import PINNED from '$lib/utils/repos.js';
-import type { Data } from '$lib/types.js';
-import { getContent } from '$lib/db/content.js';
+import type { Data, IRepo } from '$lib/types.js';
+import { getContentMany } from '$lib/db/content.js';
 import { verifySession } from '$lib/auth/magic-link.js';
 
-// Simple in-memory cache with 5 minute TTL
-const cache = new Map<string, { data: any; expires: number }>();
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-
-function getCached<T>(key: string): T | null {
-	const cached = cache.get(key);
-	if (cached && cached.expires > Date.now()) {
-		return cached.data as T;
-	}
-	cache.delete(key);
-	return null;
+interface ProjectConfig {
+	name: string;
+	summary?: string;
+	description?: string;
+	image?: string;
+	customTitle?: string;
+	production?: string;
+	externalLinks?: IRepo['externalLinks'];
 }
 
-function setCache(key: string, data: any): void {
-	cache.set(key, { data, expires: Date.now() + CACHE_TTL });
-}
+const CMS_KEYS = [
+	'footer.content',
+	'journey.header',
+	'journey.experiences',
+	'homepage.hero.title',
+	'homepage.hero.subtitle',
+	'about.bio',
+	'about.resume_url',
+	'about.resume_label',
+	'contact.email',
+	'about.social_links',
+	'projects.config'
+];
 
-interface GitHubRepo {
-	full_name: string;
-}
-
-async function loadCMSContent(isLoggedIn: boolean) {
+/**
+ * Parse a JSON content value, falling back to `fallback` if the stored value is
+ * missing or malformed. Per-key so that one bad entry cannot blank the page.
+ */
+function parseJSON<T>(raw: string | undefined, fallback: T): T {
+	if (!raw) return fallback;
 	try {
-		return {
-			footer: JSON.parse((await getContent('footer.content', isLoggedIn)) || '{}'),
-			journey: {
-				header: JSON.parse((await getContent('journey.header', isLoggedIn)) || '{}'),
-				experiences: JSON.parse((await getContent('journey.experiences', isLoggedIn)) || '[]')
-			},
-			hero: {
-				title: (await getContent('homepage.hero.title', isLoggedIn)) || "Hi, I'm Tom Freeman 🖖",
-				subtitle: (await getContent('homepage.hero.subtitle', isLoggedIn)) || 'Software Dev.',
-				bio:
-					(await getContent('about.bio', isLoggedIn)) ||
-					"I'm a developer with a passion for creating beautiful and efficient applications.",
-				resumeUrl: (await getContent('about.resume_url', isLoggedIn)) || '/Tom_Freeman.pdf',
-				resumeLabel: (await getContent('about.resume_label', isLoggedIn)) || 'Resume'
-			},
-			contact: {
-				email: (await getContent('contact.email', isLoggedIn)) || 'tom@team-freeman.com'
-			},
-			socialLinks: JSON.parse((await getContent('about.social_links', isLoggedIn)) || '[]')
-		};
+		return JSON.parse(raw) as T;
 	} catch {
-		return { header: null, footer: null, journey: null, hero: null, contact: null };
+		console.error('Malformed JSON in CMS content; falling back to default');
+		return fallback;
 	}
 }
 
-/** @type {import('./$types').PageLoad} */
+function buildCMSContent(values: Map<string, string>) {
+	return {
+		footer: parseJSON(values.get('footer.content'), {}),
+		journey: {
+			header: parseJSON(values.get('journey.header'), {}),
+			experiences: parseJSON(values.get('journey.experiences'), [])
+		},
+		hero: {
+			title: values.get('homepage.hero.title') || "Hi, I'm Tom Freeman 🖖",
+			subtitle: values.get('homepage.hero.subtitle') || 'Software Dev.',
+			bio:
+				values.get('about.bio') ||
+				"I'm a developer with a passion for creating beautiful and efficient applications.",
+			resumeUrl: values.get('about.resume_url') || '/Tom_Freeman.pdf',
+			resumeLabel: values.get('about.resume_label') || 'Resume'
+		},
+		contact: {
+			email: values.get('contact.email') || 'tom@team-freeman.com'
+		},
+		socialLinks: parseJSON(values.get('about.social_links'), [])
+	};
+}
+
+function buildRepos(projectsConfig: ProjectConfig[]): Data {
+	const repos = projectsConfig
+		.filter((project) => Boolean(project?.name))
+		.map((project) => {
+			const pinnedData = PINNED[project.name] || {};
+
+			return {
+				...pinnedData,
+				error: false,
+				name: project.name,
+				url: `https://github.com/FomasTreeman/${project.name}`,
+				summary: project.summary || pinnedData.summary,
+				description: project.description || pinnedData.description || '',
+				image: project.image,
+				customTitle: project.customTitle,
+				production: project.production || pinnedData.production,
+				externalLinks: project.externalLinks || pinnedData.externalLinks || []
+			};
+		});
+
+	return { repos, error: false };
+}
+
+/** @type {import('./$types').LayoutServerLoad} */
 export async function load({ cookies }) {
 	const sessionToken = cookies.get('cms_session');
 	const isLoggedIn = (await verifySession(sessionToken || '')) !== null;
 
-	const cmsContent = await loadCMSContent(isLoggedIn);
-
-	// Load projects configuration from CMS
-	let projectsConfig: any[] = [];
+	let values = new Map<string, string>();
 	try {
-		const configContent = await getContent('projects.config', isLoggedIn);
-		if (configContent) {
-			projectsConfig = JSON.parse(configContent);
-		}
-	} catch {
-		// Fallback to PINNED if config fails
-		projectsConfig = Object.keys(PINNED).map((name) => ({ name }));
+		values = await getContentMany(CMS_KEYS, isLoggedIn);
+	} catch (error) {
+		// The site still renders from the defaults below, so degrade rather than 500
+		console.error('Failed to load CMS content:', error);
 	}
 
-	// If no projects configured, use default PINNED
-	if (projectsConfig.length === 0) {
-		projectsConfig = Object.keys(PINNED).map((name) => ({ name }));
-	}
+	const defaultProjects = Object.keys(PINNED).map((name) => ({ name }));
+	const projectsConfig = parseJSON<ProjectConfig[]>(values.get('projects.config'), defaultProjects);
 
-	const getRepos = async (): Promise<Data> => {
-		try {
-			// Check cache first
-			const cacheKey = `repos:${JSON.stringify(projectsConfig.map((p) => p.name))}`;
-			const cached = getCached<any[]>(cacheKey);
-			if (cached) {
-				return { repos: cached, error: false };
-			}
-
-			const pinnedRepoNames = projectsConfig.map((p) => p.name).filter(Boolean);
-
-			// Just return project metadata
-			const repos = projectsConfig
-				.map((project: any) => {
-					const repoName = project.name;
-					if (!repoName) return null;
-
-					const pinnedData = PINNED[repoName] || {};
-
-					return {
-						...pinnedData,
-						error: false,
-						name: repoName,
-						url: `https://github.com/FomasTreeman/${repoName}`,
-						summary: project.summary || pinnedData.summary,
-						description: project.description || pinnedData.description || '',
-						image: project.image,
-						customTitle: project.customTitle,
-						production: project.production || pinnedData.production,
-						externalLinks: project.externalLinks || pinnedData.externalLinks || []
-					};
-				})
-				.filter((repo): repo is NonNullable<typeof repo> => repo !== null);
-
-			// Cache the results
-			setCache(cacheKey, repos);
-
-			return {
-				repos,
-				error: false
-			};
-		} catch {
-			return { error: true, repos: [] };
-		}
-	};
-	const reposData = await getRepos();
 	return {
-		error: reposData.error,
-		repos: reposData.repos,
-		cmsContent,
+		...buildRepos(projectsConfig.length > 0 ? projectsConfig : defaultProjects),
+		cmsContent: buildCMSContent(values),
 		isLoggedIn
 	};
 }

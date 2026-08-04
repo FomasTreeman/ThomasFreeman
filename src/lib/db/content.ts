@@ -40,6 +40,32 @@ export async function getContent(key: string, isLoggedIn = false): Promise<strin
 	return row?.value ?? null;
 }
 
+/**
+ * Batched form of getContent. The root layout needs ~10 keys on every request,
+ * and issuing them one at a time costs one Turso round trip each.
+ */
+export async function getContentMany(
+	keys: string[],
+	isLoggedIn = false
+): Promise<Map<string, string>> {
+	const values = new Map<string, string>();
+	if (keys.length === 0) return values;
+
+	const db = getDb();
+	const placeholders = keys.map(() => '?').join(', ');
+	const result = await db.execute({
+		sql: isLoggedIn
+			? `SELECT key, value FROM content WHERE key IN (${placeholders})`
+			: `SELECT key, value FROM content WHERE key IN (${placeholders}) AND is_draft = 0`,
+		args: keys
+	});
+
+	for (const row of result.rows as unknown as { key: string; value: string }[]) {
+		values.set(row.key, row.value);
+	}
+	return values;
+}
+
 export async function setContent(key: string, value: string, isDraft = true): Promise<void> {
 	const db = getDb();
 	// Get old value for history tracking
