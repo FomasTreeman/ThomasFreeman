@@ -146,7 +146,8 @@
 					}
 				];
 			}
-		} catch (error) {
+		} catch {
+			// keep whatever defaults were set above
 		} finally {
 			loading = false;
 		}
@@ -159,7 +160,9 @@
 				const data = await response.json();
 				availableImages = data.images;
 			}
-		} catch (error) {}
+		} catch {
+			// image list is non-critical; leave it empty
+		}
 	}
 
 	async function uploadImageFile(file: File) {
@@ -181,7 +184,7 @@
 				const error = await response.json();
 				alert('Error uploading image: ' + error.error);
 			}
-		} catch (error) {
+		} catch {
 			alert('Error uploading image');
 		} finally {
 			uploadingImage = false;
@@ -238,7 +241,7 @@
 			} else {
 				alert('Error deleting image');
 			}
-		} catch (error) {
+		} catch {
 			alert('Error deleting image');
 		}
 	}
@@ -372,7 +375,7 @@
 			} else {
 				alert('Error saving projects');
 			}
-		} catch (error) {
+		} catch {
 			alert('Error saving projects');
 		} finally {
 			saving = false;
@@ -443,7 +446,7 @@
 								<label for="repo-{index}">Repository <span class="required">*</span></label>
 								<select id="repo-{index}" bind:value={project.name} required>
 									<option value="">Select a repository...</option>
-									{#each allRepos as repo}
+									{#each allRepos as repo (repo.name)}
 										<option value={repo.name}>{repo.name}</option>
 									{/each}
 								</select>
@@ -602,7 +605,7 @@
 				</div>
 
 				<div class="images-grid">
-					{#each availableImages as imageName}
+					{#each availableImages as imageName (imageName)}
 						<div class="image-item">
 							<button class="image-button" on:click={() => selectImage(imageName)} type="button">
 								<img src="/repos/{imageName}" alt={imageName} />

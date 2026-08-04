@@ -67,7 +67,7 @@
 		<h2>Loading ...</h2>
 	{:then repos}
 		<section class="grid">
-			{#each repos as repo, index}
+			{#each repos as repo, index (repo.name)}
 				<ReadMeCard
 					{repo}
 					{index}

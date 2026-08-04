@@ -2,6 +2,13 @@ import { json } from '@sveltejs/kit';
 import { TOKEN } from '$env/static/private';
 import { verifySession } from '$lib/auth/magic-link.js';
 
+interface GitHubRepo {
+	name: string;
+	full_name: string;
+	description: string | null;
+	updated_at: string;
+}
+
 export async function GET({ cookies }) {
 	// Verify user is logged in
 	const sessionToken = cookies.get('cms_session');
@@ -28,7 +35,7 @@ export async function GET({ cookies }) {
 	}
 
 		const repos = await resp.json();
-		const repoList = repos.map((repo: any) => ({
+		const repoList = repos.map((repo: GitHubRepo) => ({
 			name: repo.name,
 			full_name: repo.full_name,
 			description: repo.description,
@@ -36,7 +43,7 @@ export async function GET({ cookies }) {
 		}));
 
 	return json({ repos: repoList });
-	} catch (error) {
+	} catch {
 		return json({ error: 'Failed to fetch repositories' }, { status: 500 });
 	}
 }

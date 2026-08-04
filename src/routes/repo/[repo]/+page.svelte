@@ -22,7 +22,7 @@
 	<a href="/" class="return">← back to home</a>
 	<h1>// {repo.name}</h1>
 	<div class="link-list">
-		{#each repo.externalLinks || [] as link}
+		{#each repo.externalLinks || [] as link (link.id)}
 			<a
 				href={link.url}
 				class="link-button external-link {link.type === 'preview' ? 'preview-link' : ''}"
@@ -110,7 +110,7 @@
 		<details open>
 			<summary>Stack</summary>
 			<ul>
-				{#each repo.stack as stackElement}
+				{#each repo.stack as stackElement (stackElement)}
 					<mark>{stackElement}</mark>
 				{/each}
 			</ul>

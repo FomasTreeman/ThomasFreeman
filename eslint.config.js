@@ -48,7 +48,11 @@ export default [
 		},
 		rules: {
 			...ts.configs['recommended'].rules,
-			'no-console': ['error', { allow: ['warn', 'error'] }]
+			'no-console': ['error', { allow: ['warn', 'error'] }],
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{ argsIgnorePattern: '^_', varsIgnorePattern: '^_' }
+			]
 		}
 	},
 
@@ -71,21 +75,14 @@ export default [
 		rules: {
 			'no-console': ['error', { allow: ['warn', 'error'] }],
 			'no-undef': 'off',
+			// the base rule cannot read TS type annotations and flags their params
+			'no-unused-vars': 'off',
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{ argsIgnorePattern: '^_', varsIgnorePattern: '^_' }
+			],
 			// resolve() only matters when kit.paths.base is set; this app is served from root
 			'svelte/no-navigation-without-resolve': 'off'
-		}
-	},
-
-	// Standalone tooling scripts — outside the app's tsconfig, so no type-aware linting
-	{
-		files: ['scripts/**/*.ts', '*.config.ts'],
-		languageOptions: {
-			parserOptions: {
-				project: null
-			}
-		},
-		rules: {
-			'no-console': 'off'
 		}
 	},
 
@@ -104,9 +101,16 @@ export default [
 		}
 	},
 
-	// Allow console in debug endpoint
+	// Standalone tooling scripts — outside the app's tsconfig, so no type-aware
+	// linting, and console output is the whole point of them.
+	// Must come after the generic JS/TS blocks so it wins.
 	{
-		files: ['**/api/leaderboard/debug/**/*.ts'],
+		files: ['scripts/**/*.{ts,js}', '*.config.ts'],
+		languageOptions: {
+			parserOptions: {
+				project: null
+			}
+		},
 		rules: {
 			'no-console': 'off'
 		}

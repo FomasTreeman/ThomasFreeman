@@ -430,7 +430,7 @@
 				nameInputError = errorData.error || 'Failed to submit score. Please try again.';
 				gameState = { ...gameState, isSubmittingScore: false };
 			}
-		} catch (error) {
+		} catch {
 			nameInputError = 'Failed to submit score. Please try again.';
 			gameState = { ...gameState, isSubmittingScore: false };
 		}
@@ -611,7 +611,7 @@
 						{#each gameState.activeOrders as order (order.id)}
 							<div class="order-card" class:completed={order.completed}>
 								<div class="order-ingredients">
-									{#each order.ingredients as ingredient}
+									{#each order.ingredients as ingredient, i (i)}
 										<span class="ingredient-icon">{getIngredientEmoji(ingredient)}</span>
 									{/each}
 								</div>
@@ -640,7 +640,7 @@
 							<div class="empty-pizza">Click ingredients to start making a pizza!</div>
 						{:else}
 							<div class="pizza-ingredients">
-								{#each gameState.currentPizza.ingredients as ingredient}
+								{#each gameState.currentPizza.ingredients as ingredient, i (i)}
 									<span class="ingredient-icon large">{getIngredientEmoji(ingredient)}</span>
 								{/each}
 							</div>
@@ -673,7 +673,7 @@
 				<div class="ingredients-section">
 					<h3>Ingredients:</h3>
 					<div class="ingredients-grid">
-						{#each INGREDIENTS as ingredient}
+						{#each INGREDIENTS as ingredient (ingredient.name)}
 							<button
 								on:click={() => addIngredient(ingredient.name)}
 								class="ingredient-button"

@@ -5,11 +5,6 @@ import { writable, get } from 'svelte/store';
 export type LocoInstance = import('locomotive-scroll').default | null;
 export const locoStore = writable<LocoInstance>(null);
 
-function isCoarsePointer() {
-	if (!browser) return false;
-	return window.matchMedia?.('(pointer: coarse)').matches ?? false;
-}
-
 function prefersReducedMotion() {
 	if (!browser) return false;
 	return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
@@ -29,7 +24,10 @@ export async function initLoco(container: HTMLElement) {
 
 	const loco = new LocomotiveScroll({
 		el: container,
-		smooth: true, // Always enable smooth scroll for better animation detection
+		// Smoothing is a large continuous motion effect, so honour the OS setting.
+		// In-view detection still works with smooth disabled, which is already the
+		// case on smartphone/tablet below.
+		smooth: !prefersReducedMotion(),
 		lerp: 0.12, // smoothing strength
 		multiplier: 1.0, // scroll speed
 		getDirection: true,

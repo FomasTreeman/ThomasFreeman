@@ -82,7 +82,7 @@
 	<ul>
 		<li class="home-items" class:active={currentPath === '/'} on:wheel|preventDefault={handleWheel}>
 			<div class="menu-container" style="transform: translateY({$menuOffset}rem)">
-				{#each homeItems as item, i}
+				{#each homeItems as item, i (item.id)}
 					<a
 						data-index={i}
 						href={`${BASE_URL}/#${item.id}`}
@@ -122,7 +122,7 @@
 				>
 			{/if}
 		</li>
-		{#each navigation.otherItems || [] as item}
+		{#each navigation.otherItems || [] as item (item.id)}
 			<li class:active={currentPath.startsWith(item.href || '')}>
 				<a href={item.href}>{item.text}</a>
 			</li>

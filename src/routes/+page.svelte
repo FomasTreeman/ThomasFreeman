@@ -11,7 +11,6 @@
 <section id="home">
 	<About 
 		heroData={data?.cmsContent?.hero} 
-		contactData={data?.cmsContent?.contact}
 		socialLinks={data?.cmsContent?.socialLinks}
 	/>
 </section>

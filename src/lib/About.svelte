@@ -4,15 +4,13 @@
 	import Scene from './Scene.svelte';
 	import { DEFAULT_HERO, DEFAULT_SOCIAL_LINKS } from './constants/defaults';
 
-	let { heroData = null, contactData = null, socialLinks = [] } = $props();
+	let { heroData = null, socialLinks = [] } = $props();
 
 	const title = $derived(heroData?.title || DEFAULT_HERO.title);
 	const subtitle = $derived(heroData?.subtitle || DEFAULT_HERO.subtitle);
 	const bio = $derived(heroData?.bio || DEFAULT_HERO.bio);
 	const resumeUrl = $derived(heroData?.resumeUrl || DEFAULT_HERO.resumeUrl);
 	const resumeLabel = $derived(heroData?.resumeLabel || DEFAULT_HERO.resumeLabel);
-	const email = $derived(contactData?.email || 'tom@team-freeman.com');
-
 	const links = $derived(socialLinks.length > 0 ? socialLinks : DEFAULT_SOCIAL_LINKS);
 
 	let shouldPromptScroll = false;
@@ -58,7 +56,7 @@
 				</a>
 			</span>
 			<div class="contact-links">
-				{#each links as link}
+				{#each links as link (link.name)}
 					<a href={link.url} target="_blank" rel="noopener noreferrer">
 						{#if link.type === 'image'}
 							<img loading="lazy" src={link.icon} alt={link.name} />

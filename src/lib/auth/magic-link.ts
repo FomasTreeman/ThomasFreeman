@@ -8,18 +8,6 @@ const resend = new Resend(RESEND_API_KEY);
 const MAGIC_LINK_EXPIRY_MINUTES = 15;
 const SESSION_EXPIRY_DAYS = 7;
 
-interface MagicLink {
-	token: string;
-	email: string;
-	expires_at: string;
-}
-
-interface Session {
-	token: string;
-	email: string;
-	expires_at: string;
-}
-
 export type MagicLinkResult = { ok: true } | { ok: false; reason: 'unauthorized' | 'send_failed' };
 
 export async function createMagicLink(email: string, baseUrl: string): Promise<MagicLinkResult> {

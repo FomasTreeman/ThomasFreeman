@@ -13,12 +13,15 @@ declare module 'locomotive-scroll' {
 	};
 	export default class LocomotiveScroll {
 		constructor(options: LocoOptions);
-		on(event: 'scroll', cb: (args: any) => void): void;
-		on(event: 'call', cb: (fn: string, way: 'enter' | 'leave', obj: any) => void): void;
+		on(
+			event: 'scroll',
+			cb: (args: { direction?: string; scroll?: { x: number; y: number } }) => void
+		): void;
+		on(event: 'call', cb: (fn: string, way: 'enter' | 'leave', obj: unknown) => void): void;
 		update(): void;
 		start(): void;
 		stop(): void;
 		destroy(): void;
-		scrollTo(target: number | string | HTMLElement, options?: any): void;
+		scrollTo(target: number | string | HTMLElement, options?: Record<string, unknown>): void;
 	}
 }

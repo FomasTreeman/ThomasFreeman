@@ -1,11 +1,12 @@
 import { json } from '@sveltejs/kit';
 import { verifySession } from '$lib/auth/magic-link.js';
 import { getAllContent, getContent, setContent, deleteContent, publishContent } from '$lib/db/content.js';
+import type { Cookies } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-async function checkAuth(cookies: any): Promise<boolean> {
+async function checkAuth(cookies: Cookies): Promise<boolean> {
 	const sessionToken = cookies.get('cms_session');
-	return (await verifySession(sessionToken)) !== null;
+	return (await verifySession(sessionToken ?? '')) !== null;
 }
 
 // GET - Retrieve all content or specific content by key

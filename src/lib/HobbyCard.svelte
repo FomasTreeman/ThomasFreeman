@@ -37,7 +37,7 @@
 			<div class="hobby-icon">{icon}</div>
 			<div class="icon-ring" style="--hobby-color: {color}" />
 			<div class="icon-particles">
-				{#each Array(6) as _, i}
+				{#each Array(6) as _, i (i)}
 					<div
 						class="particle"
 						style="--angle: {i * 60}deg; --delay: {i * 0.1}s; --color: {color}"
@@ -48,7 +48,7 @@
 		<h4>{title}</h4>
 		<div class="hobby-glow" style="--hobby-color: {color}" />
 		<div class="bubbles">
-			{#each Array(6) as _, i}
+			{#each Array(6) as _, i (i)}
 				<div class="bubble" style="--delay: {i * 1.5}s; --size: {Math.random() * 2 + 1}rem" />
 			{/each}
 		</div>

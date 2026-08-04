@@ -11,7 +11,7 @@
 </script>
 
 <div class="blog-list">
-	{#each blogs as blog}
+	{#each blogs as blog (blog.title)}
 		<a href={`/blogs/${blog.title.toLowerCase().replace(/ /g, '_')}`} class="blog-card">
 			<div class="fade-overlay"></div>
 			<div class="blog-content">

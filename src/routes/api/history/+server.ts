@@ -20,7 +20,7 @@ export async function GET({ url, cookies }) {
 			: await getAllHistory(limit);
 		
 		return json({ history });
-	} catch (error) {
+	} catch {
 		return json({ error: 'Failed to fetch history' }, { status: 500 });
 	}
 }

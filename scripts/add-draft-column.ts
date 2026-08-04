@@ -24,8 +24,8 @@ try {
 
 	console.log('✓ Created index on is_draft column');
 	console.log('Migration complete!');
-} catch (error: any) {
-	if (error.message.includes('duplicate column name')) {
+} catch (error) {
+	if (error instanceof Error && error.message.includes('duplicate column name')) {
 		console.log('Column already exists, skipping migration');
 	} else {
 		console.error('Migration failed:', error);

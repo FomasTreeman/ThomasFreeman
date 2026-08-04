@@ -20,10 +20,10 @@ loader.load(
 		r2d2Loaded.set(true);
 		scene.add(gltf.scene);
 	},
-	function (xhr) {
-		// Progress callback
-	},
+	undefined,
 	function (error) {
+		// the R2D2 model is decorative; log rather than surfacing it to the page
+		console.error('Failed to load /r2d2.glb', error);
 	}
 );
 

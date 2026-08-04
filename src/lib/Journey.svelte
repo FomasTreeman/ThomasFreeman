@@ -51,7 +51,7 @@
 
 		<div class="timeline">
 			<div class="timeline-line"></div>
-			{#each experiences as exp, index}
+			{#each experiences as exp, index (index)}
 				<div class="timeline-item scroll-animate" style="--delay: {index * 0.15}s;">
 					<div
 						class="timeline-dot"
@@ -73,7 +73,7 @@
 							<div class="achievements">
 								<h4 class="achievements-title">Key Achievements</h4>
 								<ul class="achievements-list">
-									{#each exp.achievements as achievement}
+									{#each exp.achievements as achievement (achievement)}
 										<li>{achievement}</li>
 									{/each}
 								</ul>
@@ -81,7 +81,7 @@
 						{/if}
 
 						<div class="skills">
-							{#each exp.skills as skill}
+							{#each exp.skills as skill (skill)}
 								<span class="skill-tag" style="border-color: {exp.color.secondary}">{skill}</span>
 							{/each}
 						</div>

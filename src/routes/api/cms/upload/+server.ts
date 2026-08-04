@@ -54,7 +54,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 			size: file.size,
 			type: file.type
 		});
-	} catch (error) {
+	} catch {
 		return json({ error: 'Failed to upload file' }, { status: 500 });
 	}
 };

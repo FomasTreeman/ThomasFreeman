@@ -46,7 +46,7 @@ async function loadCMSContent(isLoggedIn: boolean) {
 			},
 			socialLinks: JSON.parse((await getContent('about.social_links', isLoggedIn)) || '[]')
 		};
-	} catch (error) {
+	} catch {
 		return { header: null, footer: null, journey: null, hero: null, contact: null };
 	}
 }
@@ -65,7 +65,7 @@ export async function load({ cookies }) {
 		if (configContent) {
 			projectsConfig = JSON.parse(configContent);
 		}
-	} catch (error) {
+	} catch {
 		// Fallback to PINNED if config fails
 		projectsConfig = Object.keys(PINNED).map((name) => ({ name }));
 	}
@@ -116,7 +116,7 @@ export async function load({ cookies }) {
 				repos,
 				error: false
 			};
-		} catch (err) {
+		} catch {
 			return { error: true, repos: [] };
 		}
 	};

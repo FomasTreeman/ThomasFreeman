@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { goto, invalidateAll } from '$app/navigation';
+	import { SvelteSet } from 'svelte/reactivity';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -18,7 +19,7 @@
 	let historyKey: string | null = null;
 	let loadingHistory = false;
 	let undoing: Record<string, boolean> = {};
-	let expandedHistoryEntries: Set<number> = new Set();
+	let expandedHistoryEntries: SvelteSet<number> = new SvelteSet();
 
 	function isJSON(str: string): boolean {
 		try {
@@ -64,7 +65,7 @@
 				const error = await response.json();
 				alert('Error saving: ' + error.error);
 			}
-		} catch (error) {
+		} catch {
 			alert('Error saving content');
 		} finally {
 			saving = false;
@@ -96,7 +97,7 @@
 				const error = await response.json();
 				alert('Error publishing: ' + error.error);
 			}
-		} catch (error) {
+		} catch {
 			alert('Error publishing content');
 		} finally{
 			publishing[key] = false;
@@ -104,11 +105,9 @@
 	}
 
 	async function undoDraft(key: string) {
-		console.log('[UNDO DRAFT] Starting undo for key:', key);
 		undoing[key] = true;
 
 		try {
-			console.log('[UNDO DRAFT] Fetching history...');
 			// Get history to find the last published version
 			const historyResponse = await fetch(`/api/history?key=${encodeURIComponent(key)}&limit=100`);
 			if (!historyResponse.ok) {
@@ -120,14 +119,12 @@
 
 			const historyData = await historyResponse.json();
 			const history = historyData.history;
-			console.log('[UNDO DRAFT] History entries:', history.length);
 
 			// Find the most recent 'update' or 'create' action that came before the current draft
 			const lastPublished = history.find((entry: any) =>
 				entry.action === 'update' || entry.action === 'create'
 			);
 
-			console.log('[UNDO DRAFT] Last published entry:', lastPublished);
 
 			if (!lastPublished || !lastPublished.old_value) {
 				console.error('[UNDO DRAFT] No previous version found');
@@ -136,7 +133,6 @@
 				return;
 			}
 
-			console.log('[UNDO DRAFT] Reverting to old value...');
 			// Restore the old value and publish it
 			const saveResponse = await fetch('/api/cms/content', {
 				method: 'PUT',
@@ -144,10 +140,8 @@
 				body: JSON.stringify({ key, value: lastPublished.old_value, isDraft: false })
 			});
 
-			console.log('[UNDO DRAFT] Save response status:', saveResponse.status);
 
 			if (saveResponse.ok) {
-				console.log('[UNDO DRAFT] Success! Updating UI...');
 				// Don't update if it's projects.config (shouldn't happen, but just in case)
 				if (key !== 'projects.config') {
 					const idx = content.findIndex((c) => c.key === key);
@@ -165,7 +159,7 @@
 				console.error('[UNDO DRAFT] Server error:', error);
 				alert('Error reverting: ' + error.error);
 			}
-		} catch (error) {
+		} catch {
 			alert('Error reverting draft');
 		} finally {
 			undoing[key] = false;
@@ -219,7 +213,7 @@
 			} else {
 				alert('Failed to load history');
 			}
-		} catch (error) {
+		} catch {
 			alert('Error loading history');
 		} finally {
 			loadingHistory = false;
@@ -230,7 +224,7 @@
 		showHistory = false;
 		historyData = [];
 		historyKey = null;
-		expandedHistoryEntries = new Set();
+		expandedHistoryEntries = new SvelteSet();
 	}
 
 	function toggleExpanded(index: number) {
@@ -242,16 +236,7 @@
 		expandedHistoryEntries = expandedHistoryEntries; // trigger reactivity
 	}
 
-	function truncateValue(value: string | null, maxLength = 100): string {
-		if (!value) return 'null';
-		if (value.length <= maxLength) return value;
-		return value.substring(0, maxLength) + '...';
-	}
-
 	async function revertToVersion(key: string, value: string) {
-		console.log('[REVERT] Starting revert for key:', key);
-		console.log('[REVERT] Value length:', value?.length);
-		console.log('[REVERT] Sending API request...');
 
 		try {
 			// Save as draft (isDraft: true)
@@ -261,24 +246,19 @@
 				body: JSON.stringify({ key, value, isDraft: true })
 			});
 
-			console.log('[REVERT] API response status:', response.status);
 
 			if (response.ok) {
-				console.log('[REVERT] Success! Updating UI...');
 				// Update the content in the UI
 				const idx = content.findIndex((c) => c.key === key);
-				console.log('[REVERT] Found content at index:', idx);
 
 				if (idx !== -1) {
 					content[idx].value = value;
 					content[idx].is_draft = 1;  // Set as draft
 					content[idx].updated_at = new Date().toISOString();
 					content = [...content]; // Trigger reactivity
-					console.log('[REVERT] UI updated');
 				}
 				saveMessage = '✓ Reverted to draft! Review and publish when ready.';
 				setTimeout(() => (saveMessage = ''), 3000);
-				console.log('[REVERT] Closing history modal');
 				closeHistory();
 			} else {
 				const errorData = await response.json();
@@ -427,7 +407,7 @@
 					<div class="empty-history">No change history found</div>
 				{:else}
 					<div class="history-list">
-						{#each historyData as entry, index}
+						{#each historyData as entry, index (entry.id)}
 							<div class="history-entry" class:expanded={expandedHistoryEntries.has(index)}>
 								<div class="history-item-header" on:click={() => toggleExpanded(index)} on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && toggleExpanded(index)} role="button" tabindex="0">
 									<div class="history-item-info">

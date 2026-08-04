@@ -53,7 +53,7 @@ async function readLeaderboard(): Promise<LeaderboardEntry[]> {
 					const data = JSON.parse(text);
 					return Array.isArray(data) ? data : [];
 				}
-			} catch (fetchError) {
+			} catch {
 				continue;
 			}
 		}
@@ -102,7 +102,7 @@ export const GET: RequestHandler = async () => {
 				Expires: '0'
 			}
 		});
-	} catch (error) {
+	} catch {
 		return json({ error: 'Failed to fetch leaderboard' }, { status: 500 });
 	}
 };
@@ -154,7 +154,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				}
 			}
 		);
-	} catch (error) {
+	} catch {
 		return json({ error: 'Failed to add score' }, { status: 500 });
 	}
 };

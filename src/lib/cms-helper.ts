@@ -9,7 +9,7 @@ import { getContent } from './db/content.js';
 export async function loadContent(key: string, fallback: string = ''): Promise<string> {
 	try {
 		return (await getContent(key)) ?? fallback;
-	} catch (error) {
+	} catch {
 		return fallback;
 	}
 }
@@ -25,7 +25,7 @@ export async function loadContentBatch(keys: string[]): Promise<Record<string, s
 	for (const key of keys) {
 		try {
 			result[key] = (await getContent(key)) ?? '';
-		} catch (error) {
+		} catch {
 			result[key] = '';
 		}
 	}

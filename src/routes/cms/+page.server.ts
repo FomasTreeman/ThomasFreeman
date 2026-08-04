@@ -1,4 +1,4 @@
-import { redirect, fail } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 import { verifySession, deleteSession } from '$lib/auth/magic-link.js';
 import { getAllContent } from '$lib/db/content.js';
 import type { PageServerLoad, Actions } from './$types';
@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ cookies }) => {
 			email,
 			content
 		};
-	} catch (error) {
+	} catch {
 		return {
 			email,
 			content: []

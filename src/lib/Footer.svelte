@@ -18,7 +18,10 @@
 <footer>
 	<div class="background glass-bg" />
 	<h3>{footer.heading}</h3>
-	{#each footer.paragraphs as paragraph}
+	{#each footer.paragraphs as paragraph, i (i)}
+		<!-- Footer copy is authored in the CMS by the single admin account and
+		     intentionally supports inline links. -->
+		<!-- eslint-disable-next-line svelte/no-at-html-tags -->
 		<p>{@html paragraph}</p>
 	{/each}
 	{footer.emoji}

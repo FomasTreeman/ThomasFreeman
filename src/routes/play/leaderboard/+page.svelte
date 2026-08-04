@@ -36,7 +36,7 @@
 				const errorData = await response.json().catch(() => ({}));
 				error = errorData.error || 'Failed to load leaderboard';
 			}
-		} catch (err) {
+		} catch {
 			error = 'Failed to connect to leaderboard service';
 		} finally {
 			loading = false;
@@ -130,7 +130,7 @@
 				<div class="col-date">Date</div>
 			</div>
 
-			{#each leaderboard as entry, index}
+			{#each leaderboard as entry, index (entry.id)}
 				<div class="table-row" class:top-three={index < 3}>
 					<div class="col-rank">
 						<span class="rank-badge" style="color: {getScoreColor(index + 1)}">
