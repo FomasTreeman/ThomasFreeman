@@ -1,38 +1,117 @@
-# create-svelte
+# thomas-freeman.vercel.app
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+Personal site and portfolio. SvelteKit 2 / Svelte 5, deployed to Vercel, with a
+small self-hosted CMS backed by Turso (libSQL).
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Getting started
 
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+pnpm install
+cp .env.example .env   # then fill in the values below
+pnpm dev
 ```
 
-## Building
+Requires Node 20+. The dev server needs a reachable Turso database — every page
+reads its copy from the `content` table.
 
-To create a production version of your app:
+## Environment
+
+| Variable                | Used for                                                     |
+| ----------------------- | ------------------------------------------------------------ |
+| `TURSO_DATABASE_URL`    | libSQL connection string for the content/session database     |
+| `TURSO_AUTH_TOKEN`      | Turso auth token                                              |
+| `CMS_ADMIN_EMAIL`       | The only address allowed to log in to the CMS                 |
+| `RESEND_API_KEY`        | Sending the magic-link login email                            |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob — project images and the Pizza Rush leaderboard   |
+| `TOKEN`                 | GitHub token for listing repositories in the projects editor  |
+
+`.env.staging` and `.env.production` hold the same keys for the `db:*` scripts.
+
+## Scripts
+
+| Command                  | Does                                             |
+| ------------------------ | ------------------------------------------------ |
+| `pnpm dev`               | Dev server                                       |
+| `pnpm build` / `preview` | Production build / serve it locally              |
+| `pnpm check`             | `svelte-kit sync` + `svelte-check`               |
+| `pnpm lint`              | ESLint (`lint:fix` to autofix)                   |
+| `pnpm format`            | Prettier                                         |
+| `pnpm test:unit`         | Vitest — pure logic, no browser                  |
+| `pnpm test:integration`  | Playwright — builds, previews, drives real pages |
+| `pnpm test`              | Both                                             |
+
+Playwright needs its browser once: `npx playwright install chromium`.
+
+Database setup, per environment:
 
 ```bash
-npm run build
+pnpm db:init:staging      # create tables
+pnpm db:seed:staging      # seed structured content
+pnpm db:migrate:staging   # apply migrations
 ```
 
-You can preview the production build with `npm run preview`.
+Substitute `production` for the live database.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+## How the CMS works
+
+Login is passwordless. `/cms/login` mails a magic link to `CMS_ADMIN_EMAIL`
+(15-minute expiry), `/cms/auth/verify` exchanges it for a `cms_session` cookie
+(7 days). No other address can log in. `src/routes/cms/+layout.server.ts` gates
+every CMS route apart from the login and verify pages.
+
+All editable copy lives in one `content` table as `key` → `value` strings, most
+of them JSON. Two flags matter:
+
+- **`is_draft`** — drafts are visible only to a logged-in admin. `getContent()`
+  takes an `isLoggedIn` argument that decides which version is returned, so the
+  live site and the logged-in preview share one code path.
+- **`content_history`** — every write records the previous value, which powers
+  the history and revert UI.
+
+Editing surfaces:
+
+| Route            | Edits                                                         |
+| ---------------- | ------------------------------------------------------------- |
+| `/cms`           | Every content key as raw text/JSON, plus history and revert    |
+| `/cms/projects`  | `projects.config` — which repos appear, their copy and images  |
+| `/cms/resources` | `resources.links` — the /resources list                        |
+
+Keys with a dedicated editor are listed in `src/lib/constants/content-keys.ts`
+and filtered out of the generic `/cms` list.
+
+### Adding a resource
+
+`/cms/resources` is paste-driven: drop in a URL and `/api/cms/link-metadata`
+fetches the page server-side and reads its title and description from `og:`
+tags, falling back to `<title>`/`<meta description>`.
+
+Because that endpoint fetches a URL chosen by the caller, it resolves the host
+first and refuses anything that is not publicly routable — loopback, RFC1918,
+link-local (including the cloud metadata address) and non-http(s) schemes. See
+`src/lib/server/safe-url.ts` and its tests.
+
+Link avatars are letter tiles generated from the title, so the page makes no
+third-party requests.
+
+## Storage
+
+- **Turso** — content, sessions, magic links, history.
+- **Vercel Blob** — uploaded project images (`repos/` prefix) and the Pizza Rush
+  leaderboard. Uploads must not use the filesystem: Vercel's is read-only
+  outside `/tmp` and `static/` is fixed at build time.
+- **`static/`** — committed assets only. Images referenced by bare filename
+  still resolve here for backwards compatibility (`resolveImageSrc`).
+
+## Layout
+
+```
+src/lib/            components, and server-only helpers under lib/server
+src/lib/db/         Turso client and the content/history queries
+src/lib/auth/       magic link and session handling
+src/routes/         pages; api/ for endpoints, cms/ for the admin
+scripts/            database setup and the OG image generator
+tests/              Playwright integration tests
+```
+
+Social card: `node scripts/generate-og-image.mjs` rewrites
+`static/og-image.png`. Rerun it if the name, role or palette changes.
