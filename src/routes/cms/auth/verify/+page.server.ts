@@ -1,4 +1,5 @@
 import { redirect } from '@sveltejs/kit';
+import { dev } from '$app/environment';
 import { verifyMagicLink, createSession } from '$lib/auth/magic-link.js';
 import type { PageServerLoad } from './$types';
 
@@ -22,7 +23,7 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 	cookies.set('cms_session', sessionToken, {
 		path: '/',
 		httpOnly: true,
-		secure: true,
+		secure: !dev,
 		sameSite: 'lax',
 		maxAge: 60 * 60 * 24 * 7 // 7 days
 	});

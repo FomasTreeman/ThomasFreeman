@@ -1,36 +1,38 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { PageData } from './$types';
-	
-	export let data: PageData;
-	export let form;
+	import type { PageData, ActionData } from './$types';
+
+	let { data, form }: { data: PageData; form: ActionData } = $props();
 </script>
 
 <div class="login-container">
 	<div class="login-card">
 		<h1>🔐 CMS Login</h1>
-		
-		{#if data.success}
-			<div class="success-message">
-				<p>✓ Login link sent to your email</p>
-				<p class="hint">Check your inbox for the magic link (expires in 15 minutes)</p>
-			</div>
 
-			<form method="POST" action="?/resend" use:enhance>
-				{#if form?.success}
-					<p class="resent-message">{form.message}</p>
-				{/if}
-				<button type="submit" class="resend-btn">Resend Link</button>
-			</form>
-		{:else}
+		{#if data.invalidLink}
 			<div class="error-message">
-				<p>Failed to send login link. Please try again.</p>
+				<p>That login link is invalid or has expired. Request a new one below.</p>
 			</div>
-
-			<form method="POST" action="?/resend" use:enhance>
-				<button type="submit">Retry</button>
-			</form>
 		{/if}
+
+		{#if form?.error}
+			<div class="error-message">
+				<p>{form.error}</p>
+			</div>
+		{/if}
+
+		{#if form?.sent}
+			<div class="success-message">
+				<p>✓ Login link sent to {data.email}</p>
+				<p class="hint">{form.message}</p>
+			</div>
+		{/if}
+
+		<form method="POST" action="?/send" use:enhance>
+			<button type="submit">
+				{form?.sent ? 'Resend Link' : 'Email me a login link'}
+			</button>
+		</form>
 	</div>
 </div>
 
@@ -63,8 +65,7 @@
 		margin-top: 1.5rem;
 	}
 
-	button,
-	.resend-btn {
+	button {
 		width: 100%;
 		padding: 0.875rem;
 		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -77,22 +78,13 @@
 		transition: transform 0.2s, box-shadow 0.2s;
 	}
 
-	button:hover,
-	.resend-btn:hover {
+	button:hover {
 		transform: translateY(-2px);
 		box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
 	}
 
-	button:active,
-	.resend-btn:active {
+	button:active {
 		transform: translateY(0);
-	}
-
-	.resent-message {
-		color: #28a745;
-		text-align: center;
-		margin-bottom: 1rem;
-		font-weight: 600;
 	}
 
 	.success-message {

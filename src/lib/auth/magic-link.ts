@@ -20,10 +20,12 @@ interface Session {
 	expires_at: string;
 }
 
-export async function createMagicLink(email: string, baseUrl: string): Promise<boolean> {
+export type MagicLinkResult = { ok: true } | { ok: false; reason: 'unauthorized' | 'send_failed' };
+
+export async function createMagicLink(email: string, baseUrl: string): Promise<MagicLinkResult> {
 	// Check if email is authorized
 	if (email.toLowerCase() !== CMS_ADMIN_EMAIL.toLowerCase()) {
-		return false;
+		return { ok: false, reason: 'unauthorized' };
 	}
 
 	const token = nanoid(32);
@@ -56,9 +58,10 @@ export async function createMagicLink(email: string, baseUrl: string): Promise<b
 			`
 		});
 
-		return true;
+		return { ok: true };
 	} catch (error) {
-		return false;
+		console.error('Failed to create magic link:', error);
+		return { ok: false, reason: 'send_failed' };
 	}
 }
 
