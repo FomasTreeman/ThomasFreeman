@@ -1,6 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { resolveImageSrc } from '$lib/utils/images.js';
+
+	interface UploadedImage {
+		name: string;
+		pathname: string;
+		url: string;
+		size: number;
+	}
 
 	let allRepos: any[] = [];
 	let selectedProjects: any[] = [];
@@ -8,7 +16,7 @@
 	let saving = false;
 	let saveMessage = '';
 	let errorMessage = '';
-	let availableImages: string[] = [];
+	let availableImages: UploadedImage[] = [];
 	let showImageManager = false;
 	let uploadingImage = false;
 	let currentProjectIndex: number | null = null;
@@ -228,11 +236,11 @@
 		await uploadImageFile(file);
 	}
 
-	async function deleteImage(fileName: string) {
-		if (!confirm(`Delete "${fileName}"?`)) return;
+	async function deleteImage(image: UploadedImage) {
+		if (!confirm(`Delete "${image.name}"?`)) return;
 
 		try {
-			const response = await fetch(`/api/images?file=${encodeURIComponent(fileName)}`, {
+			const response = await fetch(`/api/images?pathname=${encodeURIComponent(image.pathname)}`, {
 				method: 'DELETE'
 			});
 
@@ -251,9 +259,9 @@
 		showImageManager = true;
 	}
 
-	function selectImage(fileName: string) {
+	function selectImage(image: UploadedImage) {
 		if (currentProjectIndex !== null) {
-			selectedProjects[currentProjectIndex].image = fileName;
+			selectedProjects[currentProjectIndex].image = image.url;
 		}
 		showImageManager = false;
 		currentProjectIndex = null;
@@ -491,7 +499,7 @@
 								<div class="image-selector">
 									{#if project.image}
 										<div class="selected-image">
-											<img src="/repos/{project.image}" alt="Selected" />
+											<img src={resolveImageSrc(project.image, project.name)} alt="Selected" />
 											<span>{project.image}</span>
 										</div>
 									{:else}
@@ -605,14 +613,14 @@
 				</div>
 
 				<div class="images-grid">
-					{#each availableImages as imageName (imageName)}
+					{#each availableImages as image (image.pathname)}
 						<div class="image-item">
-							<button class="image-button" on:click={() => selectImage(imageName)} type="button">
-								<img src="/repos/{imageName}" alt={imageName} />
+							<button class="image-button" on:click={() => selectImage(image)} type="button">
+								<img src={image.url} alt={image.name} />
 							</button>
 							<div class="image-actions">
-								<span class="image-name">{imageName}</span>
-								<button class="delete-image-btn" on:click={() => deleteImage(imageName)}>🗑️</button>
+								<span class="image-name">{image.name}</span>
+								<button class="delete-image-btn" on:click={() => deleteImage(image)}>🗑️</button>
 							</div>
 						</div>
 					{/each}

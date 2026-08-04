@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { IRepo } from '$lib/types';
+	import { resolveImageSrc } from '$lib/utils/images.js';
 	import { onMount } from 'svelte';
 
 	export let repo: IRepo;
@@ -53,7 +54,7 @@
 
 	// Use custom color from CMS or default based on index
 	const colour = repo.color || defaultColours[index % defaultColours.length];
-	const imageSrc = repo.image ? `repos/${repo.image}` : `repos/${repo.name.toLowerCase()}.webp`;
+	const imageSrc = resolveImageSrc(repo.image, repo.name);
 	const displayTitle = (repo.customTitle || repo.name).toLocaleLowerCase();
 </script>
 
