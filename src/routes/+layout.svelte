@@ -51,11 +51,11 @@
 		position: fixed;
 		bottom: 2rem;
 		right: 2rem;
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		color: white;
+		background: var(--cms-accent-gradient);
+		color: var(--cms-accent-contrast);
 		padding: 0.75rem 1.5rem;
 		border-radius: 50px;
-		box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+		box-shadow: 0 4px 20px var(--cms-accent-shadow);
 		font-weight: 700;
 		font-size: 0.9rem;
 		text-decoration: none;
@@ -68,7 +68,7 @@
 
 	.floating-cms-btn:hover {
 		transform: translateY(-3px);
-		box-shadow: 0 6px 30px rgba(102, 126, 234, 0.6);
+		box-shadow: 0 6px 30px var(--cms-accent-shadow-strong);
 	}
 
 	@media (max-width: 768px) {

@@ -640,8 +640,8 @@
 	}
 
 	header {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		color: white;
+		background: var(--cms-accent-gradient);
+		color: var(--cms-accent-contrast);
 		padding: 1.5rem 2rem;
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	}
@@ -723,8 +723,8 @@
 	}
 
 	.add-btn {
-		background: #667eea;
-		color: white;
+		background: var(--cms-accent);
+		color: var(--cms-accent-contrast);
 	}
 
 	.add-btn:hover {
@@ -786,7 +786,7 @@
 	.project-number {
 		font-size: 1.5rem;
 		font-weight: 700;
-		color: #667eea;
+		color: var(--cms-accent);
 	}
 
 	.order-buttons {
@@ -805,8 +805,8 @@
 	}
 
 	.order-btn {
-		background: #667eea;
-		color: white;
+		background: var(--cms-accent);
+		color: var(--cms-accent-contrast);
 		font-size: 1rem;
 		font-weight: 700;
 	}
@@ -874,7 +874,7 @@
 	.field select:focus,
 	.field textarea:focus {
 		outline: none;
-		border-color: #667eea;
+		border-color: var(--cms-accent);
 	}
 
 	.field small {
@@ -913,7 +913,7 @@
 	}
 
 	.selected-image:hover {
-		border-color: #667eea;
+		border-color: var(--cms-accent);
 	}
 
 	.selected-image img {
@@ -921,8 +921,8 @@
 		height: 100px;
 		object-fit: cover;
 		border-radius: 8px;
-		border: 2px solid #667eea;
-		box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+		border: 2px solid var(--cms-accent);
+		box-shadow: 0 2px 8px var(--cms-accent-shadow);
 	}
 
 	.selected-image span {
@@ -943,22 +943,22 @@
 
 	.select-image-btn {
 		padding: 0.75rem 1.5rem;
-		background: #667eea;
-		color: white;
+		background: var(--cms-accent);
+		color: var(--cms-accent-contrast);
 		border: none;
 		border-radius: 8px;
 		cursor: pointer;
 		font-weight: 600;
 		font-size: 0.9rem;
 		transition: all 0.2s;
-		box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+		box-shadow: 0 2px 8px var(--cms-accent-shadow);
 		align-self: flex-start;
 	}
 
 	.select-image-btn:hover {
 		background: #5568d3;
 		transform: translateY(-2px);
-		box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+		box-shadow: 0 4px 12px var(--cms-accent-shadow);
 	}
 
 	.modal-overlay {
@@ -1032,10 +1032,10 @@
 
 	.upload-section.dragging {
 		background: #e8ecff;
-		border-color: #667eea;
+		border-color: var(--cms-accent);
 		border-width: 3px;
 		transform: scale(1.02);
-		box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+		box-shadow: 0 8px 24px var(--cms-accent-shadow);
 	}
 
 	.upload-icon {
@@ -1067,7 +1067,7 @@
 	}
 
 	.upload-section.dragging h3 {
-		color: #667eea;
+		color: var(--cms-accent);
 	}
 
 	.upload-section small {
@@ -1080,19 +1080,19 @@
 	.upload-btn {
 		display: inline-block;
 		padding: 0.875rem 2rem;
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		color: white;
+		background: var(--cms-accent-gradient);
+		color: var(--cms-accent-contrast);
 		border-radius: 8px;
 		font-weight: 600;
 		font-size: 1rem;
 		cursor: pointer;
 		transition: all 0.2s;
-		box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+		box-shadow: 0 4px 12px var(--cms-accent-shadow);
 	}
 
 	.upload-btn:hover {
 		transform: translateY(-2px);
-		box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+		box-shadow: 0 6px 16px var(--cms-accent-shadow);
 	}
 
 	.images-grid {
@@ -1119,9 +1119,9 @@
 	}
 
 	.image-item:hover {
-		border-color: #667eea;
+		border-color: var(--cms-accent);
 		transform: translateY(-4px);
-		box-shadow: 0 8px 24px rgba(102, 126, 234, 0.25);
+		box-shadow: 0 8px 24px var(--cms-accent-shadow);
 	}
 
 	.image-item img {
@@ -1205,7 +1205,7 @@
 	}
 
 	.external-link-item:hover {
-		border-color: #667eea;
+		border-color: var(--cms-accent);
 		background: #f0f4ff;
 	}
 
@@ -1234,8 +1234,8 @@
 	.link-url:focus,
 	.link-type:focus {
 		outline: none;
-		border-color: #667eea;
-		box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+		border-color: var(--cms-accent);
+		box-shadow: 0 0 0 2px var(--cms-accent-shadow);
 	}
 
 	.link-type {

@@ -82,6 +82,20 @@
 	--glass-border-alpha: 0.22;
 	--glass-highlight-alpha: 0.22;
 	--glass-blur: 20px;
+
+	/* Admin/CMS surface tokens.
+	 *
+	 * The CMS used to be styled in a purple that appears nowhere else on the
+	 * site, which made it read as a separate product. These derive from the
+	 * palette above so the two halves match.
+	 */
+	--cms-accent: var(--primary-color1);
+	--cms-accent-gradient: linear-gradient(135deg, var(--primary-color1) 0%, var(--primary-color2) 100%);
+	--cms-accent-soft: rgba(255, 139, 0, 0.15);
+	--cms-accent-shadow: rgba(255, 139, 0, 0.35);
+	--cms-accent-shadow-strong: rgba(255, 139, 0, 0.55);
+	/* Readable text on top of the warm gradient */
+	--cms-accent-contrast: #1a1a1a;
 }
 
 html,

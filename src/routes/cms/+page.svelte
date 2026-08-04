@@ -449,8 +449,8 @@
 	}
 
 	header {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		color: white;
+		background: var(--cms-accent-gradient);
+		color: var(--cms-accent-contrast);
 		padding: 1.5rem 2rem;
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	}
@@ -593,7 +593,7 @@
 	}
 
 	.content-key {
-		color: #667eea;
+		color: var(--cms-accent);
 		font-size: 1.1rem;
 		font-family: 'Courier New', monospace;
 	}
@@ -673,8 +673,8 @@
 	}
 
 	.edit-btn {
-		background: #667eea;
-		color: white;
+		background: var(--cms-accent);
+		color: var(--cms-accent-contrast);
 	}
 
 	.edit-btn:hover {
@@ -685,7 +685,7 @@
 		background: #f8f9fa;
 		padding: 1rem;
 		border-radius: 6px;
-		border-left: 3px solid #667eea;
+		border-left: 3px solid var(--cms-accent);
 	}
 
 	.content-value.json-content {
@@ -724,7 +724,7 @@
 
 	textarea:focus {
 		outline: none;
-		border-color: #667eea;
+		border-color: var(--cms-accent);
 	}
 
 	textarea.json-editor {
@@ -893,12 +893,12 @@
 	}
 
 	.history-entry:hover {
-		border-color: #667eea;
-		box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+		border-color: var(--cms-accent);
+		box-shadow: 0 2px 8px var(--cms-accent-soft);
 	}
 
 	.history-entry.expanded {
-		border-color: #667eea;
+		border-color: var(--cms-accent);
 	}
 
 	.history-item-header {
@@ -952,7 +952,7 @@
 	}
 
 	.expand-icon {
-		color: #667eea;
+		color: var(--cms-accent);
 		font-size: 0.9rem;
 		transition: transform 0.2s;
 	}
