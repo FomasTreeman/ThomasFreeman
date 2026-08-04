@@ -2,12 +2,12 @@
 	import { enhance } from '$app/forms';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { SvelteSet } from 'svelte/reactivity';
+	import { DEDICATED_KEYS } from '$lib/constants/content-keys.js';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
 
-	// Filter out projects.config since it's managed via the dedicated Projects page
-	let content = data.content.filter((item) => item.key !== 'projects.config');
+	let content = data.content.filter((item) => !DEDICATED_KEYS.includes(item.key));
 	let editingKey: string | null = null;
 	let editValue = '';
 	let saving = false;
@@ -50,8 +50,8 @@
 			});
 
 			if (response.ok) {
-				// Don't update if it's projects.config (shouldn't happen, but just in case)
-				if (key !== 'projects.config') {
+				// Dedicated-editor keys are filtered out of this list
+				if (!DEDICATED_KEYS.includes(key)) {
 					const idx = content.findIndex((c) => c.key === key);
 					if (idx !== -1) {
 						content[idx].value = value;
@@ -83,8 +83,8 @@
 			});
 
 			if (response.ok) {
-				// Don't update if it's projects.config (shouldn't happen, but just in case)
-				if (key !== 'projects.config') {
+				// Dedicated-editor keys are filtered out of this list
+				if (!DEDICATED_KEYS.includes(key)) {
 					const idx = content.findIndex((c) => c.key === key);
 					if (idx !== -1) {
 						content[idx].is_draft = 0;
@@ -142,8 +142,8 @@
 
 
 			if (saveResponse.ok) {
-				// Don't update if it's projects.config (shouldn't happen, but just in case)
-				if (key !== 'projects.config') {
+				// Dedicated-editor keys are filtered out of this list
+				if (!DEDICATED_KEYS.includes(key)) {
 					const idx = content.findIndex((c) => c.key === key);
 					if (idx !== -1) {
 						content[idx].value = lastPublished.old_value;
@@ -285,6 +285,9 @@
 			<div class="header-actions">
 				<button class="history-btn" on:click={() => goto('/cms/projects')}>
 					🎨 Manage Projects
+				</button>
+				<button class="history-btn" on:click={() => goto('/cms/resources')}>
+					🔗 Manage Resources
 				</button>
 				<button class="history-btn" on:click={() => viewHistory()}>
 					📜 View History

@@ -19,7 +19,10 @@
 			{ id: 'about', text: 'About' },
 			{ id: 'projects', text: 'Projects' }
 		],
-		otherItems: [{ id: 'play', text: 'Play', href: '/play' }]
+		otherItems: [
+			{ id: 'resources', text: 'Resources', href: '/resources' },
+			{ id: 'play', text: 'Play', href: '/play' }
+		]
 	};
 
 	let homeItems = navigation.homeItems;
@@ -163,10 +166,17 @@
 		padding-inline: 1.5rem;
 		border-radius: 1000px;
 		transition: background-color 0.3s ease;
-		width: 6.5ch;
+		/* the rotating home menu needs a fixed box; the rest size to their label
+		   so longer entries such as "Resources" are not clipped */
+		min-width: 6.5ch;
 		text-align: center;
 		height: 2.5rem;
 		font-size: 1.05rem;
+		white-space: nowrap;
+	}
+
+	li.home-items {
+		width: 6.5ch;
 	}
 
 	li:not(.home-items) {

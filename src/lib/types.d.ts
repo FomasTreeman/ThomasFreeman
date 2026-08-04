@@ -23,6 +23,16 @@ export interface IRepo extends IPinnedData {
 	customTitle?: string;
 }
 
+export interface IResource {
+	id: string;
+	title: string;
+	url: string;
+	description?: string;
+	category: string;
+	tags?: string[];
+	addedAt: string;
+}
+
 export type Data = {
 	error: boolean; // error fetching all repos
 	repos: IRepo[] | Promise<IRepo[]>;
