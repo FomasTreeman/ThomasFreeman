@@ -7,6 +7,15 @@
 	export let data;
 </script>
 
+<svelte:head>
+	<title>Tom Freeman — Full Stack Developer</title>
+	<meta
+		name="description"
+		content={data?.cmsContent?.hero?.bio ??
+			'Full stack developer working in TypeScript, Svelte and BSV blockchain.'}
+	/>
+</svelte:head>
+
 <!-- Home/Hero section with R2D2 -->
 <section id="home">
 	<About 

@@ -1,6 +1,9 @@
 <script>
+	// `slug` must match the .md filename in this directory. It used to be derived
+	// from the title, which produced btc_as_money for btc-as-money.md and 500d.
 	let blogs = [
 		{
+			slug: 'btc-as-money',
 			title: 'BTC as money',
 			description: 'Coming soon',
 			date: 'TBC',
@@ -10,9 +13,14 @@
 	];
 </script>
 
+<svelte:head>
+	<title>Blog · Tom Freeman</title>
+	<meta name="description" content="Writing on software, blockchain and the web." />
+</svelte:head>
+
 <div class="blog-list">
-	{#each blogs as blog (blog.title)}
-		<a href={`/blogs/${blog.title.toLowerCase().replace(/ /g, '_')}`} class="blog-card">
+	{#each blogs as blog (blog.slug)}
+		<a href={`/blogs/${blog.slug}`} class="blog-card">
 			<div class="fade-overlay"></div>
 			<div class="blog-content">
 				<h2 class="blog-title">{blog.title}</h2>

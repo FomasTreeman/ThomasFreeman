@@ -4,19 +4,38 @@
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.webp" />
 		<meta name="viewport" content="width=device-width" />
-		<meta property="og:title" content="Tom's Portfolio Site" />
+		<meta
+			name="description"
+			content="Tom Freeman — full stack developer working in TypeScript, Svelte and BSV blockchain. Projects, writing and the resources I follow."
+		/>
+		<meta name="theme-color" content="#242424" />
+		<link rel="canonical" href="https://thomas-freeman.vercel.app/" />
+
+		<meta property="og:site_name" content="Tom Freeman" />
+		<meta property="og:title" content="Tom Freeman — Full Stack Developer" />
 		<meta property="og:type" content="website" />
 		<meta
-			property="og:image"
-			content="https://www.google.com/url?sa=i&url=https%3A%2F%2Femojipedia.org%2Fwaving-hand&psig=AOvVaw3SKdA_iTMP_Vt_8cPHHlTh&ust=1693576443424000&source=images&cd=vfe&opi=89978449&ved=0CA8QjRxqFwoTCPC0uoSGh4EDFQAAAAAdAAAAABAE"
+			property="og:description"
+			content="Full stack developer working in TypeScript, Svelte and BSV blockchain."
 		/>
+		<meta property="og:image" content="https://thomas-freeman.vercel.app/og-image.png" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content="Tom Freeman — Full Stack Developer" />
 		<meta property="og:url" content="https://thomas-freeman.vercel.app/" />
 		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content="Tom Freeman — Full Stack Developer" />
+		<meta
+			name="twitter:description"
+			content="Full stack developer working in TypeScript, Svelte and BSV blockchain."
+		/>
+		<meta name="twitter:image" content="https://thomas-freeman.vercel.app/og-image.png" />
 		<link
 			rel="stylesheet"
 			href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css"
 		/>
-		<title>Thomas Freeman</title>
+		<!-- No <title> here on purpose: it would precede %sveltekit.head% and win
+		     over every page's own <svelte:head> title. Each route sets its own. -->
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">

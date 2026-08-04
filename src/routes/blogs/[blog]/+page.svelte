@@ -2,6 +2,10 @@
 	export let data;
 </script>
 
+<svelte:head>
+	<title>{data.title ?? 'Blog'} · Tom Freeman</title>
+</svelte:head>
+
 <section class="content">
 	<svelte:component this={data.content} />
 </section>

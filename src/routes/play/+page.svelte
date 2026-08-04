@@ -547,6 +547,11 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Pizza Rush · Tom Freeman</title>
+	<meta name="description" content="A small browser game. Build the orders before the timer runs out." />
+</svelte:head>
+
 <div class="game-container">
 	{#if !gameState.gameStarted}
 		<!-- Start Screen -->

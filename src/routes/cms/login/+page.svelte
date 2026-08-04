@@ -5,6 +5,11 @@
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 </script>
 
+<svelte:head>
+	<title>Login · CMS</title>
+	<meta name="robots" content="noindex" />
+</svelte:head>
+
 <div class="login-container">
 	<div class="login-card">
 		<h1>🔐 CMS Login</h1>

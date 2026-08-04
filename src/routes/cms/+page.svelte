@@ -278,6 +278,11 @@
 
 </script>
 
+<svelte:head>
+	<title>Content · CMS</title>
+	<meta name="robots" content="noindex" />
+</svelte:head>
+
 <div class="cms-container">
 	<header>
 		<div class="header-content">

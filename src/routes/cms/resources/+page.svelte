@@ -211,6 +211,7 @@
 
 <svelte:head>
 	<title>Resources · CMS</title>
+	<meta name="robots" content="noindex" />
 </svelte:head>
 
 <div class="cms-container">

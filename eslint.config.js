@@ -105,7 +105,7 @@ export default [
 	// linting, and console output is the whole point of them.
 	// Must come after the generic JS/TS blocks so it wins.
 	{
-		files: ['scripts/**/*.{ts,js}', '*.config.ts'],
+		files: ['scripts/**/*.{ts,js,mjs}', '*.config.ts'],
 		languageOptions: {
 			parserOptions: {
 				project: null

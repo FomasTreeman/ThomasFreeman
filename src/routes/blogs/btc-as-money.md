@@ -1,3 +1,7 @@
+---
+title: "Bitcoin as Money: Beyond Digital Gold"
+---
+
 # Bitcoin as Money: Beyond Digital Gold
 
 Hey there! I'm diving into something that's been on my mind lately - could Bitcoin actually become our everyday money, not just a digital vault for storing value? I know, it's a wild thought, but stick with me here. This exploration started after watching an eye-opening video on [satsvsfiat.com](https://satsvsfiat.com), and it turned into a deep dive into our financial future.

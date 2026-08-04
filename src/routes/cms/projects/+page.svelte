@@ -391,6 +391,11 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Projects · CMS</title>
+	<meta name="robots" content="noindex" />
+</svelte:head>
+
 <div class="cms-container">
 	<header>
 		<div class="header-content">

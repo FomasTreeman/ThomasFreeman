@@ -20,6 +20,7 @@
 			{ id: 'projects', text: 'Projects' }
 		],
 		otherItems: [
+			{ id: 'blogs', text: 'Blog', href: '/blogs' },
 			{ id: 'resources', text: 'Resources', href: '/resources' },
 			{ id: 'play', text: 'Play', href: '/play' }
 		]

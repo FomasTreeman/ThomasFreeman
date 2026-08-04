@@ -18,6 +18,11 @@
 	});
 </script>
 
+<svelte:head>
+	<title>{repo.customTitle || repo.name} · Tom Freeman</title>
+	<meta name="description" content={repo.summary ?? `The ${repo.name} project.`} />
+</svelte:head>
+
 <main class="wrapper" bind:this={mainElement}>
 	<a href="/" class="return">← back to home</a>
 	<h1>// {repo.name}</h1>
