@@ -135,7 +135,7 @@
 <style>
 	.resources {
 		margin-inline: var(--margin-left);
-		margin-top: 6.5rem;
+		margin-top: var(--content-top);
 		margin-bottom: 6rem;
 	}
 
@@ -152,6 +152,9 @@
 
 	.intro h1 {
 		margin: 0 0 0.5rem 0;
+		/* explicit, so the wide-screen global type scale does not blow this up
+		   to 4.5rem inside a fixed-width card */
+		font-size: clamp(2rem, 3vw, 2.75rem);
 	}
 
 	.intro p {
@@ -328,7 +331,6 @@
 	@media (max-width: 768px) {
 		.resources {
 			margin-inline: 1rem;
-			margin-top: 5rem;
 		}
 	}
 

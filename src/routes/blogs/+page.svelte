@@ -39,11 +39,10 @@
 		gap: 20px;
 		margin-bottom: 20px;
 		margin-inline: var(--margin-left);
-		margin-top: 6.5rem;
+		margin-top: var(--content-top);
 
 		@media (max-width: 768px) {
-			margin-inline: 0;
-			margin-top: 1.5rem;
+			margin-inline: 1rem;
 		}
 	}
 	.blog-card {

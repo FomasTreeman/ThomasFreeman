@@ -1,0 +1,72 @@
+/**
+ * Shared CMS surface language.
+ *
+ * Modelled on the public /resources page: dark translucent panels, soft white
+ * hairline borders, generous radii, and the brand gradient used only for
+ * emphasis. The CMS pages previously mixed a light theme with a full-bleed
+ * gradient header, which looked like a different product to the site.
+ *
+ * Imported once from src/routes/cms/+layout.svelte so it applies to every CMS
+ * route without each page redefining its own palette.
+ */
+
+:root {
+	--cms-bg: #121212;
+	/* raised panels: cards, list rows, the sticky header */
+	--cms-surface-1: rgba(30, 30, 30, 0.92);
+	/* inset areas: value previews, code, empty states */
+	--cms-surface-2: rgba(18, 18, 18, 0.85);
+	/* interactive hover */
+	--cms-surface-3: rgba(48, 48, 48, 0.94);
+	--cms-border: rgba(255, 255, 255, 0.12);
+	--cms-border-strong: rgba(255, 255, 255, 0.28);
+	--cms-text: rgba(255, 255, 255, 0.9);
+	--cms-text-muted: rgba(255, 255, 255, 0.55);
+	--cms-radius: 1rem;
+	--cms-radius-sm: 0.6rem;
+
+	/* status colours, tuned for a dark surface rather than a light one */
+	--cms-success: #4ade80;
+	--cms-success-bg: rgba(74, 222, 128, 0.15);
+	--cms-warning: #fbbf24;
+	--cms-warning-bg: rgba(251, 191, 36, 0.14);
+	--cms-danger: #f87171;
+	--cms-danger-bg: rgba(248, 113, 113, 0.15);
+	--cms-neutral-btn: rgba(255, 255, 255, 0.14);
+}
+
+.cms-container {
+	min-height: 100vh;
+	background: var(--cms-bg);
+	color: var(--cms-text);
+}
+
+/* The CMS is a tool, not a landing page — keep headings at UI scale and stop
+   the wide-screen global type ramp from applying here. */
+.cms-container h1 {
+	margin: 0;
+	font-size: 1.35rem;
+	font-weight: 700;
+	white-space: nowrap;
+}
+
+.cms-container h2 {
+	font-size: 1.1rem;
+	font-weight: 700;
+}
+
+.cms-container p {
+	font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+	.cms-container h1 {
+		font-size: 1.15rem;
+	}
+}
+
+/* Dialogs sit above page content, so they need an opaque surface rather than
+   the translucent panel background. */
+:root {
+	--cms-surface-solid: #1e1e1e;
+}

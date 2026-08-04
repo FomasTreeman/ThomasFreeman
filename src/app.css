@@ -25,6 +25,11 @@
 	--link-color: #646cff;
 	--link-color-hover: #535bf2;
 	--margin-left: 5rem;
+	/* The pill nav is position: fixed, so pages must reserve room for it rather
+	   than sliding under it. Below 768px the nav pins to the bottom instead,
+	   and --content-top drops accordingly (see the max-width block below). */
+	--nav-height: 6.2rem;
+	--content-top: calc(var(--nav-height) + 2.5rem);
 	--icon-width: 4rem;
 	--icon-margin: 2rem;
 	/* 22 is number of imgs */
@@ -44,27 +49,13 @@
 
 	@media (min-width: 1440px) {
 		--margin-left: 8rem;
-
-		h1 {
-			font-size: 4.5rem;
-		}
-
-		h2 {
-			font-size: 3rem;
-		}
-
-		h3 {
-			font-size: 2.5rem;
-		}
-
-		p {
-			font-size: 1.5rem;
-		}
 	}
 
 	@media (max-width: 768px) {
 		--reveal-distance: 80px; /* Still dramatic on mobile */
 		--dur: 900ms;
+		/* nav sits at the bottom here, so no top clearance is needed */
+		--content-top: 1.5rem;
 	}
 
 	/* Glassmorphism tokens - optimized for dark/black backgrounds
@@ -104,9 +95,36 @@ body,
 	height: 100%;
 }
 
-ƒ h1,
+h1,
 h2 {
 	font-weight: 800;
+}
+
+/* Larger type on wide screens.
+ *
+ * Deliberately top level. This used to be nested inside :root, which compiles
+ * to `:root h1` — specificity (0,1,1), exactly tying Svelte's scoped
+ * `h1.svelte-hash`. Ties fall back to stylesheet order, so whether a component's
+ * own heading size won varied between dev and build, and headings such as the
+ * CMS "Content Manager" intermittently rendered at 4.5rem. At (0,0,1) any
+ * component rule now wins deterministically.
+ */
+@media (min-width: 1440px) {
+	h1 {
+		font-size: 4.5rem;
+	}
+
+	h2 {
+		font-size: 3rem;
+	}
+
+	h3 {
+		font-size: 2.5rem;
+	}
+
+	p {
+		font-size: 1.5rem;
+	}
 }
 
 a {
