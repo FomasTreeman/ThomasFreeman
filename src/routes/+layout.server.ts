@@ -2,6 +2,7 @@ import PINNED from '$lib/utils/repos.js';
 import type { Data, IRepo } from '$lib/types.js';
 import { getContentMany } from '$lib/db/content.js';
 import { verifySession } from '$lib/auth/magic-link.js';
+import { RESOURCES_KEY } from '$lib/constants/content-keys.js';
 
 interface ProjectConfig {
 	name: string;
@@ -24,7 +25,10 @@ const CMS_KEYS = [
 	'about.resume_label',
 	'contact.email',
 	'about.social_links',
-	'projects.config'
+	'projects.config',
+	// only to tell the nav whether /resources has anything on it — joining this
+	// batch keeps that a free lookup rather than a second round trip
+	RESOURCES_KEY
 ];
 
 /**
@@ -106,6 +110,9 @@ export async function load({ cookies }) {
 	return {
 		...buildRepos(projectsConfig.length > 0 ? projectsConfig : defaultProjects),
 		cmsContent: buildCMSContent(values),
+		// The nav hides /resources when there is nothing to show there. Only the
+		// count travels to the client; the page itself loads the entries.
+		hasResources: parseJSON<unknown[]>(values.get(RESOURCES_KEY), []).length > 0,
 		isLoggedIn
 	};
 }

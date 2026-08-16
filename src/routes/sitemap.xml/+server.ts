@@ -1,12 +1,14 @@
 import { getContent } from '$lib/db/content.js';
-import { PROJECTS_KEY } from '$lib/constants/content-keys.js';
+import { PROJECTS_KEY, RESOURCES_KEY } from '$lib/constants/content-keys.js';
+import { BLOG_ENABLED } from '$lib/constants/features.js';
 import PINNED from '$lib/utils/repos.js';
 import type { RequestHandler } from './$types';
 
 const SITE = 'https://thomas-freeman.vercel.app';
 
 // Static routes worth indexing. /cms and /api are excluded here and in robots.txt.
-const STATIC_PATHS = ['/', '/resources', '/blogs', '/play'];
+// /blogs and /resources are conditional — see below.
+const STATIC_PATHS = ['/', '/play'];
 
 function urlEntry(path: string, priority: string): string {
 	return `	<url>\n		<loc>${SITE}${path}</loc>\n		<priority>${priority}</priority>\n	</url>`;
@@ -28,8 +30,23 @@ export const GET: RequestHandler = async ({ setHeaders }) => {
 		console.error('sitemap: failed to read projects config:', error);
 	}
 
+	// A disabled blog 404s, and an empty /resources is not worth indexing.
+	let hasResources = false;
+	try {
+		const raw = await getContent(RESOURCES_KEY);
+		hasResources = raw ? (JSON.parse(raw) as unknown[])?.length > 0 : false;
+	} catch (error) {
+		console.error('sitemap: failed to read resources:', error);
+	}
+
+	const paths = [
+		...STATIC_PATHS,
+		...(BLOG_ENABLED ? ['/blogs'] : []),
+		...(hasResources ? ['/resources'] : [])
+	];
+
 	const entries = [
-		...STATIC_PATHS.map((path) => urlEntry(path, path === '/' ? '1.0' : '0.7')),
+		...paths.map((path) => urlEntry(path, path === '/' ? '1.0' : '0.7')),
 		...projectNames.map((name) => urlEntry(`/repo/${encodeURIComponent(name)}`, '0.6'))
 	];
 

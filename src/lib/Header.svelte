@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { spring } from 'svelte/motion';
 	import { page } from '$app/stores';
+	import { BLOG_ENABLED } from './constants/features.js';
 	import ScrollObserver from './ScrollObserver.svelte';
 
 	let BASE_URL = $state<string>('');
@@ -20,13 +21,17 @@
 			{ id: 'projects', text: 'Projects' }
 		],
 		otherItems: [
-			{ id: 'blogs', text: 'Blog', href: '/blogs' },
-			{ id: 'resources', text: 'Resources', href: '/resources' },
+			{ id: 'blogs', text: 'Blog', href: '/blogs', show: () => BLOG_ENABLED },
+			// nothing published yet means an empty page, so leave it out entirely
+			{ id: 'resources', text: 'Resources', href: '/resources', show: () => hasResources },
 			{ id: 'play', text: 'Play', href: '/play' }
 		]
 	};
 
 	let homeItems = navigation.homeItems;
+
+	const hasResources = $derived(Boolean($page.data?.hasResources));
+	const otherItems = $derived(navigation.otherItems.filter((item) => item.show?.() ?? true));
 
 	function scrollMenu(direction: 'up' | 'down') {
 		pauseIO = true;
@@ -126,7 +131,7 @@
 				>
 			{/if}
 		</li>
-		{#each navigation.otherItems || [] as item (item.id)}
+		{#each otherItems as item (item.id)}
 			<li class:active={currentPath.startsWith(item.href || '')}>
 				<a href={item.href}>{item.text}</a>
 			</li>

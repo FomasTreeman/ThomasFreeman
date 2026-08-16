@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { BLOG_ENABLED } from '../src/lib/constants/features.js';
 
 test.describe('public pages', () => {
 	test('home page renders and is titled', async ({ page }) => {
@@ -9,15 +10,23 @@ test.describe('public pages', () => {
 
 	test('nav links reach every public section', async ({ page }) => {
 		await page.goto('/');
-		for (const [label, path] of [
-			['Blog', '/blogs'],
-			['Resources', '/resources'],
-			['Play', '/play']
-		]) {
+		// Blog and Resources are conditional, so only assert on what the nav
+		// actually offers rather than a hardcoded list that drifts from it.
+		const labels = await page.locator('nav li:not(.home-items) a').allInnerTexts();
+		expect(labels).toContain('Play');
+
+		for (const label of labels) {
 			await page.goto('/');
 			await page.getByRole('link', { name: label, exact: true }).click();
-			await expect(page).toHaveURL(new RegExp(`${path}$`));
+			await expect(page).toHaveURL(new RegExp(`/${label.toLowerCase()}s?$`));
 		}
+	});
+
+	test('the nav offers Blog only when the blog is enabled', async ({ page }) => {
+		await page.goto('/');
+		await expect(page.locator('nav').getByRole('link', { name: 'Blog', exact: true })).toHaveCount(
+			BLOG_ENABLED ? 1 : 0
+		);
 	});
 
 	test('resources page renders', async ({ page }) => {
@@ -25,12 +34,28 @@ test.describe('public pages', () => {
 		await expect(page.getByRole('heading', { name: 'Resources', level: 1 })).toBeVisible();
 	});
 
-	test('the blog post opens from the listing', async ({ page }) => {
-		await page.goto('/blogs');
-		await page.locator('a.blog-card').first().click();
-		// Regression: the listing used to build an underscore slug for a
-		// hyphenated filename, so this navigation 500d
-		await expect(page.locator('section.content')).toBeVisible();
+	test('the nav hides Resources while none are published', async ({ page }) => {
+		await page.goto('/resources');
+		const published = await page.locator('a.card').count();
+		await expect(page.locator('nav').getByRole('link', { name: 'Resources' })).toHaveCount(
+			published > 0 ? 1 : 0
+		);
+	});
+
+	test('blog routes follow the flag', async ({ page }) => {
+		const listing = await page.goto('/blogs');
+		expect(listing?.status()).toBe(BLOG_ENABLED ? 200 : 404);
+
+		if (BLOG_ENABLED) {
+			await page.locator('a.blog-card').first().click();
+			// Regression: the listing used to build an underscore slug for a
+			// hyphenated filename, so this navigation 500d
+			await expect(page.locator('section.content')).toBeVisible();
+		} else {
+			// disabled means genuinely unreachable, not merely unlinked
+			const post = await page.goto('/blogs/btc-as-money');
+			expect(post?.status()).toBe(404);
+		}
 	});
 
 	test('an unknown blog slug is a 404, not a 500', async ({ page }) => {
@@ -41,7 +66,10 @@ test.describe('public pages', () => {
 	test('sitemap and robots are served', async ({ page }) => {
 		const sitemap = await page.goto('/sitemap.xml');
 		expect(sitemap?.status()).toBe(200);
-		expect(await sitemap?.text()).toContain('<urlset');
+		const xml = (await sitemap?.text()) ?? '';
+		expect(xml).toContain('<urlset');
+		// a disabled blog 404s, so advertising it to crawlers would be a dead link
+		expect(xml.includes('/blogs')).toBe(BLOG_ENABLED);
 
 		const robots = await page.goto('/robots.txt');
 		expect(robots?.status()).toBe(200);
