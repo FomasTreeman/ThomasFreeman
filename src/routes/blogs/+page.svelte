@@ -39,7 +39,11 @@
 		gap: 20px;
 		margin-bottom: 20px;
 		margin-inline: var(--margin-left);
-		margin-top: var(--content-top);
+		/* Padding, not margin. A top margin here collapses out through <main>,
+		   which offsets main itself while main keeps its min-height: 100% —
+		   the page then scrolls by exactly --content-top with nothing to see.
+		   Padding stays inside main, so short pages fit the viewport. */
+		padding-top: var(--content-top);
 
 		@media (max-width: 768px) {
 			margin-inline: 1rem;

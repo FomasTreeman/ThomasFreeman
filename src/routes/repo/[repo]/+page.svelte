@@ -7,14 +7,15 @@
 	// Data now comes directly from server load function
 	const repo = data as IRepo;
 
-	let mainElement: HTMLElement;
-
-	// Reset scroll when navigating to this page (fixes issue where clicking from homepage preserves scroll)
+	// #app is the scroll container rather than the window, so SvelteKit's own
+	// scroll handling does not reset it — clicking through from the homepage
+	// used to land here still scrolled down.
+	//
+	// This used to call scrollIntoView() on the card, which aligns the card's
+	// top with the top of the container and so scrolls the nav clearance out of
+	// view. Resetting the container to 0 keeps that clearance visible.
 	afterNavigate(() => {
-		// Scroll to show the main content, accounting for fixed navigation
-		if (mainElement) {
-			mainElement.scrollIntoView({ behavior: 'instant', block: 'start' });
-		}
+		document.getElementById('app')?.scrollTo({ top: 0, behavior: 'instant' });
 	});
 </script>
 
@@ -23,7 +24,7 @@
 	<meta name="description" content={repo.summary ?? `The ${repo.name} project.`} />
 </svelte:head>
 
-<main class="wrapper" bind:this={mainElement}>
+<main class="wrapper">
 	<a href="/" class="return">← back to home</a>
 	<h1>// {repo.name}</h1>
 	<div class="link-list">
@@ -141,10 +142,13 @@
 	}
 
 	main.wrapper {
+		/* relative only so .link-list can position against this card — it must
+		   not carry a `top` offset, which paints the card below its layout box
+		   and leaves that much empty scroll at the bottom of the page. */
 		position: relative;
 		margin-inline: 5rem;
-		margin-top: 7.5rem;
-		top: 7.5rem;
+		/* same clearance under the fixed pill nav as every other page */
+		margin-top: var(--content-top);
 		margin-bottom: 2.5rem;
 		padding: 5rem;
 		background-color: var(--background-color);
@@ -261,10 +265,10 @@
 	@media (max-width: 768px) {
 		main.wrapper {
 			margin-inline: 0rem;
+			/* full-bleed card here, so it starts flush with the top */
 			margin-top: 0;
 			margin-bottom: 2rem;
 			padding: 2rem;
-			top: 0;
 			padding-bottom: 5rem; /* Add space for bottom navigation */
 		}
 

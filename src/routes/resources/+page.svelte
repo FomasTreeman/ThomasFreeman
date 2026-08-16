@@ -135,7 +135,9 @@
 <style>
 	.resources {
 		margin-inline: var(--margin-left);
-		margin-top: var(--content-top);
+		/* Padding rather than margin: a top margin collapses out through <main>
+		   and adds --content-top of empty scroll below a short page. */
+		padding-top: var(--content-top);
 		margin-bottom: 6rem;
 	}
 

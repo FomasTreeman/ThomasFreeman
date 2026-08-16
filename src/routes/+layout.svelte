@@ -41,6 +41,11 @@
 	main {
 		min-height: 100%;
 		padding-bottom: 0;
+		/* Contain child margins. Without this a page's first-child top margin
+		   collapses out through main and offsets main itself, which still keeps
+		   its min-height: 100% — every such page then scrolls by exactly that
+		   margin with nothing below to see. */
+		display: flow-root;
 	}
 
 	#app {
