@@ -1,6 +1,9 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { put, list } from '@vercel/blob';
-import { BLOB_READ_WRITE_TOKEN } from '$env/static/private';
+import { env } from '$env/dynamic/private';
+
+// Read at runtime so a deployment without blob storage still builds
+const BLOB_READ_WRITE_TOKEN = env.BLOB_READ_WRITE_TOKEN;
 
 interface LeaderboardEntry {
 	name: string;

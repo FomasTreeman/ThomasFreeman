@@ -1,6 +1,5 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { createMagicLink, verifySession } from '$lib/auth/magic-link.js';
-import { CMS_ADMIN_EMAIL } from '$env/static/private';
+import { adminEmail, createMagicLink, verifySession } from '$lib/auth/magic-link.js';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ url, cookies }) => {
@@ -13,7 +12,7 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 	}
 
 	return {
-		email: CMS_ADMIN_EMAIL,
+		email: adminEmail(),
 		invalidLink: url.searchParams.get('error') === 'invalid'
 	};
 };
@@ -21,7 +20,7 @@ export const load: PageServerLoad = async ({ url, cookies }) => {
 export const actions = {
 	send: async ({ url }) => {
 		const baseUrl = `${url.protocol}//${url.host}`;
-		const result = await createMagicLink(CMS_ADMIN_EMAIL, baseUrl);
+		const result = await createMagicLink(adminEmail(), baseUrl);
 
 		if (!result.ok) {
 			return result.reason === 'unauthorized'

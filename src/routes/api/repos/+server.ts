@@ -1,5 +1,5 @@
 import { json } from '@sveltejs/kit';
-import { TOKEN } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import { verifySession } from '$lib/auth/magic-link.js';
 
 interface GitHubRepo {
@@ -16,6 +16,13 @@ export async function GET({ cookies }) {
 	
 	if (!session) {
 		return json({ error: 'Unauthorized' }, { status: 401 });
+	}
+
+	// Optional: without it the projects editor cannot list repos, but the
+	// site must still build and run (see src/lib/db/init.ts)
+	const TOKEN = env.TOKEN;
+	if (!TOKEN) {
+		return json({ error: 'GitHub TOKEN is not configured' }, { status: 500 });
 	}
 
 	try {

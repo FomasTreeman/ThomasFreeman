@@ -9,11 +9,7 @@ declare global {
 	}
 }
 
-declare module '$env/static/private' {
-	export const TOKEN: string;
-	export const BLOB_READ_WRITE_TOKEN: string;
-	export const CMS_ADMIN_EMAIL: string;
-	export const RESEND_API_KEY: string;
-}
+// Private env is read through `$env/dynamic/private` everywhere (see
+// src/lib/db/init.ts), so there is no static module to declare here.
 
 export {};

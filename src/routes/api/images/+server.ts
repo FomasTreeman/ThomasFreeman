@@ -1,9 +1,12 @@
 import { json } from '@sveltejs/kit';
 import { del, list } from '@vercel/blob';
-import { BLOB_READ_WRITE_TOKEN } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import { verifySession } from '$lib/auth/magic-link.js';
 import { REPO_IMAGE_PREFIX, isRepoImagePath } from '$lib/server/upload.js';
 import type { RequestHandler } from './$types';
+
+// Read at runtime so a deployment without blob storage still builds
+const BLOB_READ_WRITE_TOKEN = env.BLOB_READ_WRITE_TOKEN;
 
 async function requireAdmin(cookies: { get(name: string): string | undefined }): Promise<boolean> {
 	return (await verifySession(cookies.get('cms_session') || '')) !== null;
