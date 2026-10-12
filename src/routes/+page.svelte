@@ -8,12 +8,9 @@
 </script>
 
 <svelte:head>
-	<title>Tom Freeman — Full Stack Developer</title>
-	<meta
-		name="description"
-		content={data?.cmsContent?.hero?.bio ??
-			'Full stack developer working in TypeScript, Svelte and BSV blockchain.'}
-	/>
+	<!-- Both edited at /cms/meta; the layout adds the matching og:/twitter: tags -->
+	<title>{data.meta.title}</title>
+	<meta name="description" content={data.meta.description} />
 </svelte:head>
 
 <!-- Home/Hero section with R2D2 -->

@@ -1,6 +1,7 @@
 import { createClient } from '@libsql/client';
 import { config } from 'dotenv';
 import { DEFAULT_JOURNEY } from '../src/lib/constants/defaults.js';
+import { DEFAULT_SITE_META } from '../src/lib/site-meta.js';
 
 // Load .env file (or use environment-specific .env file passed via dotenv-cli)
 config();
@@ -21,8 +22,14 @@ const args = process.argv.slice(2);
 const skipSeed = args.includes('--skip-seed');
 const forceReseed = args.includes('--force-reseed');
 
-// Structured content ordered by site structure: Hero -> About -> Journey -> Projects -> Footer
+// Structured content ordered by site structure: Head -> Hero -> About -> Journey -> Projects -> Footer
 const structuredContent = [
+	// === <HEAD>: title, description, social card (edited at /cms/meta) ===
+	{
+		key: 'site.meta',
+		value: JSON.stringify(DEFAULT_SITE_META, null, 2)
+	},
+
 	// === HERO SECTION (Homepage top) ===
 	{
 		key: 'homepage.hero.title',

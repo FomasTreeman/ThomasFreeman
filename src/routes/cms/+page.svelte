@@ -294,6 +294,9 @@
 				<button class="history-btn" on:click={() => goto('/cms/resources')}>
 					🔗 Manage Resources
 				</button>
+				<button class="history-btn" on:click={() => goto('/cms/meta')}>
+					🏷️ Site Metadata
+				</button>
 				<button class="history-btn" on:click={() => viewHistory()}>
 					📜 View History
 				</button>

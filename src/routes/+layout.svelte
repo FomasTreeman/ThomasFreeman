@@ -5,14 +5,37 @@
 	import { gameActive } from '$lib/stores';
 	import Background from '$lib/Background.svelte';
 	import Header from '../lib/Header.svelte';
+	import { SITE_URL } from '$lib/site-meta.js';
 
 	export let data;
+
+	// The social card shown when any page is shared. The copy comes from the
+	// CMS (`site.meta`); the image is static/og-image.png, regenerated with
+	// scripts/generate-og-image.mjs when the copy changes.
+	$: meta = data.meta;
+	const ogImage = `${SITE_URL}/og-image.png`;
 
 	$: isCMSRoute = $page.route.id?.startsWith('/cms');
 	$: hideBackground = $page.route.id === '/play' || $page.route.id === '/play/leaderboard' || isCMSRoute;
 	$: hideHeader = ($page.route.id === '/play' && $gameActive) || isCMSRoute;
 	$: showCMSButton = data?.isLoggedIn && !isCMSRoute;
 </script>
+
+<svelte:head>
+	<meta property="og:site_name" content={meta.siteName} />
+	<meta property="og:title" content={meta.title} />
+	<meta property="og:type" content="website" />
+	<meta property="og:description" content={meta.description} />
+	<meta property="og:image" content={ogImage} />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:image:alt" content={meta.title} />
+	<meta property="og:url" content="{SITE_URL}/" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content={meta.title} />
+	<meta name="twitter:description" content={meta.description} />
+	<meta name="twitter:image" content={ogImage} />
+</svelte:head>
 
 <!-- Keep any fixed overlays/header outside the scroll container -->
 <div id="app">

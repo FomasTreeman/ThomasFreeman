@@ -4,12 +4,57 @@
  * name, role or palette changes.
  *
  *   node scripts/generate-og-image.mjs
+ *
+ * The tagline is the published `site.meta` description (edited at /cms/meta)
+ * when TURSO_DATABASE_URL and TURSO_AUTH_TOKEN are set in the environment or
+ * .env; otherwise the built-in default. Pass a string as the first argument to
+ * override it either way.
  */
 import { chromium } from '@playwright/test';
+import { config } from 'dotenv';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
+config();
+
 const OUTPUT = join(dirname(fileURLToPath(import.meta.url)), '..', 'static', 'og-image.png');
+const SITE_HOST = 'thomas-freeman.vercel.app';
+const NAME = 'Tom Freeman';
+// Mirrors DEFAULT_SITE_META.description in src/lib/site-meta.ts (this file is
+// plain JS, so it cannot import the TypeScript constant).
+const DEFAULT_TAGLINE = 'Full stack developer working in TypeScript, Svelte and BSV blockchain.';
+
+async function publishedTagline() {
+	const url = process.env.TURSO_DATABASE_URL;
+	const authToken = process.env.TURSO_AUTH_TOKEN;
+	if (!url || !authToken) return null;
+
+	const { createClient } = await import('@libsql/client');
+	const db = createClient({ url, authToken });
+	const result = await db.execute({
+		sql: 'SELECT value FROM content WHERE key = ? AND is_draft = 0',
+		args: ['site.meta']
+	});
+	const raw = result.rows[0]?.value;
+	if (typeof raw !== 'string') return null;
+
+	try {
+		const description = JSON.parse(raw)?.description;
+		return typeof description === 'string' && description.trim() ? description.trim() : null;
+	} catch {
+		return null;
+	}
+}
+
+function escapeHtml(text) {
+	return text
+		.replaceAll('&', '&amp;')
+		.replaceAll('<', '&lt;')
+		.replaceAll('>', '&gt;')
+		.replaceAll('"', '&quot;');
+}
+
+const tagline = process.argv[2] || (await publishedTagline()) || DEFAULT_TAGLINE;
 
 const html = `<!doctype html>
 <html>
@@ -50,10 +95,10 @@ const html = `<!doctype html>
 		</style>
 	</head>
 	<body>
-		<div class="eyebrow">thomas-freeman.vercel.app</div>
-		<h1>Tom Freeman</h1>
+		<div class="eyebrow">${SITE_HOST}</div>
+		<h1>${escapeHtml(NAME)}</h1>
 		<div class="rule"></div>
-		<p>Full stack developer — TypeScript, Svelte and BSV blockchain.</p>
+		<p>${escapeHtml(tagline)}</p>
 	</body>
 </html>`;
 
@@ -64,3 +109,4 @@ await page.screenshot({ path: OUTPUT });
 await browser.close();
 
 console.log(`Wrote ${OUTPUT}`);
+console.log(`Tagline: ${tagline}`);

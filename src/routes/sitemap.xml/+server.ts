@@ -2,9 +2,8 @@ import { getContent } from '$lib/db/content.js';
 import { PROJECTS_KEY, RESOURCES_KEY } from '$lib/constants/content-keys.js';
 import { BLOG_ENABLED } from '$lib/constants/features.js';
 import PINNED from '$lib/utils/repos.js';
+import { SITE_URL as SITE } from '$lib/site-meta.js';
 import type { RequestHandler } from './$types';
-
-const SITE = 'https://thomas-freeman.vercel.app';
 
 // Static routes worth indexing. /cms and /api are excluded here and in robots.txt.
 // /blogs and /resources are conditional — see below.
