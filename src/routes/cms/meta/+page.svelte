@@ -22,6 +22,20 @@
 	const siteUrlClean = $derived(cleanSiteUrl(meta.siteUrl));
 	const host = $derived(new URL(siteUrlClean ?? DEFAULT_SITE_META.siteUrl).host);
 
+	// The card image previews the unsaved fields: /og-image.png renders from
+	// query parameters for a logged-in admin. Debounced so typing does not
+	// fire a render per keystroke.
+	let cardSrc = $state('/og-image.png');
+	$effect(() => {
+		const params = new URLSearchParams({
+			siteName: meta.siteName,
+			description: meta.description,
+			siteUrl: siteUrlClean ?? DEFAULT_SITE_META.siteUrl
+		});
+		const timer = setTimeout(() => (cardSrc = `/og-image.png?${params}`), 400);
+		return () => clearTimeout(timer);
+	});
+
 	function flash(text: string) {
 		message = text;
 		setTimeout(() => (message = ''), 2500);
@@ -243,7 +257,7 @@
 
 					<p class="preview-label">Social card</p>
 					<div class="card">
-						<img src="/og-image.png" alt="" class="card-image" />
+						<img src={cardSrc} alt="" class="card-image" />
 						<div class="card-body">
 							<span class="card-site">{host}</span>
 							<span class="card-title">{meta.title || DEFAULT_SITE_META.title}</span>
@@ -253,9 +267,8 @@
 						</div>
 					</div>
 					<p class="hint">
-						The image is a static file. After changing the copy, run
-						<code>node scripts/generate-og-image.mjs</code> and commit the new
-						<code>static/og-image.png</code> so the picture matches the words.
+						The image is drawn from the site name, description and URL, so it updates itself when
+						you publish. Platforms cache cards, so a share made earlier may keep the old one.
 					</p>
 				</aside>
 			</div>

@@ -5,16 +5,16 @@
 	import { gameActive } from '$lib/stores';
 	import Background from '$lib/Background.svelte';
 	import Header from '../lib/Header.svelte';
-	import { absoluteUrl } from '$lib/site-meta.js';
+	import { absoluteUrl, ogImageVersion } from '$lib/site-meta.js';
 
 	export let data;
 
 	// The social card shown when any page is shared. The copy and the site's
-	// public address come from the CMS (`site.meta`, edited at /cms/meta); the
-	// image is static/og-image.png, regenerated with scripts/generate-og-image.mjs
-	// when the copy changes.
+	// public address come from the CMS (`site.meta`, edited at /cms/meta), and
+	// the image itself is rendered from the same values by /og-image.png. The
+	// ?v= changes with the text so platforms re-fetch a changed card.
 	$: meta = data.meta;
-	$: ogImage = absoluteUrl(meta, '/og-image.png');
+	$: ogImage = `${absoluteUrl(meta, '/og-image.png')}?v=${ogImageVersion(meta)}`;
 	// Vercel serves the site on several hostnames. The canonical link and
 	// og:url always name the primary one, for this page, so crawlers and
 	// share counts consolidate there.

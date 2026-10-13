@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { DEFAULT_SITE_META, absoluteUrl, cleanSiteUrl, parseSiteMeta } from './site-meta.js';
+import {
+	DEFAULT_SITE_META,
+	absoluteUrl,
+	cleanSiteUrl,
+	ogImageVersion,
+	parseSiteMeta
+} from './site-meta.js';
 
 describe('parseSiteMeta', () => {
 	it('returns the defaults when nothing is stored', () => {
@@ -95,6 +101,26 @@ describe('cleanSiteUrl', () => {
 	];
 	it.each(rejected)('rejects %s (%s)', (input) => {
 		expect(cleanSiteUrl(input)).toBeUndefined();
+	});
+});
+
+describe('ogImageVersion', () => {
+	const base = {
+		siteName: 'Tom Freeman',
+		description: 'DevSecOps engineer.',
+		siteUrl: 'https://me.fomastree.dev'
+	};
+
+	it('is stable for the same text', () => {
+		expect(ogImageVersion(base)).toBe(ogImageVersion({ ...base }));
+		expect(ogImageVersion(base)).toMatch(/^[0-9a-z]+$/);
+	});
+
+	it('changes when any text drawn on the card changes', () => {
+		const v = ogImageVersion(base);
+		expect(ogImageVersion({ ...base, siteName: 'Tom' })).not.toBe(v);
+		expect(ogImageVersion({ ...base, description: 'Something else.' })).not.toBe(v);
+		expect(ogImageVersion({ ...base, siteUrl: 'https://thomas-freeman.vercel.app' })).not.toBe(v);
 	});
 });
 
