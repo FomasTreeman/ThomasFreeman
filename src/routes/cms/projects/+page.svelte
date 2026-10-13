@@ -323,7 +323,9 @@
 		selectedProjects = [...selectedProjects];
 	}
 
-	async function saveProjects() {
+	// publish=false saves a draft: visible on the site only while logged in,
+	// which is what Preview needs. publish=true is the live save.
+	async function saveProjects(publish = true): Promise<boolean> {
 		saving = true;
 		saveMessage = '';
 		errorMessage = '';
@@ -363,30 +365,45 @@
 		if (errors.length > 0) {
 			errorMessage = errors.join(', ');
 			saving = false;
-			return;
+			return false;
 		}
 
 		try {
+			// The content table holds one row per key, so a draft of the live key
+			// would hide every project from the public. Previews go to their own key.
 			const response = await fetch('/api/cms/content', {
 				method: 'PUT',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					key: 'projects.config',
+					key: publish ? 'projects.config' : 'projects.config.preview',
 					value: JSON.stringify(selectedProjects, null, 2),
-					isDraft: false
+					isDraft: !publish
 				})
 			});
 
 			if (response.ok) {
-				saveMessage = '✓ Saved successfully!';
+				if (publish) {
+					// A stale preview would otherwise keep overriding the live list for you
+					await fetch('/api/cms/content?key=projects.config.preview', { method: 'DELETE' });
+				}
+				saveMessage = publish ? '✓ Saved successfully!' : '✓ Preview saved';
 				setTimeout(() => (saveMessage = ''), 3000);
-			} else {
-				alert('Error saving projects');
+				return true;
 			}
+			alert('Error saving projects');
 		} catch {
 			alert('Error saving projects');
 		} finally {
 			saving = false;
+		}
+		return false;
+	}
+
+	// Save as a draft, then open the site: logged in, the site renders drafts,
+	// so this shows the edits without publishing them.
+	async function previewSite() {
+		if (await saveProjects(false)) {
+			window.open('/#projects', '_blank');
 		}
 	}
 </script>
@@ -401,8 +418,7 @@
 		<div class="header-content">
 			<h1>🎨 Manage Projects</h1>
 			<div class="header-actions">
-				<button class="preview-btn" on:click={() => window.open('/', '_blank')}
-					>👁️ Preview Site</button
+				<button class="preview-btn" on:click={previewSite} disabled={saving}>👁️ Preview Site</button
 				>
 				<button class="back-btn" on:click={() => goto('/cms')}>← Back to CMS</button>
 			</div>
@@ -415,7 +431,7 @@
 		{:else}
 			<div class="controls">
 				<button class="add-btn" on:click={addProject}>+ Add Project</button>
-				<button class="save-btn" on:click={saveProjects} disabled={saving}>
+				<button class="save-btn" on:click={() => saveProjects()} disabled={saving}>
 					{saving ? 'Saving...' : '💾 Save Projects'}
 				</button>
 				{#if saveMessage}
