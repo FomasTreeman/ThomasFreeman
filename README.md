@@ -18,14 +18,17 @@ reads its copy from the `content` table.
 
 | Variable                | Used for                                                     |
 | ----------------------- | ------------------------------------------------------------ |
-| `TURSO_DATABASE_URL`    | libSQL connection string for the content/session database     |
-| `TURSO_AUTH_TOKEN`      | Turso auth token                                              |
-| `CMS_ADMIN_EMAIL`       | The only address allowed to log in to the CMS                 |
-| `RESEND_API_KEY`        | Sending the magic-link login email                            |
-| `BLOB_READ_WRITE_TOKEN` | Vercel Blob — project images and the Pizza Rush leaderboard   |
-| `TOKEN`                 | GitHub token for listing repositories in the projects editor  |
+| `TURSO_DATABASE_URL`    | libSQL connection string for the content/session database    |
+| `TURSO_AUTH_TOKEN`      | Turso auth token                                             |
+| `CMS_ADMIN_EMAIL`       | The only address allowed to log in to the CMS                |
+| `RESEND_API_KEY`        | Sending the magic-link login email                           |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob — project images and the Pizza Rush leaderboard  |
+| `TOKEN`                 | GitHub token for listing repositories in the projects editor |
 
 `.env.staging` and `.env.production` hold the same keys for the `db:*` scripts.
+
+Set `CMS_DEV_BYPASS=true` in `.env` to skip the CMS login under `pnpm dev`.
+It only takes effect on the dev server, so it cannot affect a build.
 
 ## Scripts
 
@@ -57,7 +60,8 @@ Substitute `production` for the live database.
 Login is passwordless. `/cms/login` mails a magic link to `CMS_ADMIN_EMAIL`
 (15-minute expiry), `/cms/auth/verify` exchanges it for a `cms_session` cookie
 (7 days). No other address can log in. `src/routes/cms/+layout.server.ts` gates
-every CMS route apart from the login and verify pages.
+every CMS route apart from the login and verify pages. With `CMS_DEV_BYPASS=true`
+the dev server treats every request as `CMS_ADMIN_EMAIL` and skips all of this.
 
 All editable copy lives in one `content` table as `key` → `value` strings, most
 of them JSON. Two flags matter:
@@ -70,11 +74,11 @@ of them JSON. Two flags matter:
 
 Editing surfaces:
 
-| Route            | Edits                                                         |
-| ---------------- | ------------------------------------------------------------- |
-| `/cms`           | Every content key as raw text/JSON, plus history and revert    |
-| `/cms/projects`  | `projects.config` — which repos appear, their copy and images  |
-| `/cms/resources` | `resources.links` — the /resources list                        |
+| Route            | Edits                                                                                 |
+| ---------------- | ------------------------------------------------------------------------------------- |
+| `/cms`           | Every content key as raw text/JSON, plus history and revert                           |
+| `/cms/projects`  | `projects.config` — which repos appear, their copy and images                         |
+| `/cms/resources` | `resources.links` — the /resources list                                               |
 | `/cms/meta`      | `site.meta` — home page title, description, social-card copy and the primary site URL |
 
 Keys with a dedicated editor are listed in `src/lib/constants/content-keys.ts`

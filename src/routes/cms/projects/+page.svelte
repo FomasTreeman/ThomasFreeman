@@ -510,9 +510,11 @@
 									placeholder="Full project description - supports Markdown formatting"
 									rows="8"
 								></textarea>
-								<small
-									>This is the main content shown on the project page. Markdown is supported.</small
-								>
+								<small>
+									This is the main content shown on the project page. Markdown is supported,
+									including links: <code>[live demo](https://example.com)</code> for other sites and
+									<code>[another project](/repo/DID)</code> for pages on this one.
+								</small>
 							</div>
 
 							<div class="field">

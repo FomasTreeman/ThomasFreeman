@@ -5,6 +5,17 @@ import { getDb } from '../db/init.js';
 // variable is missing, and `new Resend(undefined)` throws at import, which
 // together took down every preview deploy. See src/lib/db/init.ts.
 import { env } from '$env/dynamic/private';
+import { dev } from '$app/environment';
+
+/**
+ * Skip the magic-link flow on a local dev server.
+ *
+ * Every CMS gate and API route funnels through verifySession(), so this is the
+ * one place the bypass needs to live. It requires BOTH `vite dev` and
+ * CMS_DEV_BYPASS=true in .env: `dev` is false in any build, so the flag cannot
+ * leak into a deployment even if the variable is set there.
+ */
+const CMS_DEV_BYPASS = dev && env.CMS_DEV_BYPASS === 'true';
 
 /** The one address allowed into the CMS, or '' when not configured. */
 export function adminEmail(): string {
@@ -52,7 +63,7 @@ export async function createMagicLink(email: string, baseUrl: string): Promise<M
 
 		// Send email
 		const magicUrl = `${baseUrl}/cms/auth/verify?token=${token}`;
-		
+
 		await mailer.emails.send({
 			from: 'CMS Login <onboarding@resend.dev>',
 			to: email,
@@ -110,6 +121,7 @@ export async function createSession(email: string): Promise<string> {
 }
 
 export async function verifySession(token: string): Promise<string | null> {
+	if (CMS_DEV_BYPASS) return adminEmail();
 	if (!token) return null;
 
 	// Every page calls this, so a database that is down or not configured must

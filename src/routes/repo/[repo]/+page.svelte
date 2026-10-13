@@ -25,7 +25,7 @@
 </svelte:head>
 
 <main class="wrapper">
-	<a href="/" class="return">← back to home</a>
+	<a href="/" class="return"><span class="arrow" aria-hidden="true">←</span>back to home</a>
 	<h1>// {repo.name}</h1>
 	<div class="link-list">
 		{#each repo.externalLinks || [] as link (link.id)}
@@ -35,6 +35,8 @@
 				target="_blank"
 				rel="noopener noreferrer"
 				title={link.name}
+				aria-label={link.name}
+				data-label={link.name}
 			>
 				{#if link.type === 'preview'}
 					<svg
@@ -96,7 +98,15 @@
 			</a>
 		{/each}
 
-		<a href={repo.url} class="link-button github-link" target="_blank" rel="noopener noreferrer">
+		<a
+			href={repo.url}
+			class="link-button github-link"
+			target="_blank"
+			rel="noopener noreferrer"
+			title="Source on GitHub"
+			aria-label="Source on GitHub"
+			data-label="GitHub"
+		>
 			<svg
 				stroke="currentColor"
 				fill="currentColor"
@@ -131,14 +141,42 @@
 
 <style>
 	a.return {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		/* negative inline margin keeps the text aligned with the heading while
+		   giving the pill some padding to live in on hover */
+		margin-inline-start: -0.6rem;
+		padding: 0.35rem 0.6rem;
+		border-radius: 999px;
+		font-family: 'JetBrains Mono Variable', monospace;
+		font-size: 0.9rem;
 		color: rgb(209, 209, 209);
 		opacity: 0.7;
-		transition: all 0.3s ease;
+		transition:
+			opacity 0.3s ease,
+			background-color 0.3s ease;
 	}
 
-	a.return:hover {
-		opacity: 0.9;
-		transition: all 0.3s ease;
+	a.return .arrow {
+		display: inline-block;
+		transition: transform 0.3s var(--ease-out, ease);
+	}
+
+	a.return:hover,
+	a.return:focus-visible {
+		opacity: 1;
+		background-color: rgba(255, 255, 255, 0.06);
+	}
+
+	a.return:hover .arrow,
+	a.return:focus-visible .arrow {
+		transform: translateX(-3px);
+	}
+
+	a.return:focus-visible {
+		outline: 2px solid var(--primary-color1);
+		outline-offset: 2px;
 	}
 
 	main.wrapper {
@@ -189,10 +227,50 @@
 		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 	}
 
-	.link-button:hover {
+	.link-button:hover,
+	.link-button:focus-visible {
 		transform: translateY(-2px) scale(1.05);
 		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 		color: white;
+	}
+
+	.link-button:focus-visible {
+		outline: 2px solid var(--primary-color1);
+		outline-offset: 3px;
+	}
+
+	/* The buttons are icon-only, so show their name underneath on hover/focus.
+	   The <a> already carries aria-label; this label is purely visual. */
+	.link-button {
+		position: relative;
+	}
+
+	.link-button::after {
+		content: attr(data-label);
+		position: absolute;
+		top: calc(100% + 0.5rem);
+		left: 50%;
+		translate: -50% -4px;
+		padding: 0.25rem 0.6rem;
+		border-radius: 6px;
+		background: rgba(20, 20, 20, 0.92);
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		color: rgba(255, 255, 255, 0.9);
+		font-family: 'JetBrains Mono Variable', monospace;
+		font-size: 0.7rem;
+		line-height: 1.2;
+		white-space: nowrap;
+		opacity: 0;
+		pointer-events: none;
+		transition:
+			opacity 0.2s ease,
+			translate 0.2s ease;
+	}
+
+	.link-button:hover::after,
+	.link-button:focus-visible::after {
+		opacity: 1;
+		translate: -50% 0;
 	}
 
 	.link-button svg {
@@ -262,6 +340,49 @@
 		line-height: 1.6;
 	}
 
+	/* Links inside the CMS markdown. The global stylesheet strips colour and
+	   underline from every <a>, which left these indistinguishable from body
+	   text. :global() is needed because svelte-markdown renders them outside
+	   this component's scope. */
+	.description-wrapper :global(a) {
+		color: var(--primary-color2);
+		font-weight: 500;
+		text-decoration: underline;
+		text-decoration-color: rgba(249, 220, 0, 0.35);
+		text-decoration-thickness: 1.5px;
+		text-underline-offset: 0.2em;
+		overflow-wrap: anywhere;
+		border-radius: 3px;
+		transition:
+			color 0.2s ease,
+			text-decoration-color 0.2s ease;
+	}
+
+	.description-wrapper :global(a:hover) {
+		color: var(--primary-color1);
+		text-decoration-color: currentColor;
+	}
+
+	.description-wrapper :global(a:focus-visible) {
+		outline: 2px solid var(--primary-color1);
+		outline-offset: 2px;
+	}
+
+	/* small outward arrow on links that leave the site */
+	.description-wrapper :global(a[href^='http']:not([href*='thomas-freeman']))::after {
+		content: '\2197';
+		display: inline-block;
+		margin-left: 0.2em;
+		font-size: 0.75em;
+		opacity: 0.6;
+		text-decoration: none;
+		transition: transform 0.2s var(--ease-out, ease);
+	}
+
+	.description-wrapper :global(a[href^='http']:not([href*='thomas-freeman']):hover)::after {
+		transform: translate(1px, -1px);
+	}
+
 	@media (max-width: 768px) {
 		main.wrapper {
 			margin-inline: 0rem;
@@ -289,6 +410,10 @@
 		.link-button svg {
 			height: 18px;
 			width: 18px;
+		}
+
+		.link-button::after {
+			display: none;
 		}
 
 		h1 {
