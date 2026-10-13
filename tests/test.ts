@@ -8,6 +8,21 @@ test.describe('public pages', () => {
 		await expect(page.locator('#home')).toBeVisible();
 	});
 
+	test('the social card tags are rendered once and match the title', async ({ page }) => {
+		await page.goto('/');
+		// These used to be hardcoded in app.html; they now come from the CMS via
+		// the root layout, so make sure the move did not drop or duplicate them.
+		const ogTitle = page.locator('meta[property="og:title"]');
+		await expect(ogTitle).toHaveCount(1);
+		expect(await ogTitle.getAttribute('content')).toBe(await page.title());
+		await expect(page.locator('meta[name="description"]')).toHaveCount(1);
+		await expect(page.locator('meta[property="og:description"]')).toHaveCount(1);
+		await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute(
+			'content',
+			'summary_large_image'
+		);
+	});
+
 	test('nav links reach every public section', async ({ page }) => {
 		await page.goto('/');
 		// Blog and Resources are conditional, so only assert on what the nav
@@ -78,7 +93,7 @@ test.describe('public pages', () => {
 });
 
 test.describe('CMS access control', () => {
-	for (const path of ['/cms', '/cms/projects', '/cms/resources']) {
+	for (const path of ['/cms', '/cms/projects', '/cms/resources', '/cms/meta']) {
 		test(`${path} redirects an anonymous visitor to login`, async ({ page }) => {
 			await page.goto(path);
 			await expect(page).toHaveURL(/\/cms\/login/);

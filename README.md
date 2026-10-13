@@ -75,6 +75,7 @@ Editing surfaces:
 | `/cms`           | Every content key as raw text/JSON, plus history and revert    |
 | `/cms/projects`  | `projects.config` — which repos appear, their copy and images  |
 | `/cms/resources` | `resources.links` — the /resources list                        |
+| `/cms/meta`      | `site.meta` — home page title, description and social-card copy |
 
 Keys with a dedicated editor are listed in `src/lib/constants/content-keys.ts`
 and filtered out of the generic `/cms` list.
@@ -113,5 +114,9 @@ scripts/            database setup and the OG image generator
 tests/              Playwright integration tests
 ```
 
-Social card: `node scripts/generate-og-image.mjs` rewrites
-`static/og-image.png`. Rerun it if the name, role or palette changes.
+Social card: the `og:`/`twitter:` tags and the home page title and description
+are rendered from `site.meta` (edit at `/cms/meta`; defaults in
+`src/lib/site-meta.ts`). The image is static: `node scripts/generate-og-image.mjs`
+rewrites `static/og-image.png` with the published description when
+`TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` are set, else with the default. Rerun
+it and commit the PNG whenever the copy, name or palette changes.

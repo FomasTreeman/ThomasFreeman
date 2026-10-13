@@ -1,9 +1,23 @@
 import { nanoid } from 'nanoid';
 import { Resend } from 'resend';
 import { getDb } from '../db/init.js';
-import { RESEND_API_KEY, CMS_ADMIN_EMAIL } from '$env/static/private';
+// Dynamic env, read at call time: a static import fails the build when the
+// variable is missing, and `new Resend(undefined)` throws at import, which
+// together took down every preview deploy. See src/lib/db/init.ts.
+import { env } from '$env/dynamic/private';
 
-const resend = new Resend(RESEND_API_KEY);
+/** The one address allowed into the CMS, or '' when not configured. */
+export function adminEmail(): string {
+	return env.CMS_ADMIN_EMAIL ?? '';
+}
+
+let resend: Resend | null = null;
+
+function getResend(): Resend | null {
+	if (!env.RESEND_API_KEY) return null;
+	if (!resend) resend = new Resend(env.RESEND_API_KEY);
+	return resend;
+}
 
 const MAGIC_LINK_EXPIRY_MINUTES = 15;
 const SESSION_EXPIRY_DAYS = 7;
@@ -12,15 +26,21 @@ export type MagicLinkResult = { ok: true } | { ok: false; reason: 'unauthorized'
 
 export async function createMagicLink(email: string, baseUrl: string): Promise<MagicLinkResult> {
 	// Check if email is authorized
-	if (email.toLowerCase() !== CMS_ADMIN_EMAIL.toLowerCase()) {
+	if (!isAuthorizedEmail(email)) {
 		return { ok: false, reason: 'unauthorized' };
+	}
+
+	const mailer = getResend();
+	if (!mailer) {
+		console.error('RESEND_API_KEY is not set; cannot send a login link');
+		return { ok: false, reason: 'send_failed' };
 	}
 
 	const token = nanoid(32);
 	const expiresAt = new Date(Date.now() + MAGIC_LINK_EXPIRY_MINUTES * 60 * 1000).toISOString();
 
-	const db = getDb();
 	try {
+		const db = getDb();
 		// Clean up expired magic links
 		await db.execute('DELETE FROM magic_links WHERE expires_at < CURRENT_TIMESTAMP');
 
@@ -33,7 +53,7 @@ export async function createMagicLink(email: string, baseUrl: string): Promise<M
 		// Send email
 		const magicUrl = `${baseUrl}/cms/auth/verify?token=${token}`;
 		
-		await resend.emails.send({
+		await mailer.emails.send({
 			from: 'CMS Login <onboarding@resend.dev>',
 			to: email,
 			subject: 'Your CMS Login Link',
@@ -92,14 +112,21 @@ export async function createSession(email: string): Promise<string> {
 export async function verifySession(token: string): Promise<string | null> {
 	if (!token) return null;
 
-	const db = getDb();
-	const result = await db.execute({
-		sql: 'SELECT email FROM sessions WHERE token = ? AND expires_at > CURRENT_TIMESTAMP',
-		args: [token]
-	});
-	const session = result.rows[0] as unknown as { email: string } | undefined;
+	// Every page calls this, so a database that is down or not configured must
+	// mean "not logged in", not a 500 for anonymous visitors.
+	try {
+		const db = getDb();
+		const result = await db.execute({
+			sql: 'SELECT email FROM sessions WHERE token = ? AND expires_at > CURRENT_TIMESTAMP',
+			args: [token]
+		});
+		const session = result.rows[0] as unknown as { email: string } | undefined;
 
-	return session?.email ?? null;
+		return session?.email ?? null;
+	} catch (error) {
+		console.error('verifySession failed:', error);
+		return null;
+	}
 }
 
 export async function deleteSession(token: string): Promise<void> {
@@ -110,5 +137,7 @@ export async function deleteSession(token: string): Promise<void> {
 }
 
 export function isAuthorizedEmail(email: string): boolean {
-	return email.toLowerCase() === CMS_ADMIN_EMAIL.toLowerCase();
+	const admin = adminEmail();
+	// No admin configured means nobody is authorized, not everybody
+	return admin !== '' && email.toLowerCase() === admin.toLowerCase();
 }

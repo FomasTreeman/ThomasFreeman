@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { put } from '@vercel/blob';
-import { BLOB_READ_WRITE_TOKEN } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import { verifySession } from '$lib/auth/magic-link.js';
 import {
 	MAX_IMAGE_BYTES,
@@ -9,6 +9,9 @@ import {
 	sanitiseFileName
 } from '$lib/server/upload.js';
 import type { RequestHandler } from './$types';
+
+// Read at runtime so a deployment without blob storage still builds
+const BLOB_READ_WRITE_TOKEN = env.BLOB_READ_WRITE_TOKEN;
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
 	const sessionToken = cookies.get('cms_session');

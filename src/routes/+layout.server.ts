@@ -2,7 +2,8 @@ import PINNED from '$lib/utils/repos.js';
 import type { Data, IRepo } from '$lib/types.js';
 import { getContentMany } from '$lib/db/content.js';
 import { verifySession } from '$lib/auth/magic-link.js';
-import { RESOURCES_KEY } from '$lib/constants/content-keys.js';
+import { RESOURCES_KEY, SITE_META_KEY } from '$lib/constants/content-keys.js';
+import { parseSiteMeta } from '$lib/site-meta.js';
 
 interface ProjectConfig {
 	name: string;
@@ -26,6 +27,7 @@ const CMS_KEYS = [
 	'contact.email',
 	'about.social_links',
 	'projects.config',
+	SITE_META_KEY,
 	// only to tell the nav whether /resources has anything on it — joining this
 	// batch keeps that a free lookup rather than a second round trip
 	RESOURCES_KEY
@@ -110,6 +112,9 @@ export async function load({ cookies }) {
 	return {
 		...buildRepos(projectsConfig.length > 0 ? projectsConfig : defaultProjects),
 		cmsContent: buildCMSContent(values),
+		// Title, description and social-card copy for the <head>; every field
+		// falls back to its default on its own
+		meta: parseSiteMeta(values.get(SITE_META_KEY)),
 		// The nav hides /resources when there is nothing to show there. Only the
 		// count travels to the client; the page itself loads the entries.
 		hasResources: parseJSON<unknown[]>(values.get(RESOURCES_KEY), []).length > 0,
