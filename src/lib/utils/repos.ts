@@ -16,8 +16,11 @@ const PINNED: { [key: string]: IPinnedData } = {
 	Comms: {
 		summary: 'My quick rough messaging app for testing new frameworks',
 		stack: ['react', 'supabase'],
-		description:
-			'A messaging app using react, (version 2) the current feature in development is introducing Supabases DB and login/auth tools. where originally there wasnt session management',
+		// Markdown, with one of each link kind the project page styles: external
+		// (gets the ↗ marker) and internal (plain).
+		description: `A messaging app using React. Version 2 is introducing [Supabase](https://supabase.com) for the database and login/auth tools, where originally there was no session management.
+
+Try the [live demo](https://comm-a.vercel.app/), or read the [source on GitHub](https://github.com/FomasTreeman/Comms). It shares its React setup with [renude](/repo/renude).`,
 		externalLinks: [
 			{
 				id: '1',
