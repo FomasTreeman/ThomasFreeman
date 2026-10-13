@@ -5,10 +5,11 @@
  *
  *   node scripts/generate-og-image.mjs
  *
- * The tagline is the published `site.meta` description (edited at /cms/meta)
- * when TURSO_DATABASE_URL and TURSO_AUTH_TOKEN are set in the environment or
- * .env; otherwise the built-in default. Pass a string as the first argument to
- * override it either way.
+ * The tagline and the eyebrow hostname are the published `site.meta`
+ * description and siteUrl (edited at /cms/meta) when TURSO_DATABASE_URL and
+ * TURSO_AUTH_TOKEN are set in the environment or .env; otherwise the built-in
+ * defaults. Pass a string as the first argument to override the tagline
+ * either way.
  */
 import { chromium } from '@playwright/test';
 import { config } from 'dotenv';
@@ -18,16 +19,17 @@ import { dirname, join } from 'node:path';
 config();
 
 const OUTPUT = join(dirname(fileURLToPath(import.meta.url)), '..', 'static', 'og-image.png');
-const SITE_HOST = 'thomas-freeman.vercel.app';
 const NAME = 'Tom Freeman';
-// Mirrors DEFAULT_SITE_META.description in src/lib/site-meta.ts (this file is
-// plain JS, so it cannot import the TypeScript constant).
+// Mirror DEFAULT_SITE_META in src/lib/site-meta.ts (this file is plain JS, so
+// it cannot import the TypeScript constants).
+const DEFAULT_HOST = 'thomas-freeman.vercel.app';
 const DEFAULT_TAGLINE = 'Full stack developer working in TypeScript, Svelte and BSV blockchain.';
 
-async function publishedTagline() {
+/** The published site.meta row, or {} when there is no database or no row. */
+async function publishedMeta() {
 	const url = process.env.TURSO_DATABASE_URL;
 	const authToken = process.env.TURSO_AUTH_TOKEN;
-	if (!url || !authToken) return null;
+	if (!url || !authToken) return {};
 
 	const { createClient } = await import('@libsql/client');
 	const db = createClient({ url, authToken });
@@ -36,11 +38,20 @@ async function publishedTagline() {
 		args: ['site.meta']
 	});
 	const raw = result.rows[0]?.value;
-	if (typeof raw !== 'string') return null;
+	if (typeof raw !== 'string') return {};
 
 	try {
-		const description = JSON.parse(raw)?.description;
-		return typeof description === 'string' && description.trim() ? description.trim() : null;
+		const parsed = JSON.parse(raw);
+		return parsed && typeof parsed === 'object' ? parsed : {};
+	} catch {
+		return {};
+	}
+}
+
+function hostOf(siteUrl) {
+	if (typeof siteUrl !== 'string' || !siteUrl.trim()) return null;
+	try {
+		return new URL(siteUrl).host;
 	} catch {
 		return null;
 	}
@@ -54,7 +65,12 @@ function escapeHtml(text) {
 		.replaceAll('"', '&quot;');
 }
 
-const tagline = process.argv[2] || (await publishedTagline()) || DEFAULT_TAGLINE;
+const published = await publishedMeta();
+const tagline =
+	process.argv[2] ||
+	(typeof published.description === 'string' && published.description.trim()) ||
+	DEFAULT_TAGLINE;
+const siteHost = hostOf(published.siteUrl) || DEFAULT_HOST;
 
 const html = `<!doctype html>
 <html>
@@ -95,7 +111,7 @@ const html = `<!doctype html>
 		</style>
 	</head>
 	<body>
-		<div class="eyebrow">${SITE_HOST}</div>
+		<div class="eyebrow">${escapeHtml(siteHost)}</div>
 		<h1>${escapeHtml(NAME)}</h1>
 		<div class="rule"></div>
 		<p>${escapeHtml(tagline)}</p>
@@ -109,4 +125,5 @@ await page.screenshot({ path: OUTPUT });
 await browser.close();
 
 console.log(`Wrote ${OUTPUT}`);
+console.log(`Host: ${siteHost}`);
 console.log(`Tagline: ${tagline}`);

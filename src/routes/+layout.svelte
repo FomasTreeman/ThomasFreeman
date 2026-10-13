@@ -5,15 +5,20 @@
 	import { gameActive } from '$lib/stores';
 	import Background from '$lib/Background.svelte';
 	import Header from '../lib/Header.svelte';
-	import { SITE_URL } from '$lib/site-meta.js';
+	import { absoluteUrl } from '$lib/site-meta.js';
 
 	export let data;
 
-	// The social card shown when any page is shared. The copy comes from the
-	// CMS (`site.meta`); the image is static/og-image.png, regenerated with
-	// scripts/generate-og-image.mjs when the copy changes.
+	// The social card shown when any page is shared. The copy and the site's
+	// public address come from the CMS (`site.meta`, edited at /cms/meta); the
+	// image is static/og-image.png, regenerated with scripts/generate-og-image.mjs
+	// when the copy changes.
 	$: meta = data.meta;
-	const ogImage = `${SITE_URL}/og-image.png`;
+	$: ogImage = absoluteUrl(meta, '/og-image.png');
+	// Vercel serves the site on several hostnames. The canonical link and
+	// og:url always name the primary one, for this page, so crawlers and
+	// share counts consolidate there.
+	$: canonical = absoluteUrl(meta, $page.url.pathname);
 
 	$: isCMSRoute = $page.route.id?.startsWith('/cms');
 	$: hideBackground = $page.route.id === '/play' || $page.route.id === '/play/leaderboard' || isCMSRoute;
@@ -22,6 +27,7 @@
 </script>
 
 <svelte:head>
+	<link rel="canonical" href={canonical} />
 	<meta property="og:site_name" content={meta.siteName} />
 	<meta property="og:title" content={meta.title} />
 	<meta property="og:type" content="website" />
@@ -30,7 +36,7 @@
 	<meta property="og:image:width" content="1200" />
 	<meta property="og:image:height" content="630" />
 	<meta property="og:image:alt" content={meta.title} />
-	<meta property="og:url" content="{SITE_URL}/" />
+	<meta property="og:url" content={canonical} />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content={meta.title} />
 	<meta name="twitter:description" content={meta.description} />

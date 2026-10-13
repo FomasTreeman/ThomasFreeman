@@ -17,6 +17,13 @@ test.describe('public pages', () => {
 		expect(await ogTitle.getAttribute('content')).toBe(await page.title());
 		await expect(page.locator('meta[name="description"]')).toHaveCount(1);
 		await expect(page.locator('meta[property="og:description"]')).toHaveCount(1);
+		// The canonical link names the primary public address for this page,
+		// whatever hostname served it, and og:url agrees with it
+		const canonical = page.locator('link[rel="canonical"]');
+		await expect(canonical).toHaveCount(1);
+		const href = (await canonical.getAttribute('href')) ?? '';
+		expect(href).toMatch(/^https:\/\/[^/]+\/$/);
+		await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', href);
 		await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute(
 			'content',
 			'summary_large_image'
@@ -88,7 +95,10 @@ test.describe('public pages', () => {
 
 		const robots = await page.goto('/robots.txt');
 		expect(robots?.status()).toBe(200);
-		expect(await robots?.text()).toContain('Sitemap:');
+		const robotsText = (await robots?.text()) ?? '';
+		expect(robotsText).toContain('Disallow: /cms');
+		// robots.txt is now a route so that this line follows the CMS site URL
+		expect(robotsText).toMatch(/^Sitemap: https:\/\/[^/]+\/sitemap\.xml$/m);
 	});
 });
 

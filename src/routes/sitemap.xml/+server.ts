@@ -1,19 +1,27 @@
 import { getContent } from '$lib/db/content.js';
-import { PROJECTS_KEY, RESOURCES_KEY } from '$lib/constants/content-keys.js';
+import { PROJECTS_KEY, RESOURCES_KEY, SITE_META_KEY } from '$lib/constants/content-keys.js';
 import { BLOG_ENABLED } from '$lib/constants/features.js';
 import PINNED from '$lib/utils/repos.js';
-import { SITE_URL as SITE } from '$lib/site-meta.js';
+import { absoluteUrl, parseSiteMeta } from '$lib/site-meta.js';
 import type { RequestHandler } from './$types';
 
 // Static routes worth indexing. /cms and /api are excluded here and in robots.txt.
 // /blogs and /resources are conditional — see below.
 const STATIC_PATHS = ['/', '/play'];
 
-function urlEntry(path: string, priority: string): string {
-	return `	<url>\n		<loc>${SITE}${path}</loc>\n		<priority>${priority}</priority>\n	</url>`;
-}
-
 export const GET: RequestHandler = async ({ setHeaders }) => {
+	// The site's public address is CMS content (edited at /cms/meta); the
+	// published value only, since crawlers never see drafts
+	let meta = parseSiteMeta(null);
+	try {
+		meta = parseSiteMeta(await getContent(SITE_META_KEY));
+	} catch (error) {
+		console.error('sitemap: failed to read site meta:', error);
+	}
+
+	const urlEntry = (path: string, priority: string): string =>
+		`	<url>\n		<loc>${absoluteUrl(meta, path)}</loc>\n		<priority>${priority}</priority>\n	</url>`;
+
 	let projectNames = Object.keys(PINNED);
 
 	try {

@@ -75,7 +75,7 @@ Editing surfaces:
 | `/cms`           | Every content key as raw text/JSON, plus history and revert    |
 | `/cms/projects`  | `projects.config` — which repos appear, their copy and images  |
 | `/cms/resources` | `resources.links` — the /resources list                        |
-| `/cms/meta`      | `site.meta` — home page title, description and social-card copy |
+| `/cms/meta`      | `site.meta` — home page title, description, social-card copy and the primary site URL |
 
 Keys with a dedicated editor are listed in `src/lib/constants/content-keys.ts`
 and filtered out of the generic `/cms` list.
@@ -114,9 +114,12 @@ scripts/            database setup and the OG image generator
 tests/              Playwright integration tests
 ```
 
-Social card: the `og:`/`twitter:` tags and the home page title and description
-are rendered from `site.meta` (edit at `/cms/meta`; defaults in
-`src/lib/site-meta.ts`). The image is static: `node scripts/generate-og-image.mjs`
+Social card: the `og:`/`twitter:` tags, the canonical link and the home page
+title and description are rendered from `site.meta` (edit at `/cms/meta`;
+defaults in `src/lib/site-meta.ts`). Its `siteUrl` is the primary public
+address: Vercel answers on several hostnames, and this one is what the
+canonical link, `og:url`, the sitemap and `robots.txt` (both routes, not static
+files) point at. The image is static: `node scripts/generate-og-image.mjs`
 rewrites `static/og-image.png` with the published description when
 `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` are set, else with the default. Rerun
 it and commit the PNG whenever the copy, name or palette changes.

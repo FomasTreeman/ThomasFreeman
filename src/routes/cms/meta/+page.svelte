@@ -5,7 +5,7 @@
 	import {
 		DEFAULT_SITE_META,
 		SITE_META_LIMITS,
-		SITE_URL,
+		cleanSiteUrl,
 		parseSiteMeta,
 		type SiteMeta
 	} from '$lib/site-meta.js';
@@ -17,7 +17,10 @@
 	let message = $state('');
 	let error = $state('');
 
-	const host = new URL(SITE_URL).host;
+	// What the typed address will be stored as, or undefined while it is not
+	// a usable https origin. Drives the previews and the inline warning.
+	const siteUrlClean = $derived(cleanSiteUrl(meta.siteUrl));
+	const host = $derived(new URL(siteUrlClean ?? DEFAULT_SITE_META.siteUrl).host);
 
 	function flash(text: string) {
 		message = text;
@@ -67,6 +70,10 @@
 		const cleaned = parseSiteMeta(JSON.stringify(meta));
 		if (!meta.title.trim() || !meta.description.trim() || !meta.siteName.trim()) {
 			error = 'Every field needs a value. Blank fields would silently fall back to the defaults.';
+			return;
+		}
+		if (!siteUrlClean) {
+			error = 'The site URL must be an https address such as https://me.fomastree.dev.';
 			return;
 		}
 
@@ -196,6 +203,25 @@
 						<span class="hint-inline">
 							Shown above the card title on Facebook, LinkedIn and Slack (<code>og:site_name</code
 							>).
+						</span>
+					</label>
+
+					<label>
+						Site URL
+						<input
+							type="url"
+							bind:value={meta.siteUrl}
+							placeholder={DEFAULT_SITE_META.siteUrl}
+							class:invalid={!siteUrlClean}
+						/>
+						<span class="hint-inline">
+							The primary address when the site answers on several. Sets the canonical link,
+							<code>og:url</code>, the social image address, the sitemap and robots.txt.
+							{#if siteUrlClean && siteUrlClean !== meta.siteUrl.trim()}
+								Will be saved as <code>{siteUrlClean}</code>.
+							{:else if !siteUrlClean}
+								Needs to be an https address.
+							{/if}
 						</span>
 					</label>
 
@@ -398,6 +424,10 @@
 	textarea:focus-visible {
 		outline: 2px solid var(--primary-color1);
 		outline-offset: 1px;
+	}
+
+	input.invalid {
+		border-color: var(--cms-warning);
 	}
 
 	textarea {
