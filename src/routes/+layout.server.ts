@@ -2,7 +2,7 @@ import PINNED from '$lib/utils/repos.js';
 import type { Data, IRepo } from '$lib/types.js';
 import { getContentMany } from '$lib/db/content.js';
 import { verifySession } from '$lib/auth/magic-link.js';
-import { RESOURCES_KEY, SITE_META_KEY } from '$lib/constants/content-keys.js';
+import { PROJECTS_PREVIEW_KEY, RESOURCES_KEY, SITE_META_KEY } from '$lib/constants/content-keys.js';
 import { parseSiteMeta } from '$lib/site-meta.js';
 
 interface ProjectConfig {
@@ -27,6 +27,9 @@ const CMS_KEYS = [
 	'contact.email',
 	'about.social_links',
 	'projects.config',
+	// The editor's Preview draft. Stored as a draft row, so getContentMany only
+	// returns it when logged in; the public never sees it.
+	PROJECTS_PREVIEW_KEY,
 	SITE_META_KEY,
 	// only to tell the nav whether /resources has anything on it — joining this
 	// batch keeps that a free lookup rather than a second round trip
@@ -107,7 +110,10 @@ export async function load({ cookies }) {
 	}
 
 	const defaultProjects = Object.keys(PINNED).map((name) => ({ name }));
-	const projectsConfig = parseJSON<ProjectConfig[]>(values.get('projects.config'), defaultProjects);
+	const projectsConfig = parseJSON<ProjectConfig[]>(
+		(isLoggedIn && values.get(PROJECTS_PREVIEW_KEY)) || values.get('projects.config'),
+		defaultProjects
+	);
 
 	return {
 		...buildRepos(projectsConfig.length > 0 ? projectsConfig : defaultProjects),
