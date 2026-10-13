@@ -5,15 +5,14 @@
 		<link rel="icon" href="%sveltekit.assets%/favicon.webp" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="theme-color" content="#242424" />
-		<link rel="canonical" href="https://thomas-freeman.vercel.app/" />
 		<link
 			rel="stylesheet"
 			href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css"
 		/>
 		<!--
-			No <title>, description or Open Graph tags here on purpose: each route
-			sets its own title, and the root layout renders the social-card tags
-			from the CMS (`site.meta`, edited at /cms/meta).
+			No <title>, description, canonical or Open Graph tags here on purpose:
+			each route sets its own title, and the root layout renders the canonical
+			link and social-card tags from the CMS (`site.meta`, edited at /cms/meta).
 		-->
 		%sveltekit.head%
 	</head>
