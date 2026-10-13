@@ -30,6 +30,20 @@ test.describe('public pages', () => {
 		);
 	});
 
+	test('the social card image is rendered and versioned by its text', async ({ page, request }) => {
+		await page.goto('/');
+		const ogImage = (await page.locator('meta[property="og:image"]').getAttribute('content')) ?? '';
+		expect(ogImage).toMatch(/\/og-image\.png\?v=[0-9a-z]+$/);
+
+		const response = await request.get('/og-image.png');
+		expect(response.status()).toBe(200);
+		expect(response.headers()['content-type']).toBe('image/png');
+
+		// Preview parameters are an admin feature; anonymously they change nothing
+		const tampered = await request.get('/og-image.png?description=anything');
+		expect(Buffer.compare(await tampered.body(), await response.body())).toBe(0);
+	});
+
 	test('nav links reach every public section', async ({ page }) => {
 		await page.goto('/');
 		// Blog and Resources are conditional, so only assert on what the nav

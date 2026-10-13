@@ -110,7 +110,7 @@ src/lib/            components, and server-only helpers under lib/server
 src/lib/db/         Turso client and the content/history queries
 src/lib/auth/       magic link and session handling
 src/routes/         pages; api/ for endpoints, cms/ for the admin
-scripts/            database setup and the OG image generator
+scripts/            database setup and seeding
 tests/              Playwright integration tests
 ```
 
@@ -119,7 +119,8 @@ title and description are rendered from `site.meta` (edit at `/cms/meta`;
 defaults in `src/lib/site-meta.ts`). Its `siteUrl` is the primary public
 address: Vercel answers on several hostnames, and this one is what the
 canonical link, `og:url`, the sitemap and `robots.txt` (both routes, not static
-files) point at. The image is static: `node scripts/generate-og-image.mjs`
-rewrites `static/og-image.png` with the published description when
-`TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` are set, else with the default. Rerun
-it and commit the PNG whenever the copy, name or palette changes.
+files) point at. The card image is the `/og-image.png` route
+(`src/lib/server/og-card.ts`): satori lays it out from the published site name,
+description and host, and resvg turns it into a PNG, so it never needs
+regenerating. The layout appends `?v=<hash of that text>` so platforms that
+cache by URL pick up a changed card. Edit the design in `og-card.ts`.

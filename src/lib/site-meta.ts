@@ -103,6 +103,23 @@ export function parseSiteMeta(raw: string | null | undefined): SiteMeta {
 	};
 }
 
+/**
+ * Short, stable fingerprint of the text drawn on the social card. Appended to
+ * the og:image URL so that platforms which cache images by URL (LinkedIn,
+ * Slack, X) fetch a fresh card whenever the copy changes. FNV-1a, 32-bit.
+ */
+export function ogImageVersion(
+	meta: Pick<SiteMeta, 'siteName' | 'description' | 'siteUrl'>
+): string {
+	const input = `${meta.siteName}\n${meta.description}\n${meta.siteUrl}`;
+	let hash = 0x811c9dc5;
+	for (let i = 0; i < input.length; i++) {
+		hash ^= input.charCodeAt(i);
+		hash = Math.imul(hash, 0x01000193);
+	}
+	return (hash >>> 0).toString(36);
+}
+
 /** Absolute URL for a site path, e.g. absoluteUrl(meta, '/sitemap.xml'). */
 export function absoluteUrl(meta: Pick<SiteMeta, 'siteUrl'>, path: string): string {
 	return `${meta.siteUrl}${path.startsWith('/') ? path : `/${path}`}`;
