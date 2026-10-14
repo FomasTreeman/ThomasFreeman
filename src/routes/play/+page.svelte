@@ -549,7 +549,21 @@
 
 <svelte:head>
 	<title>Pizza Rush · Tom Freeman</title>
-	<meta name="description" content="A small browser game. Build the orders before the timer runs out." />
+	<meta
+		name="description"
+		content="A small browser game. Build the orders before the timer runs out."
+	/>
+	<!--
+		Dough (U+1FAD3) and olive (U+1FAD2) are Emoji 13 (2020). Windows 10's Segoe UI
+		Emoji stops short of them, so they render as boxes there. This is a 2 KB subset
+		of Noto Color Emoji holding just those two glyphs; the font stack below only
+		reaches it when the platform's own emoji font has no glyph.
+	-->
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+	<link
+		rel="stylesheet"
+		href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&text=%F0%9F%AB%93%F0%9F%AB%92&display=swap"
+	/>
 </svelte:head>
 
 <div class="game-container">
@@ -1012,6 +1026,12 @@
 		justify-content: center;
 		margin-bottom: 0.5rem;
 		gap: 0.5rem;
+	}
+
+	/* Native emoji first; Noto (subset in <svelte:head>) only fills missing glyphs */
+	.ingredient-icon,
+	.ingredient-emoji {
+		font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
 	}
 
 	.ingredient-icon {
